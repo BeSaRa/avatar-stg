@@ -1,10 +1,10 @@
 {
   "ENVIRONMENTS_URLS": {
-    "DEV": "http://mm-api-demo.azurewebsites.net/api",
+    "DEV": "https://mm-api-demo.azurewebsites.net/api",
     "AQARAT_STG": "https://afnqcscbai01.azurewebsites.net/api",
     "AZURE": "https://rera-api.azurewebsites.net/api",
     "RERA": "https://rera-api-1.azurewebsites.net/api",
-    "MM": "http://mm-api-demo.azurewebsites.net/api"
+    "MM": "https://mm-api-demo.azurewebsites.net/api"
   },
   "API_VERSION": "v1",
   "BASE_ENVIRONMENT": "DEV",
