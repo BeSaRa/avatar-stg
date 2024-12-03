@@ -7,6 +7,6 @@
     "MM": "https://mm-api-demo.azurewebsites.net/api"
   },
   "API_VERSION": "v1",
-  "BASE_ENVIRONMENT": "DEV",
+  "BASE_ENVIRONMENT": "AQARAT_STG",
   "KUNA": "3Q84i4HgnkCtMvq3HhCulIbqMbf73QNGDn5MXKQnK_xtAzFu2CXK-w=="
 }
