@@ -1,6 +1,6 @@
 {
   "ENVIRONMENTS_URLS": {
-    "DEV": "https://mm-api-demo.azurewebsites.net/api",
+    "DEV": "https://afnqcpcbai01.azurewebsites.net/api/v1/",
     "AQARAT_STG": "https://afnqcscbai01.azurewebsites.net/api",
     "AZURE": "https://rera-api.azurewebsites.net/api",
     "RERA": "https://rera-api-1.azurewebsites.net/api",
@@ -8,5 +8,5 @@
   },
   "API_VERSION": "v1",
   "BASE_ENVIRONMENT": "DEV",
-  "KUNA": "i-mEGilYdirGxQO_579aS_Y226Qq8Bi1SCwBehnp_jK_AzFu9Lhwig=="
+  "KUNA": "3Q84i4HgnkCtMvq3HhCulIbqMbf73QNGDn5MXKQnK_xtAzFu2CXK-w=="
 }
