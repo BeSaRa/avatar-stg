@@ -1,7 +1,7 @@
 <header class="p-4 bg-gray-200">
   <div class="flex m-auto container items-center justify-between">
     <a class="flex-shrink" [routerLink]="['/home']">
-      <img class="h-20" [src]="'assets/images/MME-logo.png'" alt="logo" />
+      <img class="h-20" [src]="store.logoUrl()" alt="logo" />
     </a>
     <button (click)="toggleMenu()" class="md:hidden">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256">
@@ -39,6 +39,15 @@
                 d="M200,48H136V16a8,8,0,0,0-16,0V48H56A32,32,0,0,0,24,80V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32V80A32,32,0,0,0,200,48Zm16,144a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V80A16,16,0,0,1,56,64H200a16,16,0,0,1,16,16Zm-52-56H92a28,28,0,0,0,0,56h72a28,28,0,0,0,0-56Zm-24,16v24H116V152ZM80,164a12,12,0,0,1,12-12h8v24H92A12,12,0,0,1,80,164Zm84,12h-8V152h8a12,12,0,0,1,0,24ZM72,108a12,12,0,1,1,12,12A12,12,0,0,1,72,108Zm88,0a12,12,0,1,1,12,12A12,12,0,0,1,160,108Z"></path>
             </svg>
             <span>{{ lang.locals.chat }}</span>
+          </a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="flex gap-1" routerLink="/avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120ZM72.57,200a64,64,0,0,1,110.86,0ZM216,200H201.33a80.14,80.14,0,0,0-43.69-42.28,48,48,0,1,0-59.28,0A80.14,80.14,0,0,0,54.67,200H40V56H216V200Z"></path>
+            </svg>
+            <span>{{ lang.locals.avatar_chat }}</span>
           </a>
         </li>
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
