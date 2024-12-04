@@ -27,7 +27,7 @@ const initialState: AppStore = {
   streamReady: false,
   backgroundColor: '#8A1538',
   backgroundUrl: 'assets/images/background.svg',
-  logoUrl: 'assets/images/MME-logo.png',
+  logoUrl: 'assets/images/qrep-newlogo-colored.png',
   isVideo: false,
   preview: false,
   videoToken: '',
