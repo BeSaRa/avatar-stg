@@ -65,7 +65,7 @@ export class RecorderComponent extends OnDestroyMixin(class {}) {
   private async prepareRecognizer() {
     // noinspection DuplicatedCode
     const audioConfig = AudioConfig.fromDefaultMicrophoneInput()
-    const langDetection = AutoDetectSourceLanguageConfig.fromLanguages(['ar-QA', 'en-US', 'zh-Hans', 'zh-Hant'])
+    const langDetection = AutoDetectSourceLanguageConfig.fromLanguages(['ar-QA', 'en-US', 'zh-CN', 'wuu-CN'])
 
     this.recognizer = SpeechRecognizer.FromConfig(
       SpeechConfig.fromAuthorizationToken(this.store.speechToken.token(), this.store.speechToken.region()),
