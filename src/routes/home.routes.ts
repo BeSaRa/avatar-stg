@@ -12,6 +12,11 @@ const routes: Routes = [
     loadComponent: () => import('@/views/chat-history/chat-history.component').then(c => c.ChatHistoryComponent),
   },
   {
+    path: 'web-crawler',
+    loadComponent: () =>
+      import('@/views/web-crawler-report/web-crawler-report.component').then(c => c.WebCrawlerReportComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

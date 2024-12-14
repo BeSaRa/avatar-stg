@@ -77,4 +77,41 @@ export interface LangKeysContract {
   reload_conversation: string
   sort_conversation: string
   total: string
+  doc_analyzer: string
+  not_supported_filetype: string
+  exceed_file_size: string
+  upload: string
+  remove: string
+  click_to_upload_or_dnd: string
+  file_upload: string
+  next: string
+  previous: string
+  extracted_data: string
+  extracted_words: string
+  document_analyze_progress: string
+  vacation_request: string
+  interactive_chatbot: string
+  vacations_list: string
+  employee_name: string
+  manager_name: string
+  department: string
+  start_date: string
+  end_date: string
+  total_days: string
+  status: string
+  comments: string
+  actions: string
+  approved: string
+  rejected: string
+  pending: string
+  vacation_type: string
+  web_crawler_and_report_generator: string
+  generate_report: string
+  topics: string
+  web_page_urls: string
+  crawl_web_pages: string
+  search_text_for_report: string
+  invalid_url: string
+  required: string
+  web_crawler: string
 }
