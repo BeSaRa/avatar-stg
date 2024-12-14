@@ -7,6 +7,8 @@ export const EndPoints = {
   VIDEO_INDEXER: 'https://www.videoindexer.ai/embed',
   AI_SEARCH: 'search/search',
   CHAT_HISTORY: 'chat-history',
+  DOC_INTELLIGENCE: 'document-intelligence',
+  MEDIA: 'media',
 }
 
 export type EndpointsType = typeof EndPoints
