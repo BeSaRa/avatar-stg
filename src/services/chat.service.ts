@@ -6,6 +6,8 @@ import { Message } from '@/models/message'
 import { AppStore } from '@/stores/app.store'
 import { ChatMessageResultContract } from '@/contracts/chat-message-result-contract'
 import { formatString, formatText } from '@/utils/utils'
+import { distinctUntilChanged, tap } from 'rxjs'
+import { FormControl } from '@angular/forms'
 
 @Injectable({
   providedIn: 'root',
@@ -44,5 +46,16 @@ export class ChatService {
           return res
         })
       )
+  }
+  botNameCtrl = new FormControl('website', { nonNullable: true })
+
+  onBotNameChange() {
+    return this.botNameCtrl.valueChanges.pipe(
+      distinctUntilChanged(),
+      tap(() => {
+        this.conversationId.set('')
+        this.messages.set([])
+      })
+    )
   }
 }
