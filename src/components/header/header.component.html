@@ -47,11 +47,10 @@
               <path
                 d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120ZM72.57,200a64,64,0,0,1,110.86,0ZM216,200H201.33a80.14,80.14,0,0,0-43.69-42.28,48,48,0,1,0-59.28,0A80.14,80.14,0,0,0,54.67,200H40V56H216V200Z"></path>
             </svg>
-            <span>{{ lang.locals.avatar_chat }}</span>
             <span class="text-sm">{{ lang.locals.avatar_chat }}</span>
           </a>
         </li>
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="flex gap-1" routerLink="/home/video-indexer">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 24 24">
               <path
@@ -60,7 +59,7 @@
 
             <span class="text-sm">{{ lang.locals.video_indexer }}</span>
           </a>
-        </li>
+        </li> -->
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="flex gap-1" routerLink="/home/chat-history">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 24 24">
@@ -68,11 +67,10 @@
                 d="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3" />
             </svg>
 
-            <span>{{ lang.locals.chat_history }}</span>
             <span class="text-sm">{{ lang.locals.chat_history }}</span>
           </a>
         </li>
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="flex gap-1" routerLink="/home/doc-intelligence">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 24 24">
               <path
@@ -81,8 +79,8 @@
 
             <span class="text-sm">{{ lang.locals.doc_analyzer }}</span>
           </a>
-        </li>
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        </li> -->
+        <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a routerLink="/home/interactive-chatbot" class="flex gap-1">
             <svg class="size-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -90,7 +88,7 @@
             </svg>
             <span class="text-sm">{{ lang.locals.interactive_chatbot }}</span>
           </a>
-        </li>
+        </li> -->
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a routerLink="/home/web-crawler" class="flex gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 24 24">
@@ -100,7 +98,7 @@
             <span class="text-sm">{{ lang.locals.web_crawler }}</span>
           </a>
         </li>
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a (click)="openSettings($event)" href="#" class="flex gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
               <path
@@ -108,7 +106,7 @@
             </svg>
             <span class="text-sm">{{ lang.locals.settings }}</span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </nav>
   </div>
