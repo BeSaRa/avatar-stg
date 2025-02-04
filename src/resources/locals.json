@@ -808,7 +808,8 @@
     "en": "Stop Chat"
   },
   "log_out": {
-    "ar": "خروج"
+    "ar": "خروج",
+    "en": "Log Out"
   },
   "login": {
     "ar": "تسجيل الدخول",
