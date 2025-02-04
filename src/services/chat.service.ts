@@ -48,7 +48,7 @@ export class ChatService {
         })
       )
   }
-  botNameCtrl = new FormControl('website', { nonNullable: true })
+  botNameCtrl = new FormControl('', { nonNullable: true })
 
   onBotNameChange() {
     return this.botNameCtrl.valueChanges.pipe(
