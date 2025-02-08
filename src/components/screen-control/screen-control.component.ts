@@ -209,8 +209,6 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
   }
 
   private listenToAccept() {
-    const selectedBot = this.chatService.botNameCtrl.value
-
     this.accept$
       .pipe(map(() => this.recognizedText()))
       .pipe(filter(value => !!value))
@@ -225,7 +223,7 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
         })
       )
       .pipe(tap(() => this.goToEndOfChat()))
-      .pipe(exhaustMap(value => this.chatService.sendMessage(value, selectedBot)))
+      .pipe(exhaustMap(value => this.chatService.sendMessage(value, 'legal')))
       .pipe(delay(200))
       .subscribe(() => {
         const assistantList = this.overlayChatComponent().container().nativeElement.querySelectorAll('.assistant')

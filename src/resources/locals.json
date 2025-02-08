@@ -76,7 +76,7 @@
     "en": "AI Search"
   },
   "chat": {
-    "ar": "المساعد الآلي",
+    "ar": "المساعد القانوني",
     "en": "Chatbot"
   },
   "avatar_chat": {
@@ -735,8 +735,116 @@
     "ar": "تعديل العنوان",
     "en": "Edit URL"
   },
+  "users": {
+    "ar": "المستخدمين",
+    "en": "Users"
+  },
+  "username": {
+    "ar": "اسم المستخدم",
+    "en": "Username"
+  },
+  "edit_permissions": {
+    "ar": "تعديل الصلاحيات",
+    "en": "Edit Permissions"
+  },
+  "search_username": {
+    "ar": "بحث عن طريق اسم المستخدم...",
+    "en": "Search by username..."
+  },
+  "no_users": {
+    "ar": "لا يوجد مستخدمين",
+    "en": "No users found"
+  },
+  "never_expire": {
+    "ar": "لا تنتهي صلاحية الجلسة",
+    "en": "Never expire"
+  },
+  "add_user": {
+    "ar": "إضافة مستخدم",
+    "en": "Add User"
+  },
+  "usernameTip": {
+    "ar": "يجب أن يكون اسم المستخدم بين 3 و20 حرفًا ويمكن أن يحتوي فقط على:",
+    "en": "Username must be 3-20 characters long and can only contain:"
+  },
+  "usernameLetters": {
+    "ar": "حروف (a-z, A-Z)",
+    "en": "Letters (a-z, A-Z)"
+  },
+  "usernameNumbers": {
+    "ar": "أرقام (0-9)",
+    "en": "Numbers (0-9)"
+  },
+  "usernameSpecialChars": {
+    "ar": "نقاط (.), شرطة سفلية (_), أو شرطة (-)",
+    "en": "Periods (.), underscores (_), or hyphens (-)"
+  },
+  "usernameRequired": {
+    "ar": "اسم المستخدم مطلوب.",
+    "en": "Username is required."
+  },
+  "usernameMinLength": {
+    "ar": "يجب أن يكون اسم المستخدم على الأقل 3 أحرف.",
+    "en": "Username must be at least 3 characters long."
+  },
+  "usernameMaxLength": {
+    "ar": "لا يمكن أن يتجاوز اسم المستخدم 20 حرفًا.",
+    "en": "Username cannot exceed 20 characters."
+  },
+  "usernamePattern": {
+    "ar": "يمكن أن يحتوي اسم المستخدم فقط على حروف وأرقام ونقاط وشرطة سفلية أو شرطة.",
+    "en": "Username can only contain letters, numbers, periods, underscores, or hyphens."
+  },
+  "operationSuccess": {
+    "ar": "تمت العملية بنجاح.",
+    "en": "Operation completed successfully."
+  },
+  "users_desc": {
+    "ar": "إضافة، حذف، وتعديل صلاحيات المستخدمين.",
+    "en": "Add, delete, and edit user permissions."
+  },
   "stop_chat": {
     "ar": "إيقاف المحادثة",
     "en": "Stop Chat"
+  },
+  "log_out": {
+    "ar": "خروج",
+    "en": "Log Out"
+  },
+  "login": {
+    "ar": "تسجيل الدخول",
+    "en": "Login"
+  },
+  "password": {
+    "ar": "كلمة المرور",
+    "en": "Password"
+  },
+  "user_name": {
+    "ar": "اسم المستخدم",
+    "en": "User Name"
+  },
+  "permission_managment": {
+    "ar": "إدارة الصلاحيات",
+    "en": "Permission Management"
+  },
+  "statistics": {
+    "ar": "الإحصائيات",
+    "en": "Statistics"
+  },
+  "total_reports": {
+    "ar": "إجمالي التقارير",
+    "en": "Total Reports"
+  },
+  "total_urls": {
+    "ar": "إجمالي الروابط",
+    "en": "Total URLs"
+  },
+  "web_crawling_stats": {
+    "ar": "إحصائيات تتبع البيانات",
+    "en": "Web Crawling Statistics"
+  },
+  "reports_number": {
+    "ar": "عدد التقارير",
+    "en": "Number of reports"
   }
 }
