@@ -66,7 +66,7 @@
     [matTooltip]="lang.locals.change_bot + '\n' + lang.locals.change_bot_note"
     [matTooltipClass]="'whitespace-pre-line'"
     [formControl]="chatService.botNameCtrl"
-    class="block p-1 w-full truncate text-gray-200 text-sm border-b-2 border-gray-300 bg-transparent focus:ring-primary focus:border-primary outline-none">
+    class="hidden p-1 w-full truncate text-gray-200 text-sm border-b-2 border-gray-300 bg-transparent focus:ring-primary focus:border-primary outline-none">
     @for (chatbot of botNames$ | async; track $index) {
       <option class="text-gray-800 truncate" [value]="chatbot">{{ chatbot }}</option>
     }

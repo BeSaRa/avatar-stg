@@ -17,6 +17,10 @@ const routes: Routes = [
       import('@/views/web-crawler-report/web-crawler-report.component').then(c => c.WebCrawlerReportComponent),
   },
   {
+    path: 'statistics',
+    loadComponent: () => import('@/views/statistics/statistics.component').then(c => c.StatisticsComponent),
+  },
+  {
     path: 'admin',
     loadChildren: () => import('@/routes/admin.routes'),
   },
