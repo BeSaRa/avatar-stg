@@ -4,7 +4,9 @@ export const Config = {
   ENVIRONMENTS_URLS: {},
   BASE_URL: '',
   API_VERSION: 'v1',
-  KUNA: '',
+  KUNA_DEV: '',
+  KUNA_STG: '',
+  KUNA_PROD: '',
   EXTERNAL_PROTOCOLS: ['http', 'https'],
 }
 
