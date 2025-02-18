@@ -64,9 +64,12 @@ export class RecorderComponent extends OnDestroyMixin(class {}) {
 
   private async prepareRecognizer() {
     // noinspection DuplicatedCode
+    const uri = new URL(
+      `wss://${this.store.speechToken.region()}/stt/speech/recognition/conversation/cognitiveservices/v1`
+    )
     const audioConfig = AudioConfig.fromDefaultMicrophoneInput()
-    const langDetection = AutoDetectSourceLanguageConfig.fromLanguages(['ar-QA', 'en-US', 'zh-CN', 'wuu-CN'])
-    const config = SpeechConfig.fromAuthorizationToken(this.store.speechToken.token(), this.store.speechToken.region())
+    const langDetection = AutoDetectSourceLanguageConfig.fromLanguages(['ar-QA', 'en-US'])
+    const config = SpeechConfig.fromEndpoint(uri)
     config.authorizationToken = this.store.speechToken.token()
     this.recognizer = SpeechRecognizer.FromConfig(
       // SpeechConfig.fromEndpoint(
