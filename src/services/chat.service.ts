@@ -8,6 +8,7 @@ import { ChatMessageResultContract } from '@/contracts/chat-message-result-contr
 import { formatString, formatText } from '@/utils/utils'
 import { distinctUntilChanged, tap } from 'rxjs'
 import { FormControl } from '@angular/forms'
+import { LocalService } from './local.service'
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,7 @@ export class ChatService {
   private readonly http = inject(HttpClient)
   private readonly urlService = inject(UrlService)
   private readonly store = inject(AppStore)
+  private readonly lang = inject(LocalService)
   messages = signal<Message[]>([])
   status = signal<boolean>(false)
   conversationId = signal<string>('')
@@ -58,5 +60,14 @@ export class ChatService {
         this.messages.set([])
       })
     )
+  }
+
+  checkInteractivity() {
+    if (!this.store.isInteracted() && this.status()) {
+      setTimeout(() => {
+        this.messages.update(messages => [...messages, new Message(this.lang.locals.bot_welcom_message, 'assistant')])
+        this.store.updateInteractioinWithChat(true)
+      })
+    }
   }
 }
