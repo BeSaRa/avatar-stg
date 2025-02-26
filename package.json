@@ -12,6 +12,7 @@
     "format": "prettier --write \"src/**/*.{ts,html,scss,tsx,js,jsx}\"",
     "prepare": "husky install",
     "version": "node bin/version.js",
+    "build:package": "node bin/build-and-package.js",
     "deploy": "ng deploy"
   },
   "private": true,
@@ -40,6 +41,7 @@
     "ng2-charts": "^6.0.1",
     "perfect-scrollbar": "^1.5.6",
     "process": "^0.11.10",
+    "readline-sync": "^1.4.10",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "url": "^0.11.4",
