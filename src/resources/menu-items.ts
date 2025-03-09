@@ -43,4 +43,11 @@ export const MENU_ITEMS: MenuItem[] = [
     svg: 'WEB_CRAWLER',
     permissions: ['SEARCH'],
   },
+  {
+    id: 11,
+    label: 'video_generator',
+    route: '/video-generator',
+    svg: 'VIDEO_GENERATOR',
+    permissions: ['AVATAR'],
+  },
 ]
