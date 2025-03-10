@@ -92,6 +92,9 @@ export const AppStore = signalStore(
     return {
       onInit() {
         patchState(store, { isInteractiWithChat: false })
+        if (store.isRecordingLoading()) {
+          patchState(store, { recording: 'Stopped' })
+        }
         effect(() => {
           const state = getState(store)
           localStorage.setItem('CURRENT_STATE', JSON.stringify(state))
