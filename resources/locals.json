@@ -76,7 +76,7 @@
     "en": "AI Search"
   },
   "chat": {
-    "ar": "المساعد العقاري",
+    "ar": "المساعد القانوني",
     "en": "Chatbot"
   },
   "avatar_chat": {
@@ -436,7 +436,7 @@
     "en": "Search text for report"
   },
   "topics": {
-    "ar": "مواضيع",
+    "ar": "المواضيع",
     "en": "Topics"
   },
   "web_page_urls": {
@@ -466,5 +466,445 @@
   "change_bot_note": {
     "ar": "ملاحظة: عند تغيير البوت سيتم مسح جميع المحادثة",
     "en": " Note: Changing the bot's name will result in the chat history being cleared."
+  },
+  "indexers": {
+    "ar": "الفهارس",
+    "en": "Indexers"
+  },
+  "storage": {
+    "ar": "التخزين",
+    "en": "Storage"
+  },
+  "admin_services": {
+    "ar": "خدمات المسؤول",
+    "en": "Admin Services"
+  },
+  "urls": {
+    "ar": "العناوين الالكترونية",
+    "en": "URLs"
+  },
+  "general_settings": {
+    "ar": "الإعدادات العامة",
+    "en": "General Settings"
+  },
+  "deep_crawling": {
+    "ar": "تتبع عميق",
+    "en": "Deep Crawling"
+  },
+  "media_crawling": {
+    "ar": "تتبع الوسائط",
+    "en": "Media Crawling"
+  },
+  "selectors": {
+    "ar": "المحددات",
+    "en": "Selectors"
+  },
+  "container_name": {
+    "ar": "اسم الحاوية",
+    "en": "Container Name"
+  },
+  "add_url": {
+    "ar": "إضافة عنوان",
+    "en": "Add URL"
+  },
+  "link": {
+    "ar": "الرابط",
+    "en": "Link"
+  },
+  "headers": {
+    "ar": "الترويسات",
+    "en": "Headers"
+  },
+  "cookies": {
+    "ar": "ملفات الارتباط",
+    "en": "Cookies"
+  },
+  "payload": {
+    "ar": "بيانات الإرسال",
+    "en": "Payload"
+  },
+  "key": {
+    "ar": "المفتاح",
+    "en": "Key"
+  },
+  "value": {
+    "ar": "القيمة",
+    "en": "Value"
+  },
+  "add_header": {
+    "ar": "إضافة ترويسة",
+    "en": "Add Header"
+  },
+  "add_cookie": {
+    "ar": "إضافة ملف ارتباط",
+    "en": "Add Cookie"
+  },
+  "add_payload": {
+    "ar": "إضافة بيانات إرسال",
+    "en": "Add Payload"
+  },
+  "add_selector": {
+    "ar": "إضافة محدد",
+    "en": "Add Selector"
+  },
+  "add_topic": {
+    "ar": "إضافة موضوع",
+    "en": "Add Topic"
+  },
+  "json_preview": {
+    "ar": "معاينة JSON",
+    "en": "JSON Preview"
+  },
+  "copy": {
+    "ar": "نسخ",
+    "en": "Copy"
+  },
+  "url": {
+    "ar": "العنوان",
+    "en": "URL"
+  },
+  "select_container_message": {
+    "ar": "يرجى تحديد حاوية لعرض محتوياتها",
+    "en": "Please select container to view its content"
+  },
+  "no_files_message": {
+    "ar": "لا يوجد ملفات متاحة لعرضها",
+    "en": "There are no files available for preview."
+  },
+  "delete_message": {
+    "ar": "هل أنت متأكد أنك تريد حذف ؟",
+    "en": "Are you sure you want to delete ?"
+  },
+  "open_folder_tip": {
+    "ar": "يمكنك الضغط مرتين لفتح المجلد",
+    "en": "You can double click on folder to open it"
+  },
+  "selection_tip": {
+    "ar": "يمكنك تحديد جميع العناصر عن طريق الضغط على Ctrl + A.  \nكما يمكنك تحديد العناصر برسم مربع حولها عن طريق الضغط مع السحب باستخدام الماوس.  \nوأيضًا، يمكنك تحديد العناصر بشكل فردي أو الضغط على Ctrl لإضافة عنصر جديد إلى العناصر المحددة.",
+    "en": "You can select all items by pressing Ctrl + A.  \nYou can also select items by drawing a box around them by clicking and dragging with the mouse.  \nAdditionally, you can select items individually or press Ctrl to add a new item to the selected items."
+  },
+  "choose_files": {
+    "ar": "اختر ملفات",
+    "en": "Choose Files"
+  },
+  "errors": {
+    "ar": "الأخطاء",
+    "en": "Errors"
+  },
+  "file_not_supported": {
+    "ar": "صيغة الملف غير مدعومة",
+    "en": "File not supported"
+  },
+  "json_warning": {
+    "ar": "الملف لا يحوي على المفاتيح المطلوبة",
+    "en": "The file does not contain the required keys."
+  },
+  "file_storage": {
+    "ar": "ملفات التخرين",
+    "en": "File Storage"
+  },
+  "indexer_name": {
+    "ar": "اسم المفهرس",
+    "en": "Indexer Name"
+  },
+  "run_indexer": {
+    "ar": "تشغيل الفهرس",
+    "en": "Run Indexer"
+  },
+  "indexer_warning": {
+    "ar": "لا يمكن جلب تفاصيل الفهرس",
+    "en": "Filed to fetch details for indexer"
+  },
+  "loading_content": {
+    "ar": "جلب التفاصيل",
+    "en": "Loading  Contents"
+  },
+  "index_name": {
+    "ar": "اسم الفهرس",
+    "en": "Index Name"
+  },
+  "data_source": {
+    "ar": "مصدر البيانات",
+    "en": "Data Source"
+  },
+  "data_storage_type": {
+    "ar": "نوع تخزين البيانات",
+    "en": "Data Storage Type"
+  },
+  "data_storage_name": {
+    "ar": "اسم تخزين البيانات",
+    "en": "Data Storage Name"
+  },
+  "skillset_name": {
+    "ar": "اسم مجموعة المهارات",
+    "en": "Skillset Name"
+  },
+  "selector": {
+    "ar": "المحدد",
+    "en": "Selector"
+  },
+  "topic": {
+    "ar": "الموضوع",
+    "en": "Topic"
+  },
+  "delete": {
+    "ar": "حذف",
+    "en": "Delete"
+  },
+  "cancel": {
+    "ar": "إلغاء",
+    "en": "Cancel"
+  },
+  "confirm": {
+    "ar": "تأكيد",
+    "en": "Confirm"
+  },
+  "uploading": {
+    "ar": "جاري الرفع",
+    "en": "Uploading"
+  },
+  "not_valid_json": {
+    "ar": "ملف ال JSON غير صالح",
+    "en": "Is not valid JSON file"
+  },
+  "file_already_added": {
+    "ar": "الملف موجود مسبقاً",
+    "en": "File is already added"
+  },
+  "search_indexer": {
+    "ar": "ابحث عن فهرس...",
+    "en": "Search for an indexer..."
+  },
+  "delete_confirmation": {
+    "ar": "تأكيد الحذف",
+    "en": "Delete Confirmation"
+  },
+  "confirm_action": {
+    "ar": "تأكيد الإجراء",
+    "en": "Confirm Action"
+  },
+  "web_crawling_btn": {
+    "ar": "بدأ عملية تتبع البيانات",
+    "en": "Start web crawling"
+  },
+  "url_details": {
+    "ar": "تفاصيل الرابط",
+    "en": "URL Details"
+  },
+  "url_settings": {
+    "ar": "إعدادات الرابط",
+    "en": "URL Settings"
+  },
+  "url_details_desc": {
+    "ar": "قم بإضافة الرابط مع بيانات الكوكيز والحزمة لتكوين سلوكه",
+    "en": "Provide the URL along with its cookies and payload data to configure its behavior."
+  },
+  "url_settings_desc": {
+    "ar": "خصص إعدادات الرابط، بما في ذلك التفضيلات والتكوينات",
+    "en": "Customize the settings for the URL, including preferences and configurations."
+  },
+  "edit": {
+    "ar": "تعديل",
+    "en": "Edit"
+  },
+  "chips_tip": {
+    "ar": "بعد الكتابة قم بضغط Enter للإدخال",
+    "en": "After typing press Enter to add the word"
+  },
+  "tag_exist": {
+    "ar": "الوسم موجود مسبقاً",
+    "en": "Tag already exists"
+  },
+  "tag_empty": {
+    "ar": "لا يمكن إضافة وسم فارغ",
+    "en": "Tag cannot be empty"
+  },
+  "storage_desc": {
+    "ar": "أضف، احذف، ونظّم الملفات والمجلدات.",
+    "en": "Manage files and folders: add, delete, or organize."
+  },
+  "indexers_desc": {
+    "ar": "إدارة وعرض الفهرسة على Azure.\n",
+    "en": "View and manage Azure indexers."
+  },
+  "web_crawling_desc": {
+    "ar": "إدارة تتبع الويب بإضافة الروابط والإعدادات.",
+    "en": "Configure and manage web crawling with URLs, cookies, and settings."
+  },
+  "edit_url": {
+    "ar": "تعديل العنوان",
+    "en": "Edit URL"
+  },
+  "users": {
+    "ar": "المستخدمين",
+    "en": "Users"
+  },
+  "username": {
+    "ar": "اسم المستخدم",
+    "en": "Username"
+  },
+  "edit_permissions": {
+    "ar": "تعديل الصلاحيات",
+    "en": "Edit Permissions"
+  },
+  "search_username": {
+    "ar": "بحث عن طريق اسم المستخدم...",
+    "en": "Search by username..."
+  },
+  "no_users": {
+    "ar": "لا يوجد مستخدمين",
+    "en": "No users found"
+  },
+  "never_expire": {
+    "ar": "لا تنتهي صلاحية الجلسة",
+    "en": "Never expire"
+  },
+  "add_user": {
+    "ar": "إضافة مستخدم",
+    "en": "Add User"
+  },
+  "usernameTip": {
+    "ar": "يجب أن يكون اسم المستخدم بين 3 و20 حرفًا ويمكن أن يحتوي فقط على:",
+    "en": "Username must be 3-20 characters long and can only contain:"
+  },
+  "usernameLetters": {
+    "ar": "حروف (a-z, A-Z)",
+    "en": "Letters (a-z, A-Z)"
+  },
+  "usernameNumbers": {
+    "ar": "أرقام (0-9)",
+    "en": "Numbers (0-9)"
+  },
+  "usernameSpecialChars": {
+    "ar": "نقاط (.), شرطة سفلية (_), أو شرطة (-)",
+    "en": "Periods (.), underscores (_), or hyphens (-)"
+  },
+  "usernameRequired": {
+    "ar": "اسم المستخدم مطلوب.",
+    "en": "Username is required."
+  },
+  "usernameMinLength": {
+    "ar": "يجب أن يكون اسم المستخدم على الأقل 3 أحرف.",
+    "en": "Username must be at least 3 characters long."
+  },
+  "usernameMaxLength": {
+    "ar": "لا يمكن أن يتجاوز اسم المستخدم 20 حرفًا.",
+    "en": "Username cannot exceed 20 characters."
+  },
+  "usernamePattern": {
+    "ar": "يمكن أن يحتوي اسم المستخدم فقط على حروف وأرقام ونقاط وشرطة سفلية أو شرطة.",
+    "en": "Username can only contain letters, numbers, periods, underscores, or hyphens."
+  },
+  "operationSuccess": {
+    "ar": "تمت العملية بنجاح.",
+    "en": "Operation completed successfully."
+  },
+  "users_desc": {
+    "ar": "إضافة، حذف، وتعديل صلاحيات المستخدمين.",
+    "en": "Add, delete, and edit user permissions."
+  },
+  "stop_chat": {
+    "ar": "إيقاف المحادثة",
+    "en": "Stop Chat"
+  },
+  "log_out": {
+    "ar": "خروج",
+    "en": "Log Out"
+  },
+  "login": {
+    "ar": "تسجيل الدخول",
+    "en": "Login"
+  },
+  "password": {
+    "ar": "كلمة المرور",
+    "en": "Password"
+  },
+  "user_name": {
+    "ar": "اسم المستخدم",
+    "en": "User Name"
+  },
+  "permission_managment": {
+    "ar": "إدارة الصلاحيات",
+    "en": "Permission Management"
+  },
+  "statistics": {
+    "ar": "الإحصائيات",
+    "en": "Statistics"
+  },
+  "total_reports": {
+    "ar": "إجمالي التقارير",
+    "en": "Total Reports"
+  },
+  "total_urls": {
+    "ar": "إجمالي الروابط",
+    "en": "Total URLs"
+  },
+  "web_crawling_stats": {
+    "ar": "إحصائيات تتبع البيانات",
+    "en": "Web Crawling Statistics"
+  },
+  "reports_number": {
+    "ar": "عدد التقارير",
+    "en": "Number of reports"
+  },
+  "bot_welcom_message": {
+    "ar": "مرحبا بك في المساعد القانوني الذكي",
+    "en": "Welcome to the AI Legal Assistant"
+  },
+  "links_count": {
+    "ar": "عدد الروابط",
+    "en": "Links count"
+  },
+  "video_generator": {
+    "ar": "مولد الفيديو",
+    "en": "Video generator"
+  },
+  "test": {
+    "ar": "اختبار",
+    "en": "Test"
+  },
+  "download": {
+    "ar": "تحميل",
+    "en": "Download"
+  },
+  "index_start_date": {
+    "ar": "تاريخ بداية الفهرسة",
+    "en": "Index start date"
+  },
+  "index_end_date": {
+    "ar": "تاريخ نهاية الفهرسة",
+    "en": "Index end data"
+  },
+  "news_start_date": {
+    "ar": "تاريخ بداية الخبر",
+    "en": "News start date"
+  },
+  "news_end_data": {
+    "ar": "تاريخ نهاية الخبر",
+    "en": "News end date"
+  },
+  "keywords": {
+    "ar": "الكلمات المفتاحية",
+    "en": "tags"
+  },
+  "add_keyword": {
+    "ar": "اضف كلمات مفتاحية",
+    "en": "Add tags"
+  },
+  "welcome_back": {
+    "ar": "تم تسجيل الدخول بنجاح!",
+    "en": "Login successful!"
+  },
+  "login_failed": {
+    "ar": "فشل تسجيل الدخول. تحقق من بيانات تسجيل الدخول الخاصة بك وحاول مرة أخرى.",
+    "en": "Login failed. Check your credentials and try again."
+  },
+  "welcome_user": {
+    "ar": "مرحبًا بعودتك، ",
+    "en": "Welcome back,"
+  },
+  "video_generating_and_downloading_progress": {
+    "ar": "جاري توليد وتحميل الفيديو",
+    "en": "Video generating and downloading progress"
   }
 }

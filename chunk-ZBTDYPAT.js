@@ -1,0 +1,1 @@
+import{e as o}from"./chunk-MKDINXEF.js";import{qa as a}from"./chunk-3MLM6FP2.js";var e=class{static canActivate=t=>{let i=a(o),s=this._hasPermission(i,t.data);return s||i.logout(),s};static _hasPermission(t,i){return i.hasAnyPermission?t.$applicationUser().hasAnyPermission(i.permissions):t.$applicationUser().hasAllPermission(i.permissions)}};export{e as a};
