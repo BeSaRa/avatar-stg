@@ -14,6 +14,7 @@ export const EndPoints = {
   MEDIA: 'media',
   ADMIN: 'admin',
   USER: 'user',
+  FAQ: 'FAQ',
 }
 
 export type EndpointsType = typeof EndPoints
