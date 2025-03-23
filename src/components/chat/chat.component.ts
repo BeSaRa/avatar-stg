@@ -71,8 +71,8 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   questions = signal<FAQContract[]>([])
   selectedBot = signal(this.chatService.botNameCtrl.value)
   botNames$ = this.chatHistoryService.getAllBotNames().pipe(
-    tap(() => this.chatService.botNameCtrl.patchValue('legal')),
-    tap(() => this.getQuestions(3, 'legal'))
+    tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)),
+    tap(bots => this.getQuestions(3, bots.at(0)!))
   )
   declare scrollbarRef: PerfectScrollbar
   feedbackOptions = FeedbackChat
@@ -165,7 +165,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(
         exhaustMap(value =>
           this.chatService
-            .sendMessage(value, 'legal')
+            .sendMessage(value, this.chatService.botNameCtrl.value)
             .pipe(
               catchError(err => {
                 this.answerInProgress.set(false)

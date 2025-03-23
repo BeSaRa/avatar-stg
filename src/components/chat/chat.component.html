@@ -22,7 +22,7 @@
           [matTooltip]="lang.locals.change_bot + '\n' + lang.locals.change_bot_note"
           [matTooltipClass]="'whitespace-pre-line'"
           [formControl]="chatService.botNameCtrl"
-          class="hidden p-1 w-24 text-sm border-b-2 bg-transparent border-gray-400 focus:ring-primary focus:border-primary outline-none">
+          class="p-1 w-24 text-sm border-b-2 bg-transparent border-gray-400 focus:ring-primary focus:border-primary outline-none">
           @for (chatbot of botNames$ | async; track $index) {
             <option [value]="chatbot">{{ chatbot }}</option>
           }

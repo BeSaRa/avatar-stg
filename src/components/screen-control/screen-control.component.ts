@@ -223,7 +223,7 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
         })
       )
       .pipe(tap(() => this.goToEndOfChat()))
-      .pipe(exhaustMap(value => this.chatService.sendMessage(value, 'legal')))
+      .pipe(exhaustMap(value => this.chatService.sendMessage(value, this.chatService.botNameCtrl.value)))
       .pipe(delay(200))
       .subscribe(() => {
         const assistantList = this.overlayChatComponent().container().nativeElement.querySelectorAll('.assistant')

@@ -11,9 +11,9 @@ export class FAQService {
   private readonly urlServices = inject(UrlService)
   private readonly http = inject(HttpClient)
 
-  getQuestions(numberOfQuestoins: number, botName = 'legal') {
-    const url = `${this.urlServices.URLS.FAQ}/questions`
-    const params = new HttpParams().append('n', numberOfQuestoins).append('bot_name', botName)
+  getQuestions(numberOfQuestoins: number, botName = 'website') {
+    const url = `${this.urlServices.URLS.FAQ}/faqs/archive`
+    const params = new HttpParams().append('limit', numberOfQuestoins).append('bot_name', botName)
     return this.http.get<FAQContract[]>(url, { params: params })
   }
 
