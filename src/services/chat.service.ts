@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { UrlService } from '@/services/url.service'
-import { catchError, map, Observable } from 'rxjs'
+import { catchError, exhaustMap, map, Observable } from 'rxjs'
 import { Message } from '@/models/message'
 import { AppStore } from '@/stores/app.store'
 import { ChatMessageResultContract } from '@/contracts/chat-message-result-contract'
@@ -9,6 +9,7 @@ import { formatString, formatText } from '@/utils/utils'
 import { distinctUntilChanged, tap } from 'rxjs'
 import { FormControl } from '@angular/forms'
 import { LocalService } from './local.service'
+import { MediaResultContract } from '@/contracts/media-result-contract'
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,42 @@ export class ChatService {
       tap(() => {
         this.conversationId.set('')
         this.messages.set([])
+      })
+    )
+  }
+  uploadDocument(
+    files: FileList,
+    bot_name: string,
+    conversation_id: string | null
+  ): Observable<ChatMessageResultContract> {
+    const url = `${this.urlService.URLS.CHATBOT_UPLOAD_DOCUMENT}`
+    const formData = new FormData()
+
+    Array.from(files).forEach(file => {
+      formData.append('files', file, file.name)
+    })
+
+    let params = new HttpParams().set('bot_name', bot_name)
+    if (conversation_id) {
+      params = params.set('conversation_id', conversation_id)
+    }
+
+    return this.http.post<MediaResultContract<string>>(url, formData, { params }).pipe(
+      map(response => {
+        this.conversationId.set(response.data || '')
+        return response.data
+      }),
+      exhaustMap(() =>
+        this.sendMessage('summarize', bot_name).pipe(
+          catchError(err => {
+            console.error('Error sending summarize message:', err)
+            throw err
+          })
+        )
+      ),
+      catchError(err => {
+        console.error('Error uploading document:', err)
+        throw err
       })
     )
   }
