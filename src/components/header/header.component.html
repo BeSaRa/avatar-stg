@@ -19,7 +19,9 @@
             <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
               <a class="flex gap-1" [routerLink]="menuItem.route">
                 <div [innerHTML]="SvgIcons[menuItem.svg] | sanitizer: 'html'"></div>
-                <span class="text-sm">{{ lang.locals[menuItem.label] }}</span>
+                <span class="text-sm" [ngClass]="{ 'text-xs': menuItem.id === 11 }">{{
+                  lang.locals[menuItem.label]
+                }}</span>
               </a>
             </li>
           }
