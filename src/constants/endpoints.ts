@@ -17,6 +17,7 @@ export const EndPoints = {
   FAQ: 'FAQ',
   FAQ_ARCHIEVE: 'FAQ/faqs/archive',
   CHATBOT_UPLOAD_DOCUMENT: 'chatbot/upload_documents/',
+  SOCIAL: 'social',
 }
 
 export type EndpointsType = typeof EndPoints
