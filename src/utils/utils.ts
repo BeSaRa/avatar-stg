@@ -10,6 +10,7 @@ import {
   FormControlName,
   FormGroup,
   NgModel,
+  ValidationErrors,
 } from '@angular/forms'
 import { catchError, filter, MonoTypeOperatorFunction, Observable, of } from 'rxjs'
 
@@ -322,4 +323,53 @@ export function transformData<TData extends TransformedGrouped>(input: TData): T
       payload: input.payload ? transformKeyValueArrayToObject(input.payload) : {},
     } as unknown as TransformedData<TData> // Explicit type assertion due to TypeScript's structural type system
   }
+}
+
+export const handleNull = (value: string | null | undefined): string | null => {
+  return value && value.trim() !== '' ? value : null
+}
+
+/**
+ * Generic date range validator utility.
+ *
+ * @param control - The form group to validate.
+ * @param fieldPairs - An array of tuples where each tuple contains [fromField, toField] names.
+ * @param errorKeys - (Optional) Custom error keys corresponding to each field pair.
+ *
+ * @returns A ValidationErrors object if any date range is invalid, or null if all are valid.
+ */
+export function dateRangeValidator(fieldPairs: [string, string][], errorKeys?: string[]) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const errors: ValidationErrors = {}
+
+    fieldPairs.forEach(([fromKey, toKey], i) => {
+      const fromValue = control.get(fromKey)?.value
+      const toValue = control.get(toKey)?.value
+
+      if (fromValue && toValue && fromValue > toValue) {
+        const key = errorKeys?.[i] ?? `${fromKey}_${toKey}_invalid`
+        errors[key] = true
+      }
+    })
+
+    return Object.keys(errors).length > 0 ? errors : null
+  }
+}
+
+export function removeNullableAndIgnoreKeys<T extends Record<string, unknown>>(
+  obj: T,
+  ignoredKeys?: (keyof T)[]
+): Partial<T> {
+  const result: Partial<T> = {}
+
+  for (const key in obj) {
+    const value = obj[key]
+
+    if (ignoredKeys?.length && ignoredKeys?.some(el => el === key)) continue
+    if (value !== null && value !== undefined) {
+      result[key] = value
+    }
+  }
+
+  return result
 }
