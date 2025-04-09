@@ -1,14 +1,19 @@
 import { AgentChatMessageResultContract } from '@/contracts/agent-chat-message-result-contract'
 import { AgentMessage } from '@/models/agent-message'
 import { formatString, formatText } from '@/utils/utils'
-import { Injectable, signal } from '@angular/core'
+import { inject, Injectable, signal } from '@angular/core'
 import { catchError, map } from 'rxjs'
-import { BaseChatService } from './base-chat.service'
+import { AppStore } from '@/stores/app.store'
+import { HttpClient } from '@angular/common/http'
+import { UrlService } from './url.service'
 
 @Injectable({
   providedIn: 'root',
 })
-export class AgentChatService extends BaseChatService {
+export class AgentChatService {
+  private readonly http = inject(HttpClient)
+  private readonly urlService = inject(UrlService)
+  private readonly store = inject(AppStore)
   messages = signal<AgentMessage[]>([])
   status = signal(false)
   conversationId = signal<string>('')

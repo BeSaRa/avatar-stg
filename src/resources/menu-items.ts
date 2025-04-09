@@ -58,20 +58,6 @@ export const MENU_ITEMS: MenuItem[] = [
     permissions: ['DOCUMENT_INTELLIGENCE'],
   },
   {
-    id: 11,
-    label: 'avatar_chat',
-    route: '/avatar',
-    svg: 'AVATAR',
-    permissions: ['AVATAR'],
-  },
-  {
-    id: 12,
-    label: 'ms_avatar',
-    route: '/ms-avatar',
-    svg: 'MS_AVATAR',
-    permissions: ['AVATAR'],
-  },
-  {
     id: 13,
     label: 'video_indexer',
     route: '/home/video-indexer',

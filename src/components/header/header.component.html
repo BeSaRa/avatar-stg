@@ -36,14 +36,6 @@
           </a>
         </li>
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a routerLink="/home/statistics" class="flex gap-1">
-            <svg class="size-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M3,22V8H7V22H3M10,22V2H14V22H10M17,22V14H21V22H17Z" />
-            </svg>
-            <span class="text-sm">{{ lang.locals.statistics }}</span>
-          </a>
-        </li>
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a (click)="openSettings($event)" href="#" class="flex gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
               <path
