@@ -275,4 +275,6 @@ export interface LangKeysContract {
   last_scheduled_date: string
   recurring_every: string
   save_urls: string
+  legal_document_management: string
+  legal_document_desc: string
 }
