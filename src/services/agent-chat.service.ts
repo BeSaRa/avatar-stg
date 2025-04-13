@@ -6,6 +6,8 @@ import { catchError, map } from 'rxjs'
 import { AppStore } from '@/stores/app.store'
 import { HttpClient } from '@angular/common/http'
 import { UrlService } from './url.service'
+import { STORAGE_ITEMS } from '@/constants/storage-items'
+import { ApplicationUser } from '@/views/auth/models/application-user'
 
 @Injectable({
   providedIn: 'root',
@@ -78,6 +80,16 @@ export class AgentChatService {
       messages: this.messages(),
       ...(this.store.streamId() ? { stream_id: this.store.streamId() } : null),
       ...(this.conversationId() ? { conversation_id: this.conversationId() } : null),
+      ...(this.getUserId() ? { user_id: this.getUserId() } : null),
     }
+  }
+
+  getUserId() {
+    const userItem = localStorage.getItem(STORAGE_ITEMS.USER)
+    let userId = ''
+    if (userItem) {
+      userId = (JSON.parse(userItem) as ApplicationUser).user_id
+    }
+    return userId
   }
 }

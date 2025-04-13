@@ -10,6 +10,8 @@ import { distinctUntilChanged, tap } from 'rxjs'
 import { FormControl } from '@angular/forms'
 import { LocalService } from './local.service'
 import { MediaResultContract } from '@/contracts/media-result-contract'
+import { STORAGE_ITEMS } from '@/constants/storage-items'
+import { ApplicationUser } from '@/views/auth/models/application-user'
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +33,7 @@ export class ChatService {
         messages: this.messages(),
         ...(this.store.streamId() ? { stream_id: this.store.streamId() } : null),
         ...(this.conversationId() ? { conversation_id: this.conversationId() } : null),
+        ...(this.getUserId() ? { user_id: this.getUserId() } : null),
       })
       .pipe(
         catchError(err => {
@@ -97,5 +100,13 @@ export class ChatService {
         throw err
       })
     )
+  }
+  getUserId() {
+    const userItem = localStorage.getItem(STORAGE_ITEMS.USER)
+    let userId = ''
+    if (userItem) {
+      userId = (JSON.parse(userItem) as ApplicationUser).user_id
+    }
+    return userId
   }
 }
