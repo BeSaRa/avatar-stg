@@ -1,17 +1,21 @@
-import {
-  Component,
-  ElementRef,
-  inject,
-  OnInit,
-  viewChild,
-  OnDestroy,
-  HostBinding,
-  AfterViewInit,
-  computed,
-  input,
-} from '@angular/core'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AvatarService } from '@/services/avatar.service'
+import { LocalService } from '@/services/local.service'
+import { AppStore } from '@/stores/app.store'
+import { ignoreErrors } from '@/utils/utils'
+import { AsyncPipe, NgClass } from '@angular/common'
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  ElementRef,
+  HostBinding,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  viewChild,
+} from '@angular/core'
 import {
   catchError,
   exhaustMap,
@@ -25,10 +29,6 @@ import {
   takeUntil,
   tap,
 } from 'rxjs'
-import { AsyncPipe, NgClass } from '@angular/common'
-import { ignoreErrors } from '@/utils/utils'
-import { AppStore } from '@/stores/app.store'
-import { LocalService } from '@/services/local.service'
 
 @Component({
   selector: 'app-avatar-video',
@@ -153,6 +153,7 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
       .subscribe(() => {
         this.store.updateStreamStatus('Stopped')
         console.log('MANUAL CLOSE')
+        this.store.updateStreamStatus('Stopped')
       })
 
     if (!this.size()) {
@@ -166,7 +167,7 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
 
   private playIdle(): void {
     if (this.idleVideo() && this.idleVideo()?.nativeElement) {
-      this.idleVideo()!.nativeElement.src = 'assets/videos/idle-full.webm'
+      this.idleVideo()!.nativeElement.src = this.store.idleAvatarUrl()
       this.idleVideo()!.nativeElement.muted = true
       this.idleVideo()!.nativeElement.loop = true
       this.idleVideo()!.nativeElement.play().then()

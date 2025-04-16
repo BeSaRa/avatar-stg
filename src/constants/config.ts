@@ -8,6 +8,7 @@ export const Config = {
   KUNA_STG: '',
   KUNA_PROD: '',
   EXTERNAL_PROTOCOLS: ['http', 'https'],
+  IDLE_AVATARS: [] as string[],
 }
 
 export type ConfigType = typeof Config
