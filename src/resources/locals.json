@@ -855,6 +855,10 @@
     "ar": "عدد الروابط",
     "en": "Links count"
   },
+  "scan_qr": {
+    "ar": "قم باستخدام الكاميرا لمسح الرمز الخاص بالشخصية أو قم بإدخاله بشكل يدوي في الحقل التالي",
+    "en": "Use camera to scan avatar QR code or enter it manually in the following field"
+  },
   "video_generator": {
     "ar": "مولد الفيديو",
     "en": "Video generator"
@@ -1055,6 +1059,10 @@
     "ar": "البدء بالبحث",
     "en": "Start searching"
   },
+  "idle_avatar": {
+    "ar": "الشخصية الافتراضية المؤقتة",
+    "en": "Idle avatar"
+  },
   "schedule_days": {
     "ar": "أيام الجدولة",
     "en": "Schedule days"
@@ -1106,5 +1114,9 @@
   "legal_document_desc": {
     "ar": "أضف، احذف، ونظّم المستندات والوثائق القانونية.",
     "en": "Manage legal documents: add, delete, or organize."
+  },
+  "words_limit_is": {
+    "ar": "الحد الأقصى لعدد الكلمات هو:",
+    "en": "Maximum words limit is:"
   }
 }

@@ -277,4 +277,7 @@ export interface LangKeysContract {
   save_urls: string
   legal_document_management: string
   legal_document_desc: string
+  scan_qr: string
+  idle_avatar: string
+  words_limit_is: string
 }

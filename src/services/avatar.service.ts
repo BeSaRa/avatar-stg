@@ -5,6 +5,7 @@ import { AppStore } from '@/stores/app.store'
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { Observable, of, switchMap, tap, timer } from 'rxjs'
+import { ConfigService } from './config.service'
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,11 @@ export class AvatarService {
   private readonly urlService = inject(UrlService)
   private readonly http = inject(HttpClient)
   private readonly store = inject(AppStore)
+  private readonly config = inject(ConfigService)
+
+  constructor() {
+    if (!this.store.idleAvatar()) this.store.updateIdleAvatar(this.config.CONFIG.IDLE_AVATARS[0])
+  }
 
   startStream(size?: 'life-size'): Observable<StreamResultContract> {
     return this.http
@@ -38,6 +44,14 @@ export class AvatarService {
     return this.http.delete<StreamResultContract>(this.urlService.URLS.AVATAR + `/close-stream/${streamId}`)
   }
 
+  retrieveStream() {
+    return this.http.get(this.urlService.URLS.AVATAR + `/retrieve-stream/${this.store.streamId()}`)
+  }
+
+  checkStreamStatus() {
+    return this.http.get(this.urlService.URLS.AVATAR + `/stream-status/${this.store.streamId()}`)
+  }
+
   sendCandidate(candidate: RTCIceCandidate): Observable<StreamResultContract> {
     return this.http.post<StreamResultContract>(
       this.urlService.URLS.AVATAR + `/send-candidate/${this.store.streamId()}`,
@@ -56,11 +70,7 @@ export class AvatarService {
   }
 
   renderText(text: string): Observable<unknown> {
-    return this.http.post(
-      this.urlService.URLS.AVATAR + `/render-text/${this.store.streamId()}`,
-      {},
-      { params: { text } }
-    )
+    return this.http.post(this.urlService.URLS.AVATAR + `/render-text/${this.store.streamId()}`, { text })
   }
 
   updateVideo(text: string): Observable<{ status: string }> {
