@@ -87,7 +87,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   //greeting avatar
   greetingAvatarEffect = effect(() => {
     if (this.store.isStreamStarted()) {
-      this.avatarService.greeting(this.selectedBot(), this.lang.currentLanguage == 'ar').subscribe()
+      this.avatarService.greeting(this.getbotName(), this.lang.currentLanguage == 'ar').subscribe()
     }
   })
   // noinspection JSUnusedGlobalSymbols
@@ -167,7 +167,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(
         exhaustMap(value =>
           this.chatService
-            .sendMessage(value, this.chatService.botNameCtrl.value)
+            .sendMessage(value, this.getbotName())
             .pipe(
               catchError(err => {
                 this.answerInProgress.set(false)
@@ -196,14 +196,12 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(tap(() => this.answerInProgress.set(true)))
       .pipe(
         exhaustMap(files =>
-          this.chatService
-            .uploadDocument(files, this.chatService.botNameCtrl.value, this.chatService.conversationId())
-            .pipe(
-              catchError(err => {
-                this.answerInProgress.set(false)
-                throw new Error(err)
-              })
-            )
+          this.chatService.uploadDocument(files, this.getbotName(), this.chatService.conversationId()).pipe(
+            catchError(err => {
+              this.answerInProgress.set(false)
+              throw new Error(err)
+            })
+          )
         )
       )
       .subscribe(() => {
@@ -288,5 +286,11 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     if (input.files && input.files.length > 0) {
       this.uploadDocument$.next(input.files)
     }
+  }
+  getbotName() {
+    if (this.chatService.showLegal()) {
+      return 'legal'
+    }
+    return this.chatService.botNameCtrl.value
   }
 }

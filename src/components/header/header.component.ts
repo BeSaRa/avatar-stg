@@ -69,8 +69,25 @@ export class HeaderComponent {
 
   openChatbot($event: Event) {
     $event.preventDefault()
-    this.chatService.status.update(value => !value)
+    this.toggleChatStatusIfNeeded()
+    this.chatService.showLegal.set(false)
   }
+
+  showLegalChatBot($event: Event) {
+    $event.preventDefault()
+    this.chatService.showLegal.update(value => !value)
+    this.toggleChatStatusIfNeeded()
+  }
+
+  private toggleChatStatusIfNeeded() {
+    const isActive = this.chatService.status()
+    const isLegalVisible = this.chatService.showLegal()
+
+    if (!isActive || (isActive && !isLegalVisible)) {
+      this.chatService.status.update(value => !value)
+    }
+  }
+
   hasPermission(permissions: (keyof typeof ALL_PERMISSIONS)[]) {
     if (!this.applicationUser) return false
     return this.applicationUser.hasAnyPermission(permissions)

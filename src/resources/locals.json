@@ -1122,5 +1122,9 @@
   "session_timeout": {
     "ar": "انتهت صلاحية الجلسة, الرجاء تسجيل الدخول مرة اخرى",
     "en": "Session timeout, please to login"
+  },
+  "chat_assisstant": {
+    "ar": "المساعد الذكي",
+    "en": "Chat Assisstant"
   }
 }
