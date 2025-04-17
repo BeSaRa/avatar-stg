@@ -281,4 +281,5 @@ export interface LangKeysContract {
   idle_avatar: string
   words_limit_is: string
   session_timeout: string
+  chat_assisstant: string
 }

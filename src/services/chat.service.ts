@@ -24,6 +24,7 @@ export class ChatService {
   messages = signal<Message[]>([])
   status = signal<boolean>(false)
   conversationId = signal<string>('')
+  showLegal = signal(false)
 
   sendMessage(content: string, bot: string): Observable<ChatMessageResultContract> {
     const url = `${this.urlService.URLS.CHAT}/${bot}`
