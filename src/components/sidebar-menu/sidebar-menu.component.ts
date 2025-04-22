@@ -30,11 +30,11 @@ export class SidebarMenuComponent {
   isOpened = false
 
   get shownItems() {
-    return this.menuItems.slice(0, 8)
+    return this.menuItems.slice(0, 7)
   }
 
   get hiddenItems() {
-    return this.menuItems.slice(8)
+    return this.menuItems.slice(7)
   }
 
   toggleFullMenu() {
