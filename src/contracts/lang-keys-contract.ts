@@ -282,4 +282,11 @@ export interface LangKeysContract {
   words_limit_is: string
   session_timeout: string
   chat_assisstant: string
+  aqarat_ai_portal: string
+  login_greeting_message: string
+  open_full_menu: string
+  close_menu: string
+  start: string
+  stop: string
+  full_screen: string
 }

@@ -1,23 +1,22 @@
 import { SettingsPopupComponent } from '@/components/settings-popup/settings-popup.component'
-import { MENU_ITEMS } from '../../resources/menu-items'
+import { SVG_ICONS } from '@/constants/svg-icons'
 import { ChatService } from '@/services/chat.service'
 import { LocalService } from '@/services/local.service'
 import { AppStore } from '@/stores/app.store'
+import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 import { animate, state, style, transition, trigger } from '@angular/animations'
-import { JsonPipe, NgClass, NgOptimizedImage } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { RouterLink, RouterLinkActive } from '@angular/router'
+import { RouterLink } from '@angular/router'
 import { getState } from '@ngrx/signals'
-import { SanitizerPipe } from '../../pipes/sanitizer.pipe'
-import { SVG_ICONS } from '@/constants/svg-icons'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 import { ALL_PERMISSIONS } from '../../resources/all-permissions'
+import { MENU_ITEMS } from '../../resources/menu-items'
+import { ButtonDirective } from '@/directives/button.directive'
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, NgOptimizedImage, RouterLinkActive, NgClass, JsonPipe, SanitizerPipe],
+  imports: [RouterLink, ButtonDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   host: {
@@ -47,6 +46,7 @@ export class HeaderComponent {
   lang = inject(LocalService)
   settings = getState(this.store)
   dialog = inject(MatDialog)
+  userService = inject(ApplicationUserService)
   clonedSettings = structuredClone(this.settings)
   menuStatus: 'opened' | 'closed' = 'closed'
   menuItems = MENU_ITEMS
