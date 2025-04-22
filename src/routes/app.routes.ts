@@ -12,14 +12,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'avatar',
-    loadComponent: () => import('@/views/avatar/avatar.component'),
-    pathMatch: 'full',
-    canActivate: [AuthGuard, PermissionGuard.canActivate],
-    data: { permissions: ['AVATAR'], hasAnyPermission: false } as PermissionRouteData,
-    canDeactivate: [closeStreamGuard],
-  },
-  {
     path: 'ms-avatar',
     loadComponent: () => import('@/views/ms-avatar/ms-avatar.component'),
     pathMatch: 'full',

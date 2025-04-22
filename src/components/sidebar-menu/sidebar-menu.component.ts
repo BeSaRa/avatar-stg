@@ -51,8 +51,23 @@ export class SidebarMenuComponent {
         : this.svgIcons.ARROW_LEFT
   }
 
-  toggleChat() {
-    this.chatService.status.update(value => !value)
+  openChatbot() {
+    this.toggleChatStatusIfNeeded()
+    this.chatService.showLegal.set(false)
+  }
+
+  showLegalChatBot() {
+    this.chatService.showLegal.update(value => !value)
+    this.toggleChatStatusIfNeeded()
+  }
+
+  private toggleChatStatusIfNeeded() {
+    const isActive = this.chatService.status()
+    const isLegalVisible = this.chatService.showLegal()
+
+    if (!isActive || (isActive && !isLegalVisible)) {
+      this.chatService.status.update(value => !value)
+    }
   }
 
   openSettings() {

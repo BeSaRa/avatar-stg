@@ -13,9 +13,16 @@
         ></a>
       }
       <button
+        [matTooltip]="lang.locals.chat_assisstant"
+        matTooltipPosition="after"
+        (click)="openChatbot()"
+        class="hover:text-primary transition-all">
+        <div [innerHTML]="svgIcons.CHAT | sanitizer: 'html'"></div>
+      </button>
+      <button
         [matTooltip]="lang.locals.chat"
         matTooltipPosition="after"
-        (click)="toggleChat()"
+        (click)="showLegalChatBot()"
         class="hover:text-primary transition-all">
         <div [innerHTML]="svgIcons.CHAT | sanitizer: 'html'"></div>
       </button>

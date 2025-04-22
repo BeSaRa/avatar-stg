@@ -25,7 +25,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 4,
     label: 'avatar_chat',
-    route: '/avatar',
+    route: '/home/avatar',
     svg: 'AVATAR',
     permissions: ['AVATAR'],
   },
@@ -69,13 +69,6 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'video_generator',
     route: '/video-generator',
     svg: 'VIDEO_GENERATOR',
-    permissions: ['AVATAR'],
-  },
-  {
-    id: 15,
-    label: 'avatar_chat',
-    route: '/home/avatar',
-    svg: 'AVATAR',
     permissions: ['AVATAR'],
   },
 ]
