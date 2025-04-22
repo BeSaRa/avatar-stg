@@ -25,7 +25,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 4,
     label: 'avatar_chat',
-    route: '/avatar',
+    route: '/home/avatar',
     svg: 'AVATAR',
     permissions: ['AVATAR'],
   },
