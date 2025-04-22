@@ -49,7 +49,7 @@ export class AdminStorageComponent extends OnDestroyMixin(class {}) {
   isLoadingIndexer = signal(false)
   legalContainers$ = this.adminService
     .getContainers()
-    .pipe(map(containers => containers.filter(container => container === 'rera-legal')))
+    .pipe(map(containers => containers.filter(container => container === 'rera-legal-s')))
   containersExceptLegals$ = this.adminService
     .getContainers()
     .pipe(map(containers => containers.filter(container => !container.includes('legal'))))
