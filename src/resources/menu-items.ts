@@ -71,4 +71,11 @@ export const MENU_ITEMS: MenuItem[] = [
     svg: 'VIDEO_GENERATOR',
     permissions: ['AVATAR'],
   },
+  {
+    id: 15,
+    label: 'avatar_chat',
+    route: '/home/avatar',
+    svg: 'AVATAR',
+    permissions: ['AVATAR'],
+  },
 ]

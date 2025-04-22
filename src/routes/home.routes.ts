@@ -1,10 +1,12 @@
 import { PermissionRouteData } from '@/contracts/permission-rout-data'
+import { closeStreamGuard } from '@/guards/close-stream.guard'
 import { PermissionGuard } from '@/guards/permission.guard'
 import { LandingComponent } from '@/views/landing/landing.component'
 import { Routes } from '@angular/router'
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
+
   {
     path: 'search',
     loadComponent: () => import('@/views/ai-search/ai-search.component').then(c => c.AiSearchComponent),
@@ -39,6 +41,14 @@ const routes: Routes = [
     loadChildren: () => import('@/routes/admin.routes'),
     canActivate: [PermissionGuard.canActivate],
     data: { permissions: ['ADMIN'], hasAnyPermission: true } as PermissionRouteData,
+  },
+  {
+    path: 'avatar',
+    loadComponent: () => import('@/views/temp-avatar/temp-avatar.component'),
+    pathMatch: 'full',
+    canActivate: [PermissionGuard.canActivate],
+    data: { permissions: ['AVATAR'], hasAnyPermission: false } as PermissionRouteData,
+    canDeactivate: [closeStreamGuard],
   },
   {
     path: '**',
