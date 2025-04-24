@@ -38,7 +38,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 7,
-    label: 'web_crawler',
+    label: 'report_generator',
     route: '/home/web-crawler',
     svg: 'WEB_CRAWLER',
     permissions: ['SEARCH'],
@@ -49,20 +49,6 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/home/statistics',
     svg: 'POLL',
     permissions: ['ADMIN'],
-  },
-  {
-    id: 10,
-    label: 'doc_analyzer',
-    route: '/home/doc-intelligence',
-    svg: 'DOCUMENT',
-    permissions: ['DOCUMENT_INTELLIGENCE'],
-  },
-  {
-    id: 13,
-    label: 'video_indexer',
-    route: '/home/video-indexer',
-    svg: 'VIDEO',
-    permissions: ['MEDIA'],
   },
   {
     id: 14,

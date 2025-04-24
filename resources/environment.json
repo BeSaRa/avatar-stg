@@ -1,20 +1,17 @@
 {
-    "ENVIRONMENTS_URLS": {
-        "DEV": "https://afnqcpcbai01.azurewebsites.net/api",
-        "AQARAT_DEV": "https://afnqcdcbai01.azurewebsites.net/api",
-        "AQARAT_STG": "https://afnqcscbai01.azurewebsites.net/api",
-        "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
-        "AZURE": "https://rera-api.azurewebsites.net/api",
-        "RERA": "https://rera-api-1.azurewebsites.net/api",
-        "MM": "https://mm-api-demo.azurewebsites.net/api"
-    },
-    "API_VERSION": "v1",
-    "BASE_ENVIRONMENT": "AQARAT_STG",
-    "KUNA_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
-    "KUNA_STG": "kTt7GZREL946kzaV7DOC9KME-2igL3LRkHt3eJoZwSWXAzFu1FCOhQ==",
-    "KUNA_PROD": "zcEFWDuz4rnpCcn3_DRtTB0zD1CCnEJ3TGBvofYkWS3kAzFu-TX8jg==",
-    "IDLE_AVATARS": [
-        "gulf",
-        "suit"
-    ]
+  "ENVIRONMENTS_URLS": {
+    "DEV": "https://afnqcpcbai01.azurewebsites.net/api",
+    "AQARAT_DEV": "https://afnqcdcbai01.azurewebsites.net/api",
+    "AQARAT_STG": "https://afnqcscbai01.azurewebsites.net/api",
+    "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
+    "AZURE": "https://rera-api.azurewebsites.net/api",
+    "RERA": "https://rera-api-1.azurewebsites.net/api",
+    "MM": "https://mm-api-demo.azurewebsites.net/api"
+  },
+  "API_VERSION": "v1",
+  "BASE_ENVIRONMENT": "AQARAT_PROD",
+  "KUNA_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
+  "KUNA_STG": "kTt7GZREL946kzaV7DOC9KME-2igL3LRkHt3eJoZwSWXAzFu1FCOhQ==",
+  "KUNA_PROD": "zcEFWDuz4rnpCcn3_DRtTB0zD1CCnEJ3TGBvofYkWS3kAzFu-TX8jg==",
+  "IDLE_AVATARS": ["gulf", "suit"]
 }
