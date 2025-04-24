@@ -121,6 +121,9 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       last && last.scrollIntoView(true)
     }
   })
+  showLegalEffect = effect(() => {
+    this.getQuestions(3, this.getbotName()).subscribe()
+  })
   // noinspection JSUnusedGlobalSymbols
   statusEffect = effect(() => {
     if (this.status()) {

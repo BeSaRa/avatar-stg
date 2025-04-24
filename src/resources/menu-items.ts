@@ -51,20 +51,6 @@ export const MENU_ITEMS: MenuItem[] = [
     permissions: ['ADMIN'],
   },
   {
-    id: 10,
-    label: 'doc_analyzer',
-    route: '/home/doc-intelligence',
-    svg: 'DOCUMENT',
-    permissions: ['DOCUMENT_INTELLIGENCE'],
-  },
-  {
-    id: 13,
-    label: 'video_indexer',
-    route: '/home/video-indexer',
-    svg: 'VIDEO',
-    permissions: ['MEDIA'],
-  },
-  {
     id: 14,
     label: 'video_generator',
     route: '/video-generator',
