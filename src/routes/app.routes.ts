@@ -33,11 +33,6 @@ export const routes: Routes = [
     loadChildren: () => import('@/routes/auth.routes'),
   },
   {
-    path: 'control',
-    loadComponent: () => import('@/views/control/control.component'),
-    pathMatch: 'full',
-  },
-  {
     path: '**',
     redirectTo: 'home',
   },
