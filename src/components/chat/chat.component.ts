@@ -14,7 +14,7 @@ import {
 import { MatRipple } from '@angular/material/core'
 import { LocalService } from '@/services/local.service'
 import { AsyncPipe, DOCUMENT, NgClass } from '@angular/common'
-import { catchError, exhaustMap, filter, iif, map, Subject, switchMap, takeUntil, tap } from 'rxjs'
+import { catchError, exhaustMap, filter, finalize, iif, map, Subject, switchMap, takeUntil, tap } from 'rxjs'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import PerfectScrollbar from 'perfect-scrollbar'
@@ -81,6 +81,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   animating = signal(false)
   stopAnimate = signal(false)
   ratingDone = signal(false)
+  loadingFAQ = signal(false)
   FAQService = inject(FAQService)
   questions = signal<FAQContract[]>([])
   selectedBot = signal(this.chatService.botNameCtrl.value)
@@ -295,11 +296,15 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     this.sendMessage$.next()
   }
   getQuestions(numberOfQuestions: number, botName?: string) {
+    // this.loadingFAQ.set(true)
     return iif(
       () => !!botName,
       this.FAQService.getQuestions(numberOfQuestions, botName),
       this.FAQService.getQuestions(numberOfQuestions)
-    ).pipe(tap(questions => this.questions.set(questions)))
+    ).pipe(
+      tap(questions => this.questions.set(questions)),
+      finalize(() => this.loadingFAQ.set(false))
+    )
   }
 
   onFileSelected(event: Event) {
