@@ -114,7 +114,16 @@
       }
     </div>
     <div class="flex items-center justify-center text-xs p-2">{{ lang.locals.ai_answers_alert }}</div>
-    @if (questions().length) {
+    @if (loadingFAQ()) {
+      <div appPerfectScroll [perfectScrollOptions]="{ suppressScrollY: true }" class="flex items-center justify-evenly">
+        <div
+          class="animate-pulse rounded-xl w-32 p-2 bg-gray-300 text-white text-xs h-fit whitespace-nowrap outline-none"></div>
+        <div
+          class="animate-pulse rounded-xl w-32 p-2 bg-gray-300 text-white text-xs h-fit whitespace-nowrap outline-none"></div>
+        <div
+          class="animate-pulse rounded-xl w-32 p-2 bg-gray-300 text-white text-xs h-fit whitespace-nowrap outline-none"></div>
+      </div>
+    } @else if (questions().length) {
       <div
         appPerfectScroll
         [perfectScrollOptions]="{ suppressScrollY: true }"
@@ -217,7 +226,7 @@
 <ng-template #thanksMessage>
   <div
     @slideFromBottom
-    class="absolute whitespace-pre-line bottom-0 mb-2 w-40 p-2 flex justify-center items-center bg-white rounded-xl shadow-md">
+    class="absolute whitespace-pre-line bottom-0 left-2 mb-2 w-40 p-2 flex justify-center items-center bg-white rounded-xl shadow-md">
     <p class="text-sm">{{ lang.locals.thanks_for_feedback }}</p>
   </div>
 </ng-template>
