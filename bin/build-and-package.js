@@ -82,6 +82,32 @@ function getLastFolderName(outputPath) {
 }
 
 /**
+ * Prompts the user whether the selected environment should use OCP.
+ * Updates envData.IS_OCP based on user input.
+ *
+ * @param selectedEnv - The environment name
+ */
+function isOcp(selectedEnv) {
+  const question = `Should the environment "${selectedEnv}" use OCP? (y/n): `
+
+  while (true) {
+    const input = readline.question(question).trim().toLowerCase()
+
+    if (input === 'y' || input === 'yes') {
+      envData.IS_OCP = true
+      console.log('✅ OCP mode enabled.')
+      break
+    } else if (input === 'n' || input === 'no') {
+      envData.IS_OCP = false
+      console.log('ℹ️ OCP mode disabled.')
+      break
+    } else {
+      console.log('❌ Invalid input. Please enter "y" or "n".')
+    }
+  }
+}
+
+/**
  * Function to update `BASE_ENVIRONMENT` in environment.json.
  */
 function updateEnvironment(selectedEnv) {
@@ -165,6 +191,7 @@ while (true) {
 
   // Loop through each selected environment and perform the process
   for (const selectedEnv of selectedEnvs) {
+    isOcp(selectedEnv)
     updateEnvironment(selectedEnv)
     buildAndCompress(selectedEnv)
   }
