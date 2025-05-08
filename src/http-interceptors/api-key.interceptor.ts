@@ -4,20 +4,25 @@ import { inject } from '@angular/core'
 
 export const apiKeyInterceptor: HttpInterceptorFn = (req, next) => {
   const configService = inject(ConfigService)
+  const config = configService.CONFIG
+  const headers: Record<string, string> = {}
+  const { BASE_ENVIRONMENT: currentEnvironment, IS_OCP, KUNA_KEYS, OCP_APIM_KEYS } = config
 
-  const environmentKunaKeys: Record<string, string> = {
-    AQARAT_DEV: configService.CONFIG.KUNA_DEV,
-    AQARAT_STG: configService.CONFIG.KUNA_STG,
-    AQARAT_PROD: configService.CONFIG.KUNA_PROD,
+  if (IS_OCP) {
+    const ocpKey = OCP_APIM_KEYS[currentEnvironment]
+    if (ocpKey) {
+      headers['Ocp-Apim-Subscription-Key'] = ocpKey
+    }
+  } else {
+    const functionsKey = KUNA_KEYS[currentEnvironment]
+    if (functionsKey) {
+      headers['x-functions-key'] = functionsKey
+    }
   }
 
-  // Get the KUNA key based on the current environment
-  const currentEnvironment = configService.CONFIG.BASE_ENVIRONMENT
-  const apiKey = environmentKunaKeys[currentEnvironment]
+  const clonedRequest = req.clone({
+    setHeaders: headers,
+  })
 
-  return next(
-    req.clone({
-      setHeaders: apiKey ? { 'x-functions-key': apiKey } : {},
-    })
-  )
+  return next(clonedRequest)
 }
