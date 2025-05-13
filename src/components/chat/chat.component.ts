@@ -36,6 +36,7 @@ import { FAQService } from '@/services/faq.service'
 import { FAQContract } from '@/contracts/FAQ-contract'
 import { AppStore } from '@/stores/app.store'
 import { AvatarService } from '@/services/avatar.service'
+import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 
 @Component({
   selector: 'app-chat',
@@ -70,6 +71,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   store = inject(AppStore)
   avatarService = inject(AvatarService)
   chatHistoryService = inject(ChatHistoryService)
+  userService = inject(ApplicationUserService)
   status = this.chatService.status
   chatContainer = viewChild.required<ElementRef<HTMLDivElement>>('chatContainer')
   chatBodyContainer = viewChild<ElementRef<HTMLDivElement>>('chatBody')
@@ -101,7 +103,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   })
   //greeting avatar
   greetingAvatarEffect = effect(() => {
-    if (this.store.isStreamStarted()) {
+    if (this.store.isStreamStarted() && this.store.hasStream() && this.userService.$isAuthenticated()) {
       this.avatarService.greeting(this.getbotName(), this.lang.currentLanguage == 'ar').subscribe()
     }
   })
@@ -127,6 +129,9 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   })
   // noinspection JSUnusedGlobalSymbols
   statusEffect = effect(() => {
+    this.chatService.showLegal()
+    this.animating.set(false)
+    this.stopAnimate.set(true)
     if (this.status()) {
       const timeoutID = setTimeout(() => {
         this.messageInput().nativeElement.focus()
