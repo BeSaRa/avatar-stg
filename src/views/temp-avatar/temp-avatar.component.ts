@@ -72,6 +72,7 @@ import RecordPlugin from 'wavesurfer.js/dist/plugins/record.js'
   ],
   templateUrl: './temp-avatar.component.html',
   styleUrl: './temp-avatar.component.scss',
+  providers: [ChatService],
 })
 export default class TempAvatarComponent extends OnDestroyMixin(class {}) implements OnInit, AfterViewInit {
   baseElement = viewChild.required<ElementRef>('baseElement')
@@ -202,7 +203,6 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
     this.store.updateStreamStatus('Stopped')
     merge(this.destroy$)
       .pipe(tap(() => this.store.updateStreamStatus('Stopped'))) // 2
-      .pipe(switchMap(() => this.avatarService.closeStream().pipe(ignoreErrors())))
       .subscribe(() => {
         console.log('COMPONENT DESTROYED')
       })
