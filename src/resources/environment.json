@@ -20,8 +20,6 @@
     "AQARAT_STG": "2685074912d34e97a1a677bdacb8e385"
   },
   "IS_OCP": true,
-  "IDLE_AVATARS": [
-    "gulf",
-    "suit"
-  ]
+  "ENTITY_NAME": "rera",
+  "IDLE_AVATARS": ["gulf", "suit"]
 }

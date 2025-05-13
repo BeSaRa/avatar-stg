@@ -7,6 +7,7 @@ export const Config = {
   KUNA_KEYS: {} as Record<string, string>,
   OCP_APIM_KEYS: {} as Record<string, string>,
   IS_OCP: false,
+  ENTITY_NAME: '',
   EXTERNAL_PROTOCOLS: ['http', 'https'],
   IDLE_AVATARS: [] as string[],
 }
