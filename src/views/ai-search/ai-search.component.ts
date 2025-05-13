@@ -2,6 +2,7 @@ import { fadeInSlideUp } from '@/animations/fade-in-slide'
 import { RecorderComponent } from '@/components/recorder/recorder.component'
 import { DEFAULT_SEARCH_QUERY } from '@/constants/default-search-query'
 import { SearchQueryContract } from '@/contracts/search-query-contract'
+import { SecureUrlDirective } from '@/directives/secure-url.directive'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AiSearchService } from '@/services/ai-search.service'
 import { LocalService } from '@/services/local.service'
@@ -12,6 +13,7 @@ import { Component, effect, inject, OnInit, signal, untracked, viewChild } from 
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatTooltipModule } from '@angular/material/tooltip'
 import {
   BehaviorSubject,
   combineLatest,
@@ -37,6 +39,8 @@ import {
     MatProgressSpinnerModule,
     NgTemplateOutlet,
     RecorderComponent,
+    MatTooltipModule,
+    SecureUrlDirective,
   ],
   templateUrl: './ai-search.component.html',
   styleUrl: './ai-search.component.scss',
