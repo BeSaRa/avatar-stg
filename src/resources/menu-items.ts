@@ -1,4 +1,5 @@
 import { MenuItem } from '@/contracts/menu-item-contract'
+import { PERMISSION_GROUPS } from './all-permissions'
 
 export const MENU_ITEMS: MenuItem[] = [
   {
@@ -6,21 +7,22 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'home',
     route: '/home',
     svg: 'HOME',
-    permissions: ['ADMIN'],
+    permissions: [],
   },
   {
     id: 2,
     label: 'admin_services',
     route: '/home/admin',
     svg: 'SUIT_CASE',
-    permissions: ['ADMIN'],
+    permissions: PERMISSION_GROUPS['ADMIN_GROUP'],
+    haveSomeOfPermissions: true,
   },
   {
     id: 3,
     label: 'search',
     route: '/home/search',
     svg: 'SEARCH',
-    permissions: ['SEARCH'],
+    permissions: PERMISSION_GROUPS['SEARCH_GROUP'],
   },
   {
     id: 4,
@@ -34,27 +36,27 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'chat_history',
     route: '/home/chat-history',
     svg: 'HISTORY',
-    permissions: ['CHATBOT'],
+    permissions: PERMISSION_GROUPS['CHAT_HISTORY_GROUP'],
   },
   {
     id: 7,
     label: 'report_generator',
     route: '/home/web-crawler',
     svg: 'WEB_CRAWLER',
-    permissions: ['SEARCH'],
+    permissions: PERMISSION_GROUPS['REPORT_GENERATOR_GROUP'],
   },
   {
     id: 8,
     label: 'statistics',
     route: '/home/statistics',
     svg: 'POLL',
-    permissions: ['ADMIN'],
+    permissions: PERMISSION_GROUPS['STATISTICS_GROUP'],
   },
   {
     id: 14,
     label: 'video_generator',
     route: '/video-generator',
     svg: 'VIDEO_GENERATOR',
-    permissions: ['AVATAR'],
+    permissions: PERMISSION_GROUPS['VIDEO_GENERATOR_GROUP'],
   },
 ]

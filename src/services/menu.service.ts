@@ -11,11 +11,13 @@ export class MenuService {
   private readonly _menuItems = MENU_ITEMS
 
   getMenuItems() {
-    return this._menuItems
-    // commented till get permissions group from BE
-    // .filter(item =>
-    //   item.permissions.length ? this.applicationUserService.$applicationUser().hasAllPermission(item.permissions) : true
-    // )
+    return this._menuItems.filter(item =>
+      item.permissions.length
+        ? item.haveSomeOfPermissions
+          ? this.applicationUserService.$applicationUser().hasAnyPermission(item.permissions)
+          : this.applicationUserService.$applicationUser().hasAllPermission(item.permissions)
+        : true
+    )
   }
 
   getHomeItems() {
