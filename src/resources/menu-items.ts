@@ -23,6 +23,7 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/home/search',
     svg: 'SEARCH',
     permissions: PERMISSION_GROUPS['SEARCH_GROUP'],
+    haveSomeOfPermissions: true,
   },
   {
     id: 4,
@@ -51,6 +52,7 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/home/statistics',
     svg: 'POLL',
     permissions: PERMISSION_GROUPS['STATISTICS_GROUP'],
+    haveSomeOfPermissions: true,
   },
   {
     id: 14,
