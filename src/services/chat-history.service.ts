@@ -66,6 +66,7 @@ export class ChatHistoryService {
     const params = new HttpParams().set('conv_id', conversationId).set('feedback', feedback)
     return this.http.post<string>(url, null, { params: params })
   }
+
   getAllBotNames(): Observable<string[]> {
     const url = `${this.urlService.URLS.CHAT_HISTORY}/bot-names`
     return this._botNames.length
