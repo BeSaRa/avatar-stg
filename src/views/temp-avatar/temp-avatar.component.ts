@@ -201,6 +201,10 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
     // trigger the start of stream
     // this.start$.next()
     // close when destroy component
+    this.chatHistoryService
+      .getAllBotNames()
+      .pipe(tap(names => this.chatService.botNameCtrl.patchValue(names[0])))
+      .subscribe()
     this.store.updateStreamStatus('Stopped')
     merge(this.destroy$)
       .pipe(tap(() => this.store.updateStreamStatus('Stopped'))) // 2
