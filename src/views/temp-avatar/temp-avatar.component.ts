@@ -14,16 +14,16 @@ import { AppStore } from '@/stores/app.store'
 import { ignoreErrors } from '@/utils/utils'
 import { AsyncPipe, CommonModule } from '@angular/common'
 import {
+  AfterViewInit,
   Component,
   computed,
   effect,
   ElementRef,
   inject,
   Injector,
+  OnInit,
   signal,
   viewChild,
-  OnInit,
-  AfterViewInit,
 } from '@angular/core'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
@@ -106,9 +106,6 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   recognized$ = new Subject<void>()
   accept$ = new Subject<void>()
   recognizingStatus = signal<boolean>(false)
-  botNames$ = this.chatHistoryService
-    .getAllBotNames()
-    .pipe(tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)))
 
   animationStatus = signal(false)
   qrCodeOpened = false
@@ -197,6 +194,10 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   })
 
   async ngOnInit(): Promise<void> {
+    this.chatHistoryService
+      .getAllBotNames()
+      .pipe(tap(names => this.chatService.botNameCtrl.patchValue(names[0])))
+      .subscribe()
     // trigger the start of stream
     // this.start$.next()
     // close when destroy component

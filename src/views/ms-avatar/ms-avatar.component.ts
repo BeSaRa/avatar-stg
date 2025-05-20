@@ -64,10 +64,6 @@ export default class MsAvatarComponent implements AfterViewInit {
   private readonly injector = inject(Injector)
   private readonly dialog = inject(MatDialog)
 
-  botNames$ = this.chatHistoryService
-    .getAllBotNames()
-    .pipe(tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)))
-
   private videoFormat?: sdk.AvatarVideoFormat
   private avatarConfig?: sdk.AvatarConfig
   private recognizer?: sdk.SpeechRecognizer
@@ -110,6 +106,10 @@ export default class MsAvatarComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.chatHistoryService
+      .getAllBotNames()
+      .pipe(tap(names => this.chatService.botNameCtrl.patchValue(names[0])))
+      .subscribe()
     this.start()
     this._initWaveSurfer()
   }
