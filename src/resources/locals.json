@@ -1234,5 +1234,9 @@
   "undefined": {
     "ar": "غير محدد",
     "en": "Unspecified"
+  },
+  "type_all_text_here": {
+    "ar": "اكتب كامل النص هنا...",
+    "en": "Type all text here..."
   }
 }
