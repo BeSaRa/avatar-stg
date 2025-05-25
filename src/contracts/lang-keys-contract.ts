@@ -311,4 +311,5 @@ export interface LangKeysContract {
   type_all_text_here: string
   filter: string
   clear: string
+  day: string
 }
