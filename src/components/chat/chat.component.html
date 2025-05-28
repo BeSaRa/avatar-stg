@@ -53,8 +53,7 @@
           [stop]="stopAnimate()"
           [text]="lang.locals.greeting_chat_message"></span>
       </div>
-
-      @for (message of chatService.getFilteredMessages(getbotName()); track message.id) {
+      @for (message of chatService.messages(); track message.id) {
         @if (message.isUser()) {
           <div
             class="user-message chat-message ltr:self-end min-w-[min(400px,100%)] rtl:self-start rtl:!rounded-tr-none ltr:!rounded-tr-none">
@@ -63,12 +62,7 @@
         } @else if (message.isAssistant()) {
           <div
             class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
-            <span
-              appSecureUrl
-              appTextWriterAnimator
-              (animating)="animating.set($event)"
-              [stop]="stopAnimate()"
-              [text]="message.content"></span>
+            <span appSecureUrl [innerHTML]="message.content | sanitizer: 'html'"></span>
           </div>
         } @else {
           <div class="system-message chat-message">
@@ -77,6 +71,12 @@
         }
       }
 
+      @if (chatService.messageInProgress() && chatService.inProgressAssisstantMessage.length) {
+        <div
+          class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
+          <span appSecureUrl> {{ chatService.inProgressAssisstantMessage }}</span>
+        </div>
+      }
       @if (answerInProgress()) {
         <div class="spinner justify-center flex gap-1">
           <div class="rect1"></div>

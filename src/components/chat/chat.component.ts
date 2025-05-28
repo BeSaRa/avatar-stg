@@ -37,6 +37,7 @@ import { FAQContract } from '@/contracts/FAQ-contract'
 import { AppStore } from '@/stores/app.store'
 import { AvatarService } from '@/services/avatar.service'
 import { ApplicationUserService } from '@/views/auth/services/application-user.service'
+import { SanitizerPipe } from '../../pipes/sanitizer.pipe'
 
 @Component({
   selector: 'app-chat',
@@ -56,6 +57,7 @@ import { ApplicationUserService } from '@/views/auth/services/application-user.s
     SecureUrlDirective,
     PerfectScrollDirective,
     FAQComponent,
+    SanitizerPipe,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -190,7 +192,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(
         exhaustMap(value =>
           this.chatService
-            .sendMessage(value, this.getbotName())
+            .sendMessageStreamed(value, this.getbotName())
             .pipe(
               catchError(err => {
                 this.answerInProgress.set(false)
