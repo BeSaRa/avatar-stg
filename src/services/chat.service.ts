@@ -1,7 +1,20 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { UrlService } from '@/services/url.service'
-import { catchError, exhaustMap, map, Observable } from 'rxjs'
+import {
+  catchError,
+  defer,
+  delay,
+  exhaustMap,
+  expand,
+  filter,
+  from,
+  map,
+  Observable,
+  switchMap,
+  takeWhile,
+  throwError,
+} from 'rxjs'
 import { Message } from '@/models/message'
 import { AppStore } from '@/stores/app.store'
 import { ChatMessageResultContract } from '@/contracts/chat-message-result-contract'
@@ -25,7 +38,10 @@ export class ChatService {
   status = signal<boolean>(false)
   conversationId = signal<string>('')
   showLegal = signal(false)
+  messageInProgress = signal(false)
   chatType?: string
+  inProgressAssisstantMessage = ''
+  declare controller: AbortController | null
 
   sendMessage(content: string, bot: string, chatType?: string): Observable<ChatMessageResultContract> {
     this.chatType = chatType ?? bot
@@ -118,5 +134,164 @@ export class ChatService {
   getFilteredMessages(chatType?: string) {
     const _type = chatType ?? this.chatType
     return this.messages().filter(m => (_type ? _type === m.chatType : true))
+  }
+
+  sendMessageStreamed(content: string, bot: string) {
+    const userMessage = new Message(content, 'user')
+    this.updateMessages(userMessage)
+    this.inProgressAssisstantMessage = ''
+
+    return defer(() => {
+      const controller = new AbortController()
+      this.controller = controller
+      const abortSignal = controller.signal
+      this.messageInProgress.set(true)
+
+      const url = `${this.urlService.URLS.AGENT_CHAT}/stream/${bot}`
+      const body = JSON.stringify({
+        messages: this.messages(),
+        ...(this.store.streamId() ? { stream_id: this.store.streamId() } : {}),
+        ...(this.conversationId() ? { conversation_id: this.conversationId() } : {}),
+        ...(this.getUserId() ? { user_id: this.getUserId() } : {}),
+      })
+
+      return from(
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body,
+          signal: abortSignal,
+        })
+      ).pipe(
+        switchMap(response => {
+          if (!response.ok || !response.body) {
+            return throwError(() => new Error('Streaming request failed'))
+          }
+
+          const reader = response.body.getReader()
+          const decoder = new TextDecoder('utf-8')
+
+          return from(reader.read()).pipe(
+            expand(() => from(reader.read())),
+            takeWhile(({ done }) => !done, true),
+            map(({ value }) => (value ? decoder.decode(value, { stream: true }) : '')),
+            filter(decoded => !!decoded),
+            map(chunk => this.parseLines(chunk)),
+            switchMap(lines => from(lines)),
+            delay(30),
+            tap(line => {
+              try {
+                const eventData = JSON.parse(line)
+
+                if (eventData.event === 'chunks' && typeof eventData.data === 'string') {
+                  this.inProgressAssisstantMessage += eventData.data
+                }
+
+                if (eventData.event === 'complete' && eventData.data) {
+                  this.messageInProgress.set(false)
+                  const { items } = eventData.data
+                  const citations = items.at(1)?.result
+                  const fullMsg = items.at(-1)?.text
+                  //create new message for assisstant
+                  this.inProgressAssisstantMessage = ''
+                  const assistantMessage = new Message('', 'assistant')
+                  this.updateMessages(assistantMessage)
+                  assistantMessage.content = fullMsg
+                  assistantMessage.context = { citations, intent: [] }
+                  const formatted = this.formatMessage(assistantMessage)
+                  this.replaceLastAssistantMessage(formatted)
+                }
+              } catch (err) {
+                console.warn(`Failed to parse line:${err}`, line)
+              }
+            }),
+            map(line => {
+              try {
+                const parsed = JSON.parse(line)
+                return (parsed?.data as string) || ''
+              } catch {
+                return ''
+              }
+            }),
+            filter((chunk): chunk is string => !!chunk),
+            catchError(err => {
+              this.updateMessages(new Message(`❌ ${err.message}`, 'error'))
+
+              return throwError(() => err)
+            }),
+            tap({
+              complete: () => {
+                controller.abort()
+                this.controller = null
+              },
+              error: () => {
+                controller.abort()
+                this.controller = null
+              },
+            })
+          )
+        })
+      )
+    })
+  }
+
+  /**
+   * Parses lines from chunked event stream.
+   */
+  private parseLines(chunk: string): string[] {
+    return chunk
+      .split('\n')
+      .filter(line => line.startsWith('data: '))
+      .map(line => line.slice(6))
+  }
+
+  /**
+   * Format content string via helper utilities.
+   */
+  private formatMessage(msg: Message): Message {
+    msg.content = formatString(formatText(msg.content, msg))
+    return new Message().clone(msg)
+  }
+
+  /**
+   * Updates the latest assistant message's content progressively.
+   */
+  private updateLastAssistantMessage(newChunk: string): void {
+    this.messages.update(messages => {
+      const updated = [...messages]
+      const index = updated.findLastIndex(m => m.isAssistant())
+
+      if (index !== -1) {
+        const previous = updated[index]
+        const updatedMessage = previous.clone<Message>()
+        updatedMessage.content += newChunk
+        updated[index] = updatedMessage
+      }
+
+      return updated
+    })
+  }
+
+  /**
+   * Finalizes the assistant message with full content and context.
+   */
+  private replaceLastAssistantMessage(finalMessage: Message): void {
+    this.messages.update(messages => {
+      const newMessages = [...messages]
+      const index = newMessages.findLastIndex(m => m.isAssistant())
+      if (index !== -1) {
+        const copy = finalMessage.clone<Message>() // كائن جديد بنفس الـ id
+        newMessages[index] = copy
+      } else {
+        newMessages.push(finalMessage)
+      }
+      return [...newMessages]
+    })
+  }
+  /**
+   * Adds a message to the conversation.
+   */
+  private updateMessages(message: Message): void {
+    this.messages.update(msgs => [...msgs, message])
   }
 }

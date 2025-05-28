@@ -18,10 +18,10 @@
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
-    "target": "ES2022",
+    "target": "ES2023",
     "resolveJsonModule": true,
     "module": "ES2022",
-    "lib": ["ES2022", "dom"],
+    "lib": ["ES2023", "dom"],
     "paths": {
       "@/directives/*": ["./src/directives/*"],
       "@/stores/*": ["./src/stores/*"],
