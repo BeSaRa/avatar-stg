@@ -38,7 +38,10 @@ export class LocalService {
     })
     //
     this.locals = new Proxy(this.locals, {
-      get(target: Record<keyof LangKeysContract, string>, p: keyof LangKeysContract): string {
+      get(target: Record<keyof LangKeysContract, string>, p: keyof LangKeysContract | symbol): string {
+        if (typeof p !== 'string') {
+          return ''
+        }
         return target[p] ? target[p] : `[MISSING KEY]: ${p}`
       },
     })
@@ -56,7 +59,6 @@ export class LocalService {
 
   private listenToLanguageChange() {
     this.langChange$.subscribe(lang => {
-      console.log({ lang })
       this.document.dir = lang === 'ar' ? 'rtl' : 'ltr'
       const html = this.document.querySelector('html')
       html && (html.lang = lang)

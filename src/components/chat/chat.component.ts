@@ -20,7 +20,6 @@ import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import PerfectScrollbar from 'perfect-scrollbar'
 import { ChatService } from '@/services/chat.service'
 import { ignoreErrors } from '@/utils/utils'
-import { TextWriterAnimatorDirective } from '@/directives/text-writer-animator.directive'
 import { RecorderComponent } from '@/components/recorder/recorder.component'
 import { MatTooltip } from '@angular/material/tooltip'
 import { AvatarVideoComponent } from '@/components/avatar-video/avatar-video.component'
@@ -37,7 +36,7 @@ import { FAQContract } from '@/contracts/FAQ-contract'
 import { AppStore } from '@/stores/app.store'
 import { AvatarService } from '@/services/avatar.service'
 import { ApplicationUserService } from '@/views/auth/services/application-user.service'
-import { SanitizerPipe } from '../../pipes/sanitizer.pipe'
+import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
 
 @Component({
   selector: 'app-chat',
@@ -45,7 +44,6 @@ import { SanitizerPipe } from '../../pipes/sanitizer.pipe'
   imports: [
     MatRipple,
     ReactiveFormsModule,
-    TextWriterAnimatorDirective,
     NgClass,
     RecorderComponent,
     MatTooltip,
@@ -130,27 +128,32 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     this.getQuestions(3, this.getbotName()).subscribe()
   })
   // noinspection JSUnusedGlobalSymbols
-  statusEffect = effect(() => {
-    this.chatService.showLegal()
-    this.animating.set(false)
-    this.stopAnimate.set(true)
-    if (this.status()) {
-      const timeoutID = setTimeout(() => {
-        this.messageInput().nativeElement.focus()
-        clearTimeout(timeoutID)
-      })
-    }
-  })
+  statusEffect = effect(
+    () => {
+      this.chatService.showLegal()
+      this.animating.set(false)
+      this.stopAnimate.set(true)
+      if (this.status()) {
+        const timeoutID = setTimeout(() => {
+          this.messageInput().nativeElement.focus()
+          clearTimeout(timeoutID)
+        })
+      }
+    },
+    { allowSignalWrites: true }
+  )
 
   messageCtrl = new FormControl<string>('', { nonNullable: true })
   sendMessage$ = new Subject<void>()
   uploadDocument$ = new Subject<FileList>()
+  inProgressMessage = signal<string>('')
 
   ngOnInit(): void {
     this.listenToSendMessage()
     this.listenToUploadDocument()
     this.listenToBotNameChange()
     this.detectFullScreenMode()
+    this.listenToInProgressMessages()
   }
 
   listenToBotNameChange() {
@@ -298,10 +301,12 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
         }, 1500)
       })
   }
+
   handleSuggestionsQuestions(question: string) {
     this.messageCtrl.setValue(question)
     this.sendMessage$.next()
   }
+
   getQuestions(numberOfQuestions: number, botName?: string) {
     // this.loadingFAQ.set(true)
     return iif(
@@ -320,10 +325,20 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       this.uploadDocument$.next(input.files)
     }
   }
+
   getbotName() {
     if (this.chatService.showLegal()) {
       return 'legal'
     }
     return this.chatService.botNameCtrl.value
+  }
+
+  private listenToInProgressMessages() {
+    this.chatService
+      .getInProgressMessage()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(inProgressMessage => {
+        this.inProgressMessage.set(inProgressMessage)
+      })
   }
 }

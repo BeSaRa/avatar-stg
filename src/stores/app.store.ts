@@ -36,7 +36,10 @@ const initialState: AppStore = {
 }
 
 export const AppStore = signalStore(
-  { providedIn: 'root', protectedState: true },
+  {
+    providedIn: 'root',
+    protectedState: true,
+  },
   withState(initialState),
   withComputed(({ streamId, speechToken, recording, streamingStatus, idleAvatar }) => ({
     hasToken: computed(() => !!speechToken().token),
@@ -48,7 +51,6 @@ export const AppStore = signalStore(
     isStreamStarted: computed(() => streamingStatus() === 'Started'),
     isStreamStopped: computed(() => streamingStatus() === 'Stopped'),
     isStreamLoading: computed(() => streamingStatus() === 'InProgress' || streamingStatus() === 'Disconnecting'),
-    idleAvatar: computed(() => idleAvatar()),
     idleAvatarUrl: computed(() => `assets/videos/${idleAvatar()}-idle.webm`),
   })),
 

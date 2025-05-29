@@ -47,11 +47,7 @@
     <div #chatBody class="flex-auto overflow-hidden flex flex-col relative min-h-0 p-4">
       <div
         class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
-        <span
-          appTextWriterAnimator
-          (animating)="animating.set($event)"
-          [stop]="stopAnimate()"
-          [text]="lang.locals.greeting_chat_message"></span>
+        <span>{{ lang.locals.greeting_chat_message }}</span>
       </div>
       @for (message of chatService.messages(); track message.id) {
         @if (message.isUser()) {
@@ -71,10 +67,10 @@
         }
       }
 
-      @if (chatService.messageInProgress() && chatService.inProgressAssisstantMessage.length) {
+      @if (chatService.messageInProgress() && inProgressMessage().length) {
         <div
           class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
-          <span appSecureUrl> {{ chatService.inProgressAssisstantMessage }}</span>
+          <span class="typewriter-effect" appSecureUrl> {{ inProgressMessage() }}</span>
         </div>
       }
       @if (answerInProgress()) {
