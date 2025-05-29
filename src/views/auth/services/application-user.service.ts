@@ -114,12 +114,11 @@ export class ApplicationUserService {
     localStorage.removeItem(STORAGE_ITEMS.USER)
     localStorage.removeItem(STORAGE_ITEMS.TOKEN_EXPIRY)
     this.logoutSubscription?.unsubscribe()
-    this._router.navigate(['/auth/login'])
+    this._router.navigate(['/auth/login']).then()
   }
 
   startAutoLogout(expiryTime: number) {
     const timeRemaining = expiryTime - Date.now()
-    console.log(timeRemaining / 1000)
 
     // Cancel previous timer if any
     this.logoutSubscription?.unsubscribe()

@@ -39,9 +39,7 @@ export class BreadcrumbComponent extends OnDestroyMixin(class {}) {
         tap(path => this.url.set(path)),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        console.log('hee')
-      })
+      .subscribe()
 
     effect(() => {
       if (this.menu().length) {

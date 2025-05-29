@@ -1,20 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { UrlService } from '@/services/url.service'
-import {
-  catchError,
-  defer,
-  delay,
-  exhaustMap,
-  expand,
-  filter,
-  from,
-  map,
-  Observable,
-  switchMap,
-  takeWhile,
-  throwError,
-} from 'rxjs'
+import { catchError, defer, EMPTY, exhaustMap, from, map, Observable, Subject, switchMap } from 'rxjs'
 import { Message } from '@/models/message'
 import { AppStore } from '@/stores/app.store'
 import { ChatMessageResultContract } from '@/contracts/chat-message-result-contract'
@@ -25,6 +12,7 @@ import { LocalService } from './local.service'
 import { MediaResultContract } from '@/contracts/media-result-contract'
 import { STORAGE_ITEMS } from '@/constants/storage-items'
 import { ApplicationUser } from '@/views/auth/models/application-user'
+import { ICitations } from '@/models/base-message'
 
 @Injectable({
   providedIn: 'root',
@@ -40,8 +28,11 @@ export class ChatService {
   showLegal = signal(false)
   messageInProgress = signal(false)
   chatType?: string
-  inProgressAssisstantMessage = ''
-  declare controller: AbortController | null
+  private inProgressMessage = new Subject<string>()
+
+  getInProgressMessage() {
+    return this.inProgressMessage.asObservable()
+  }
 
   sendMessage(content: string, bot: string, chatType?: string): Observable<ChatMessageResultContract> {
     this.chatType = chatType ?? bot
@@ -75,6 +66,7 @@ export class ChatService {
         })
       )
   }
+
   botNameCtrl = new FormControl('', { nonNullable: true })
 
   onBotNameChange() {
@@ -86,6 +78,7 @@ export class ChatService {
       })
     )
   }
+
   uploadDocument(
     files: FileList,
     bot_name: string,
@@ -122,6 +115,7 @@ export class ChatService {
       })
     )
   }
+
   getUserId() {
     const userItem = localStorage.getItem(STORAGE_ITEMS.USER)
     let userId = ''
@@ -139,12 +133,9 @@ export class ChatService {
   sendMessageStreamed(content: string, bot: string) {
     const userMessage = new Message(content, 'user')
     this.updateMessages(userMessage)
-    this.inProgressAssisstantMessage = ''
+    this.inProgressMessage.next('')
 
     return defer(() => {
-      const controller = new AbortController()
-      this.controller = controller
-      const abortSignal = controller.signal
       this.messageInProgress.set(true)
 
       const url = `${this.urlService.URLS.AGENT_CHAT}/stream/${bot}`
@@ -160,76 +151,13 @@ export class ChatService {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body,
-          signal: abortSignal,
         })
       ).pipe(
-        switchMap(response => {
+        switchMap(async response => {
           if (!response.ok || !response.body) {
-            return throwError(() => new Error('Streaming request failed'))
+            return EMPTY
           }
-
-          const reader = response.body.getReader()
-          const decoder = new TextDecoder('utf-8')
-
-          return from(reader.read()).pipe(
-            expand(() => from(reader.read())),
-            takeWhile(({ done }) => !done, true),
-            map(({ value }) => (value ? decoder.decode(value, { stream: true }) : '')),
-            filter(decoded => !!decoded),
-            map(chunk => this.parseLines(chunk)),
-            switchMap(lines => from(lines)),
-            delay(30),
-            tap(line => {
-              try {
-                const eventData = JSON.parse(line)
-
-                if (eventData.event === 'chunks' && typeof eventData.data === 'string') {
-                  this.inProgressAssisstantMessage += eventData.data
-                }
-
-                if (eventData.event === 'complete' && eventData.data) {
-                  this.messageInProgress.set(false)
-                  const { items } = eventData.data
-                  const citations = items.at(1)?.result
-                  const fullMsg = items.at(-1)?.text
-                  //create new message for assisstant
-                  this.inProgressAssisstantMessage = ''
-                  const assistantMessage = new Message('', 'assistant')
-                  this.updateMessages(assistantMessage)
-                  assistantMessage.content = fullMsg
-                  assistantMessage.context = { citations, intent: [] }
-                  const formatted = this.formatMessage(assistantMessage)
-                  this.replaceLastAssistantMessage(formatted)
-                }
-              } catch (err) {
-                console.warn(`Failed to parse line:${err}`, line)
-              }
-            }),
-            map(line => {
-              try {
-                const parsed = JSON.parse(line)
-                return (parsed?.data as string) || ''
-              } catch {
-                return ''
-              }
-            }),
-            filter((chunk): chunk is string => !!chunk),
-            catchError(err => {
-              this.updateMessages(new Message(`❌ ${err.message}`, 'error'))
-
-              return throwError(() => err)
-            }),
-            tap({
-              complete: () => {
-                controller.abort()
-                this.controller = null
-              },
-              error: () => {
-                controller.abort()
-                this.controller = null
-              },
-            })
-          )
+          return from(this.processStream(response.body)).pipe(map(() => ''))
         })
       )
     })
@@ -288,10 +216,67 @@ export class ChatService {
       return [...newMessages]
     })
   }
+
   /**
    * Adds a message to the conversation.
    */
   private updateMessages(message: Message): void {
     this.messages.update(msgs => [...msgs, message])
+  }
+
+  private async typeChunk(text: string, bufferCallback: (val: string) => string): Promise<void> {
+    for (const char of text) {
+      await new Promise(resolve => setTimeout(resolve, 10)) // delayed for each char
+      this.inProgressMessage.next(bufferCallback(char))
+    }
+  }
+
+  private async processStream(stream: ReadableStream<Uint8Array>): Promise<boolean> {
+    const reader = stream.getReader()
+    const decoder = new TextDecoder('utf-8')
+    let buffer = ''
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        // actually, it is not one chunk it all chunks which need from backend to check why it is sent like that
+        const chunk = decoder.decode(value, { stream: true })
+
+        const chunksArray = this.parseLines(chunk)
+
+        const jsonChunks = chunksArray.filter(chunk => !!chunk).map(chunk => JSON.parse(chunk)) as unknown as {
+          event: string
+          data: unknown
+        }[]
+
+        for (const chunk of jsonChunks) {
+          if (chunk.event !== 'chunks') {
+            this.messageInProgress.set(false)
+            const { items } = chunk.data as { items: { result: ICitations[]; text: string }[] }
+            const citations = items.at(1)!.result
+            const fullMsg = items.at(-1)!.text
+            this.inProgressMessage.next('')
+            const assistantMessage = new Message('', 'assistant')
+            this.updateMessages(assistantMessage)
+            assistantMessage.content = fullMsg
+            assistantMessage.context = { citations, intent: [] }
+            const formatted = this.formatMessage(assistantMessage)
+            this.replaceLastAssistantMessage(formatted)
+            break
+          }
+
+          await new Promise(resolve => {
+            setTimeout(resolve, 40) // delayed between chunks
+          })
+          await this.typeChunk(chunk.data as string, value => (buffer += value))
+        }
+      }
+      reader.releaseLock()
+    } catch (error) {
+      reader.releaseLock()
+      console.log('Error processing stream:', error)
+    }
+    return true
   }
 }
