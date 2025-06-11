@@ -275,17 +275,17 @@ export function formatText<T extends { context: { citations: ICitations[] } }>(t
   formattedText = formattedText.replace(/\[(.*?)\]/g, (match, p1) => {
     const index = Number(p1.replace(/[^0-9]/g, '')) - 1
     const item = uniqueCitations[index]
+    const title = item?.title
+    const url = item?.url ? decodeURIComponent(item.url) : ''
 
-    if (!item || replacedCitations.has(item.url + item.title)) {
-      return '' // Ignore and remove duplicate references
+    if (!url || !title || replacedCitations.has(url + title)) {
+      return ''
     }
 
     replacedCitations.add(item.url + item.title) // Mark citation as replaced
-    const title = item.title
-    const url = item.url
 
     // eslint-disable-next-line max-len
-    return `<br /><small class="px-1 text-primary"><a target="_blank" href="${url}">${title}</a><i class="link-icon"></i></small>`
+    return `<br /><small class="px-1 text-primary"><a target="_blank" href="${decodeURIComponent(url)}">${title}</a><i class="link-icon"></i></small>`
   })
 
   // Return the formatted text
@@ -301,12 +301,12 @@ export function convertMarkdownToHtmlHeaders(content: string): string {
 
     // Define Tailwind classes for each header level
     const headerClasses: Record<number, string> = {
-      1: 'text-4xl font-bold ml-9', // H1 - Large and bold
-      2: 'text-3xl font-bold', // H2 - Slightly smaller and bold
-      3: 'text-2xl font-bold', // H3 - Medium size and bold
-      4: 'text-xl font-bold', // H4 - Smaller but bold
-      5: 'text-lg font-semibold', // H5 - Small and semi-bold
-      6: 'text-base font-medium', // H6 - Smallest and medium weight
+      1: 'text-2xl font-bold ml-9', // H1 - Large and bold
+      2: 'text-xl font-bold', // H2 - Slightly smaller and bold
+      3: 'text-lg font-bold', // H3 - Medium size and bold
+      4: 'text-base font-bold', // H4 - Smaller but bold
+      5: 'text-sm font-semibold', // H5 - Small and semi-bold
+      6: 'text-xs font-medium', // H6 - Smallest and medium weight
     }
 
     const classes = headerClasses[level] || 'text-base font-medium' // Default classes

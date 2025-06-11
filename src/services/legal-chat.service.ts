@@ -1,17 +1,12 @@
 import { Injectable, signal, WritableSignal } from '@angular/core'
-import { Message } from '@/models/message'
 import { BaseChatService } from './base-chat.service'
+import { Message } from '@/models/message'
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChatService extends BaseChatService {
+export class LegalChatService extends BaseChatService {
   override messages: WritableSignal<Message[]> = signal([])
   override status: WritableSignal<boolean> = signal(false)
   override conversationId: WritableSignal<string> = signal('')
-
-  getFilteredMessages(chatType?: string) {
-    const _type = chatType ?? this.chatType
-    return this.messages().filter(m => (_type ? _type === m.chatType : true))
-  }
 }

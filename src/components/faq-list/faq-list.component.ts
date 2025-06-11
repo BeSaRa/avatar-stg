@@ -4,7 +4,7 @@ import { Component, inject, OnInit, signal } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { CheckboxComponent } from '../checkbox/checkbox.component'
 import { ArchiveFAQContract } from '@/contracts/FAQ-contract'
-import { debounceTime, distinctUntilChanged, finalize, of, switchMap, takeUntil, tap } from 'rxjs'
+import { debounceTime, distinctUntilChanged, finalize, of, startWith, switchMap, takeUntil, tap } from 'rxjs'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { DropdownComponent } from '../dropdown/dropdown.component'
 import { ChatHistoryService } from '@/services/chat-history.service'
@@ -88,6 +88,7 @@ export class FaqListComponent extends OnDestroyMixin(class {}) implements OnInit
     this.chatHistoryService
       .getAllBotNames()
       .pipe(
+        takeUntil(this.destroy$),
         tap(bots => this.selectedBotName.patchValue(bots.at(0)!)),
         tap(bots => this.botNames.set(bots))
       )
@@ -117,6 +118,7 @@ export class FaqListComponent extends OnDestroyMixin(class {}) implements OnInit
   listenToBotNameChange(): void {
     this.selectedBotName.valueChanges
       .pipe(
+        startWith(this.selectedBotName.value),
         takeUntil(this.destroy$),
         switchMap(() => this.getArchivedFAQs())
       )

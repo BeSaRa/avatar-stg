@@ -3,7 +3,7 @@ import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { LocalService } from '@/services/local.service'
 import { ignoreQueryAndFragmentChange } from '@/utils/utils'
 import { Component, computed, effect, inject, input, signal } from '@angular/core'
-import { NavigationEnd, Router, RouterLink } from '@angular/router'
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router'
 import { filter, takeUntil, tap } from 'rxjs'
 
 @Component({
@@ -16,6 +16,7 @@ import { filter, takeUntil, tap } from 'rxjs'
 export class BreadcrumbComponent extends OnDestroyMixin(class {}) {
   private _router = inject(Router)
   lang = inject(LocalService)
+  route = inject(ActivatedRoute)
 
   menu = input.required<MenuItem[]>()
 

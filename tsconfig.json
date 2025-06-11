@@ -3,7 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./src/types/html2pdf.d.ts"],
+    "typeRoots": ["./node_modules/@types", "./src/types/html2pdf.d.ts", "src/types/idle-detector.d.ts"],
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,

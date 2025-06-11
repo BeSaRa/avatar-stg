@@ -2,7 +2,7 @@ import { inject, Injectable, signal } from '@angular/core'
 import { ApplicationUser } from '../models/application-user'
 import { UrlService } from '@/services/url.service'
 import { HttpClient } from '@angular/common/http'
-import { catchError, map, mergeMap, Observable, of, Subscription, tap, timer } from 'rxjs'
+import { catchError, map, mergeMap, Observable, of, Subscription, take, tap, timer } from 'rxjs'
 import { Router } from '@angular/router'
 import { STORAGE_ITEMS } from '@/constants/storage-items'
 import { CONFIGURATIONS } from '../../../resources/configurations'
@@ -11,6 +11,7 @@ import { LocalService } from '@/services/local.service'
 import { EXPIRY_MINUTES } from '@/constants/token-expiry-time'
 import { SpeechService } from '@/services/speech.service'
 import { AppStore } from '@/stores/app.store'
+import { IdleMonitorService } from '@/services/idle-monitor.service'
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class ApplicationUserService {
   private readonly lang = inject(LocalService)
   private readonly commonService = inject(SpeechService)
   private readonly store = inject(AppStore)
+  private readonly idleMonitor = inject(IdleMonitorService)
 
   $applicationUser = signal<ApplicationUser>(new ApplicationUser())
   $isAuthenticated = signal<boolean>(false)
@@ -141,12 +143,38 @@ export class ApplicationUserService {
       this.messagesService.showError(this.lang.locals.session_timeout)
     } else {
       this.startAutoLogout(expiryTime)
+      this.setupIdleMonitor(expiryTime)
     }
   }
   setExpirationSession() {
     const expiry = Date.now() + EXPIRY_MINUTES * 60 * 1000
     localStorage.setItem(STORAGE_ITEMS.TOKEN_EXPIRY, expiry.toString())
     this.startAutoLogout(expiry)
+    this.setupIdleMonitor(expiry)
+  }
+
+  setupIdleMonitor(expiryTime: number) {
+    const refreshThreshold = (EXPIRY_MINUTES - 5) * 60 * 1000
+    const now = Date.now()
+    const refreshTime = expiryTime - refreshThreshold
+    const timeUntilCheck = refreshTime - now
+
+    if (timeUntilCheck <= 0) return
+
+    timer(timeUntilCheck).subscribe(() => {
+      this.idleMonitor
+        .getIdleStatus()
+        .pipe(take(1))
+        .subscribe(isIdle => {
+          if (!isIdle) {
+            this.generateAccessToken().subscribe(() => {
+              this.setExpirationSession()
+            })
+          } else {
+            console.log('[Idle] User inactive at refresh point. Will logout normally.')
+          }
+        })
+    })
   }
 
   getUsername() {

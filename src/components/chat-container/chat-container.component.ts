@@ -5,91 +5,115 @@ import {
   HostListener,
   inject,
   Injector,
+  input,
   OnInit,
   signal,
   TemplateRef,
   viewChild,
   ViewContainerRef,
 } from '@angular/core'
-import { MatRipple } from '@angular/material/core'
-import { LocalService } from '@/services/local.service'
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { AsyncPipe, DOCUMENT, NgClass } from '@angular/common'
-import { catchError, exhaustMap, filter, finalize, iif, map, Subject, switchMap, takeUntil, tap } from 'rxjs'
+import { TextWriterAnimatorDirective } from '@/directives/text-writer-animator.directive'
+import { LocalService } from '@/services/local.service'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
-import PerfectScrollbar from 'perfect-scrollbar'
-import { ChatService } from '@/services/chat.service'
-import { ignoreErrors } from '@/utils/utils'
-import { RecorderComponent } from '@/components/recorder/recorder.component'
-import { MatTooltip } from '@angular/material/tooltip'
-import { AvatarVideoComponent } from '@/components/avatar-video/avatar-video.component'
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop'
-import { slideFromBottom } from '@/animations/fade-in-slide'
-import { ChatHistoryService } from '@/services/chat-history.service'
 import { FeedbackChat } from '@/enums/feedback-chat'
-import { AvatarInterrupterBtnComponent } from '@/components/avatar-interrupter-btn/avatar-interrupter-btn.component'
-import { SecureUrlDirective } from '@/directives/secure-url.directive'
-import { FAQComponent } from '../faq/faq.component'
-import { PerfectScrollDirective } from '@/directives/perfect-scroll.directive'
+import { ChatHistoryService } from '@/services/chat-history.service'
+import PerfectScrollbar from 'perfect-scrollbar'
+import {
+  catchError,
+  defer,
+  exhaustMap,
+  filter,
+  finalize,
+  iif,
+  map,
+  skipWhile,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs'
+import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
+import { ignoreErrors } from '@/utils/utils'
+import { RecorderComponent } from '../recorder/recorder.component'
+import { AvatarVideoComponent } from '../avatar-video/avatar-video.component'
+import { AvatarInterrupterBtnComponent } from '../avatar-interrupter-btn/avatar-interrupter-btn.component'
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop'
 import { FAQService } from '@/services/faq.service'
 import { FAQContract } from '@/contracts/FAQ-contract'
-import { AppStore } from '@/stores/app.store'
-import { AvatarService } from '@/services/avatar.service'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
+import { PerfectScrollDirective } from '@/directives/perfect-scroll.directive'
+import { FAQComponent } from '../faq/faq.component'
+import { BaseChatService } from '@/services/base-chat.service'
 import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
+import { SecureUrlDirective } from '@/directives/secure-url.directive'
+import { slideFromBottom } from '@/animations/fade-in-slide'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 @Component({
-  selector: 'app-chat',
+  selector: 'app-chat-container',
   standalone: true,
   imports: [
-    MatRipple,
     ReactiveFormsModule,
+    MatTooltipModule,
     NgClass,
+    TextWriterAnimatorDirective,
     RecorderComponent,
-    MatTooltip,
     AvatarVideoComponent,
+    AvatarInterrupterBtnComponent,
     CdkDrag,
     CdkDragHandle,
-    AvatarInterrupterBtnComponent,
     AsyncPipe,
-    SecureUrlDirective,
     PerfectScrollDirective,
     FAQComponent,
     SanitizerPipe,
+    SecureUrlDirective,
+    MatSlideToggleModule,
   ],
-  templateUrl: './chat.component.html',
-  styleUrl: './chat.component.scss',
   animations: [slideFromBottom],
+  templateUrl: './chat-container.component.html',
+  styleUrl: './chat-container.component.scss',
 })
-export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
-  avatarOn = false
-  recorder = viewChild<RecorderComponent>('recorder')
+export class ChatContainerComponent extends OnDestroyMixin(class {}) implements OnInit {
+  lang = inject(LocalService)
+  chatService = inject(BaseChatService, { skipSelf: true })
   injector = inject(Injector)
   document = inject(DOCUMENT)
-  lang = inject(LocalService)
-  chatService = inject(ChatService)
-  store = inject(AppStore)
-  avatarService = inject(AvatarService)
   chatHistoryService = inject(ChatHistoryService)
-  userService = inject(ApplicationUserService)
   status = this.chatService.status
+  showAvatarBtn = input(true)
+  showClearMsgBtn = input(true)
+  showFullScreenBtn = input(true)
+  showHideBtn = input(true)
+  showRatingBox = input(true)
+  showRecorderBtn = input(true)
+  showUploadDocumentBtn = input(true)
+  title = input(this.lang.locals.chat)
+  containerClass = input('')
+  botNameOptions = input.required<
+    { showBotSelection: true; botName?: string } | { showBotSelection: false; botName: string }
+  >()
+  clearMessageOnly = input(false)
+  greeting_message = input('')
   chatContainer = viewChild.required<ElementRef<HTMLDivElement>>('chatContainer')
   chatBodyContainer = viewChild<ElementRef<HTMLDivElement>>('chatBody')
   messageInput = viewChild.required<ElementRef<HTMLTextAreaElement>>('textArea')
   thanksMessage = viewChild.required('thanksMessage', { read: TemplateRef })
   thanksMessageContainerRef = viewChild('thanksMessageContainer', { read: ViewContainerRef })
+  recorder = viewChild<RecorderComponent>('recorder')
+  avatarOn = false
   fullscreenStatus = signal(false)
   answerInProgress = signal(false)
   animating = signal(false)
   stopAnimate = signal(false)
   ratingDone = signal(false)
   loadingFAQ = signal(false)
+  streamResponse = signal(false)
   FAQService = inject(FAQService)
   questions = signal<FAQContract[]>([])
-  selectedBot = signal(this.chatService.botNameCtrl.value)
   botNames$ = this.chatHistoryService.getAllBotNames().pipe(
     tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)),
-    tap(bots => this.getQuestions(3, bots.at(0)!))
+    switchMap(bots => this.getQuestions(3, bots.at(0)!).pipe(map(() => bots)))
   )
   declare scrollbarRef: PerfectScrollbar
   feedbackOptions = FeedbackChat
@@ -99,12 +123,6 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       this.scrollbarRef = new PerfectScrollbar(this.chatBodyContainer()!.nativeElement)
     } else {
       this.scrollbarRef && this.scrollbarRef.destroy()
-    }
-  })
-  //greeting avatar
-  greetingAvatarEffect = effect(() => {
-    if (this.store.isStreamStarted() && this.store.hasStream() && this.userService.$isAuthenticated()) {
-      this.avatarService.greeting(this.getbotName(), this.lang.currentLanguage == 'ar').subscribe()
     }
   })
   // noinspection JSUnusedGlobalSymbols
@@ -124,48 +142,40 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       last && last.scrollIntoView(true)
     }
   })
-  showLegalEffect = effect(
+  showQuestionsEffect = effect(
     () => {
-      this.getQuestions(3, this.getbotName()).subscribe()
+      const { showBotSelection, botName } = this.botNameOptions()
+      if (!showBotSelection && this.chatService.status()) this.getQuestions(3, botName).subscribe()
     },
     { allowSignalWrites: true }
   )
   // noinspection JSUnusedGlobalSymbols
-  statusEffect = effect(
-    () => {
-      // this.chatService.showLegal()
-      this.animating.set(false)
-      this.stopAnimate.set(true)
-      if (this.status()) {
-        const timeoutID = setTimeout(() => {
-          this.messageInput().nativeElement.focus()
-          clearTimeout(timeoutID)
-        })
-      }
-    },
-    { allowSignalWrites: true }
-  )
+  statusEffect = effect(() => {
+    if (this.status()) {
+      const timeoutID = setTimeout(() => {
+        this.messageInput().nativeElement.focus()
+        clearTimeout(timeoutID)
+      })
+    }
+  })
 
   messageCtrl = new FormControl<string>('', { nonNullable: true })
   sendMessage$ = new Subject<void>()
   uploadDocument$ = new Subject<FileList>()
   inProgressMessage = signal<string>('')
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.listenToSendMessage()
     this.listenToUploadDocument()
     this.listenToBotNameChange()
-    this.detectFullScreenMode()
     this.listenToInProgressMessages()
   }
-
   listenToBotNameChange() {
     this.chatService
       .onBotNameChange()
       .pipe(
-        tap(name => this.selectedBot.set(name)),
         takeUntil(this.destroy$),
-        switchMap(name => this.getQuestions(3, name))
+        skipWhile(() => !this.botNameOptions().showBotSelection)
       )
       .subscribe()
   }
@@ -196,17 +206,23 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(tap(() => this.answerInProgress.set(true)))
       .pipe(tap(() => this.goToEndOfChat()))
       .pipe(
-        exhaustMap(value =>
-          this.chatService
-            .sendMessageStreamed(value, this.getbotName())
-            .pipe(
-              catchError(err => {
-                this.answerInProgress.set(false)
-                throw new Error(err)
-              })
-            )
-            .pipe(ignoreErrors())
-        )
+        exhaustMap(value => {
+          const botName = this.botNameOptions().showBotSelection
+            ? this.chatService.botNameCtrl.value
+            : this.botNameOptions().botName!
+
+          return iif(
+            () => this.streamResponse(),
+            defer(() => this.chatService.sendMessageStreamed(value, botName)),
+            defer(() => this.chatService.sendMessage(value, botName))
+          ).pipe(
+            catchError(err => {
+              this.answerInProgress.set(false)
+              throw new Error(err)
+            }),
+            ignoreErrors()
+          )
+        })
       )
       .subscribe(() => {
         this.answerInProgress.set(false)
@@ -227,7 +243,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(tap(() => this.answerInProgress.set(true)))
       .pipe(
         exhaustMap(files =>
-          this.chatService.uploadDocument(files, this.getbotName(), this.chatService.conversationId()).pipe(
+          this.chatService.uploadDocument(files, 'website', this.chatService.conversationId()).pipe(
             catchError(err => {
               this.answerInProgress.set(false)
               throw new Error(err)
@@ -274,6 +290,10 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   }
 
   clearChatHistory() {
+    if (this.clearMessageOnly()) {
+      this.chatService.messages.set([])
+      return
+    }
     this.chatService.messages.set([])
     this.chatService.conversationId.set('')
     this.ratingDone.set(false)
@@ -309,33 +329,24 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     this.messageCtrl.setValue(question)
     this.sendMessage$.next()
   }
-
   getQuestions(numberOfQuestions: number, botName?: string) {
-    // this.loadingFAQ.set(true)
+    this.loadingFAQ.set(true)
     return iif(
       () => !!botName,
       this.FAQService.getQuestions(numberOfQuestions, botName),
       this.FAQService.getQuestions(numberOfQuestions)
     ).pipe(
+      takeUntil(this.destroy$),
       tap(questions => this.questions.set(questions)),
       finalize(() => this.loadingFAQ.set(false))
     )
   }
-
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement
     if (input.files && input.files.length > 0) {
       this.uploadDocument$.next(input.files)
     }
   }
-
-  getbotName() {
-    // if (false) {
-    //   return 'legal'
-    // }
-    return this.chatService.botNameCtrl.value
-  }
-
   private listenToInProgressMessages() {
     this.chatService
       .getInProgressMessage()

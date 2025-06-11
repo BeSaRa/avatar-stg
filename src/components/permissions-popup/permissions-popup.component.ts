@@ -81,7 +81,7 @@ export class PermissionsPopupComponent implements OnInit {
     this.permissions.set(permissionGroups)
     this.preparePermissionsList(permissionGroups)
     allPermissions.forEach(permission => {
-      const parentIndex = this.permissionsList.controls.findIndex(ctrl => ctrl.value.id === permission._id)
+      const parentIndex = this.permissionsList.controls.findIndex(ctrl => ctrl.value.id === permission.group_id)
       this.updateChildPermissions(parentIndex, userPermissions)
     })
   }

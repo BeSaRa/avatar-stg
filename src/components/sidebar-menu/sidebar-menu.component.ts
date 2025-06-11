@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { RouterModule } from '@angular/router'
 import { SettingsPopupComponent } from '../settings-popup/settings-popup.component'
+import { LegalChatService } from '@/services/legal-chat.service'
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -21,6 +22,7 @@ import { SettingsPopupComponent } from '../settings-popup/settings-popup.compone
 export class SidebarMenuComponent {
   lang = inject(LocalService)
   chatService = inject(ChatService)
+  legalService = inject(LegalChatService)
   applicationUserService = inject(ApplicationUserService)
   dialog = inject(MatDialog)
   menuService = inject(MenuService)
@@ -51,23 +53,14 @@ export class SidebarMenuComponent {
         : this.svgIcons.ARROW_LEFT
   }
 
-  openChatbot() {
-    this.toggleChatStatusIfNeeded()
-    this.chatService.showLegal.set(false)
+  showSmartBot() {
+    this.legalService.status.set(false)
+    this.chatService.status.update(value => !value)
   }
 
   showLegalChatBot() {
-    this.chatService.showLegal.update(value => !value)
-    this.toggleChatStatusIfNeeded()
-  }
-
-  private toggleChatStatusIfNeeded() {
-    const isActive = this.chatService.status()
-    const isLegalVisible = this.chatService.showLegal()
-
-    if (!isActive || (isActive && !isLegalVisible)) {
-      this.chatService.status.update(value => !value)
-    }
+    this.chatService.status.set(false)
+    this.legalService.status.update(value => !value)
   }
 
   openSettings() {

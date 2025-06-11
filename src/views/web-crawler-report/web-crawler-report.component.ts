@@ -1,4 +1,4 @@
-import { fadeInSlideUp } from '@/animations/fade-in-slide'
+import { fadeInSlideUp, slideFromBottom } from '@/animations/fade-in-slide'
 import { URL_PATTERN } from '@/constants/url-pattern'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { LocalService } from '@/services/local.service'
@@ -27,18 +27,21 @@ import { GenerteReportContract } from '@/contracts/generate-report-contract'
 import { ChipsInputComponent } from '@/components/chips-input/chips-input.component'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
+import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
+import { AdminService } from '@/services/admin.service'
 
 @Component({
   selector: 'app-web-crawler-report',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, MatTooltipModule, NgTemplateOutlet, ChipsInputComponent],
+  imports: [ReactiveFormsModule, NgClass, MatTooltipModule, NgTemplateOutlet, ChipsInputComponent, SanitizerPipe],
   templateUrl: './web-crawler-report.component.html',
   styleUrl: './web-crawler-report.component.scss',
-  animations: [fadeInSlideUp],
+  animations: [fadeInSlideUp, slideFromBottom],
 })
 export class WebCrawlerReportComponent extends OnDestroyMixin(class {}) {
   lang = inject(LocalService)
   crawlerService = inject(WebCrawlerService)
+  adminService = inject(AdminService)
   fb = inject(NonNullableFormBuilder)
   reportName = signal('')
   reportUrl = signal('')
@@ -63,6 +66,7 @@ export class WebCrawlerReportComponent extends OnDestroyMixin(class {}) {
     { validators: [this.dateRangeValidator, this.futureIndexDateValidator] }
   )
   animateTrigger = signal<boolean>(false)
+  isApproved = signal(false)
 
   dateRangeValidator(group: AbstractControl): ValidationErrors | null {
     const indexFrom = group.get('index_date_from')?.value
@@ -210,56 +214,85 @@ export class WebCrawlerReportComponent extends OnDestroyMixin(class {}) {
       })
   }
 
-  downloadPdf() {
-    const data = document.getElementById('pdf-content')
-    if (!data) return
+  async uploadReport() {
+    const file = await this.generatePdfBlob()
+    if (file) {
+      this.adminService
+        .uploadBlobs([file], { container_name: 'rera-media-reports', subfolder_name: 'links' })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe()
+    }
+  }
 
-    const pdf = new jsPDF({
-      orientation: 'p',
-      unit: 'mm',
-      format: 'a4',
-    })
+  async downloadPdf() {
+    const file = await this.generatePdfBlob()
+    if (file) {
+      const blobUrl = URL.createObjectURL(file)
 
-    const margin = 15
+      const a = document.createElement('a')
+      a.href = blobUrl
+      a.download = this.reportName()
+      a.click()
 
-    const pdfWidth = pdf.internal.pageSize.getWidth() - margin * 2
-    const pdfHeight = pdf.internal.pageSize.getHeight() - margin * 2
+      URL.revokeObjectURL(blobUrl)
+    }
+  }
 
-    html2canvas(data, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: data.scrollWidth,
-    }).then(canvas => {
-      const imgData = canvas.toDataURL('image/jpeg', 1.0)
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width
+  generatePdfBlob(): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const data = document.getElementById('pdf-content')
+      if (!data) return reject('PDF content element not found.')
 
-      let heightLeft = imgHeight
-      let position = margin
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+      })
 
-      pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
-      heightLeft -= pdfHeight
+      const margin = 15
+      const pdfWidth = pdf.internal.pageSize.getWidth() - margin * 2
+      const pdfHeight = pdf.internal.pageSize.getHeight() - margin * 2
 
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight + margin
-        pdf.addPage()
-        pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
-        heightLeft -= pdfHeight
-      }
+      html2canvas(data, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: data.scrollWidth,
+      })
+        .then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0)
+          const imgHeight = (canvas.height * pdfWidth) / canvas.width
 
-      const totalPages = pdf.getNumberOfPages()
-      for (let i = 1; i <= totalPages; i++) {
-        pdf.setPage(i)
-        pdf.setFontSize(8)
-        const text = `${i} / ${totalPages}`
-        pdf.text(text, pdf.internal.pageSize.getWidth() - margin, pdf.internal.pageSize.getHeight() - 5, {
-          align: 'right',
+          let heightLeft = imgHeight
+          let position = margin
+
+          pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
+          heightLeft -= pdfHeight
+
+          while (heightLeft > 0) {
+            position = heightLeft - imgHeight + margin
+            pdf.addPage()
+            pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
+            heightLeft -= pdfHeight
+          }
+
+          const totalPages = pdf.getNumberOfPages()
+          for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i)
+            pdf.setFontSize(8)
+            const text = `${i} / ${totalPages}`
+            pdf.text(text, pdf.internal.pageSize.getWidth() - margin, pdf.internal.pageSize.getHeight() - 5, {
+              align: 'right',
+            })
+          }
+
+          const blob = pdf.output('blob')
+          const file = new File([blob], `${this.reportName()}.pdf`, { type: 'application/pdf' })
+          resolve(file)
         })
-      }
-
-      pdf.save(`${this.reportName()}.pdf`)
+        .catch(reject)
     })
   }
 }

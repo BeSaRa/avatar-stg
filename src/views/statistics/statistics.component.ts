@@ -177,7 +177,9 @@ export class StatisticsComponent implements OnInit {
             },
             label: (context: TooltipItem<'pie'>) => {
               const label = context.label || ''
-              return [`${label}:${this.lang.locals.no_data_to_preview ? 0 : context.raw}%`]
+              console.log(context)
+
+              return [`${label}:${label === this.lang.locals.no_data_to_preview ? 0 : context.raw}%`]
             },
           },
         },

@@ -59,6 +59,14 @@ $avatar-theme: mat.define-theme(
       container-color: transparent,
     )
   );
+
+  @include mat.slide-toggle-overrides(
+    (
+      selected-icon-color: var(--app-accent-500),
+      selected-pressed-track-color: var(--app-primary-500),
+      label-text-font: 'Lusail',
+    )
+  );
 }
 
 // Comment out the line below if you want to use the pre-defined typography utility classes.
@@ -101,20 +109,11 @@ body {
 }
 
 .lds-ellipsis {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-  color: white;
+  @apply bg-transparent inline-block relative w-20 h-20;
 }
 
 .lds-ellipsis div {
-  position: absolute;
-  top: 33.33333px;
-  width: 13.33333px;
-  height: 13.33333px;
-  border-radius: 50%;
-  background: currentColor;
+  @apply absolute top-9 w-4 h-4 rounded-full bg-accent-700;
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 

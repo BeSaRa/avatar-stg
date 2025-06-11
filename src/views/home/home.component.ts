@@ -1,13 +1,14 @@
-import { ChatComponent } from '@/components/chat/chat.component'
 import { LocalService } from '@/services/local.service'
 import { AppStore } from '@/stores/app.store'
 import { Component, ElementRef, inject, viewChild } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
+import { LegalChatComponent } from '@/components/legal-chat/legal-chat.component'
+import { SmartChatComponent } from '@/components/smart-chat/smart-chat.component'
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterOutlet, ChatComponent],
+  imports: [RouterOutlet, LegalChatComponent, SmartChatComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   host: {

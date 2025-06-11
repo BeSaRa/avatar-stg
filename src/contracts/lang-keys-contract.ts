@@ -227,6 +227,7 @@ export interface LangKeysContract {
   download: string
   video_generating_and_downloading_progress: string
   greeting_chat_message: string
+  greeting_chat_message_legal: string
   ai_answers_alert: string
   date_range_error: string
   future_date_error: string
@@ -312,4 +313,15 @@ export interface LangKeysContract {
   filter: string
   clear: string
   day: string
+  approve_report_for_download: string
+  enter_filename: string
+  filenameTip: string
+  filenameLetters: string
+  filenameNumbers: string
+  filenameSpecialChars: string
+  filenameRequired: string
+  filenamePattern: string
+  save_file_as: string
+  download_as: string
+  stream_active: string
 }

@@ -3,7 +3,10 @@
     @let routes = pathRoutes();
 
     @for (item of routes; track $index) {
-      <a class="text-primary hover:text-primary-400 transition-all" [routerLink]="item.route">
+      <a
+        class="text-primary hover:text-primary-400 transition-all"
+        [routerLink]="item.route"
+        [queryParamsHandling]="'preserve'">
         {{ lang.locals[item.label] }}
       </a>
       @if ($index !== routes.length - 1) {
