@@ -1,3 +1,5 @@
+import { fadeInScale } from '@/animations/fade-in-scale'
+import { AddFileNamePopupComponent } from '@/components/add-file-name-popup/add-file-name-popup.component'
 import { AvatarInterrupterBtnComponent } from '@/components/avatar-interrupter-btn/avatar-interrupter-btn.component'
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
 import { AppColors } from '@/constants/app-colors'
@@ -11,6 +13,7 @@ import { ignoreErrors } from '@/utils/utils'
 import { CommonModule } from '@angular/common'
 import { AfterViewInit, Component, computed, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { MatDialog } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import {
@@ -43,6 +46,7 @@ import {
   ],
   templateUrl: './video-generator.component.html',
   styleUrl: './video-generator.component.scss',
+  animations: [fadeInScale],
 })
 export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) implements OnInit, AfterViewInit {
   video = viewChild.required<ElementRef<HTMLVideoElement>>('video')
@@ -52,6 +56,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
   avatarService = inject(AvatarService)
   store = inject(AppStore)
   messageService = inject(MessageService)
+  dialog = inject(MatDialog)
 
   start$ = new ReplaySubject<void>(1)
   stop$ = new ReplaySubject<void>(1)
@@ -188,7 +193,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
       .subscribe()
   }
 
-  updateAndDownload() {
+  updateAndDownload(customFileName?: string) {
     if (!this.text.value || this.isLoading || this.isDownloading || this.wordsLimitExceeded) return
     this.isDownloading = true
     this.avatarService
@@ -206,10 +211,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
       .pipe(finalize(() => (this.isDownloading = false)))
       .subscribe(url => {
         if (url) {
-          const downloadLink = document.createElement('a')
-          downloadLink.href = url
-          downloadLink.download = 'video-generator.mp4'
-          downloadLink.click()
+          customFileName ? this.downloadBlobFromUrl(url, customFileName) : this.createDownloadLink(url)
         }
       })
   }
@@ -233,5 +235,34 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
     } else if (this.store.isStreamStarted()) {
       this.stop$.next()
     }
+  }
+
+  private downloadBlobFromUrl(url: string, filename: string) {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const blobUrl = URL.createObjectURL(blob)
+        this.createDownloadLink(blobUrl, filename)
+        URL.revokeObjectURL(blobUrl)
+      })
+  }
+  private createDownloadLink(url: string, fileName?: string) {
+    const downloadLink = document.createElement('a')
+    downloadLink.href = url
+    downloadLink.download = fileName ?? ''
+    downloadLink.click()
+  }
+
+  downloadAs() {
+    this.dialog
+      .open<AddFileNamePopupComponent, undefined, string>(AddFileNamePopupComponent)
+      .afterClosed()
+      .pipe(
+        takeUntil(this.destroy$),
+        tap(fileName => {
+          this.updateAndDownload(fileName)
+        })
+      )
+      .subscribe()
   }
 }

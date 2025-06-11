@@ -1,25 +1,29 @@
 {
-  "ENVIRONMENTS_URLS": {
-    "DEV": "https://afnqcpcbai01.azurewebsites.net/api",
-    "AQARAT_DEV": "https://apigatewaydev.aqarat.gov.qa/api-afnqcdcbai01/api",
-    "AQARAT_STG": "https://apigatewaystg.aqarat.gov.qa/api-afnqcscbai01/api",
-    "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
-    "AZURE": "https://rera-api.azurewebsites.net/api",
-    "RERA": "https://rera-api-1.azurewebsites.net/api",
-    "MM": "https://mm-api-demo.azurewebsites.net/api"
-  },
-  "API_VERSION": "v1",
-  "BASE_ENVIRONMENT": "AZURE",
-  "KUNA_KEYS": {
-    "AQARAT_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
-    "AQARAT_STG": "kTt7GZREL946kzaV7DOC9KME-2igL3LRkHt3eJoZwSWXAzFu1FCOhQ==",
-    "AQARAT_PROD": "zcEFWDuz4rnpCcn3_DRtTB0zD1CCnEJ3TGBvofYkWS3kAzFu-TX8jg=="
-  },
-  "OCP_APIM_KEYS": {
-    "AQARAT_DEV": "976abc7031124bc1ad4761fcf2c37137",
-    "AQARAT_STG": "2685074912d34e97a1a677bdacb8e385"
-  },
-  "IS_OCP": true,
-  "ENTITY_NAME": "rera",
-  "IDLE_AVATARS": ["lady", "gulf", "suit"]
+    "ENVIRONMENTS_URLS": {
+        "DEV": "https://afnqcpcbai01.azurewebsites.net/api",
+        "AQARAT_DEV": "https://apigatewaydev.aqarat.gov.qa/api-afnqcdcbai01/api",
+        "AQARAT_STG": "https://apigatewaystg.aqarat.gov.qa/api-afnqcscbai01/api",
+        "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
+        "AZURE": "https://rera-api.azurewebsites.net/api",
+        "RERA": "https://rera-api-1.azurewebsites.net/api",
+        "MM": "https://mm-api-demo.azurewebsites.net/api"
+    },
+    "API_VERSION": "v1",
+    "BASE_ENVIRONMENT": "AQARAT_STG",
+    "KUNA_KEYS": {
+        "AQARAT_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
+        "AQARAT_STG": "kTt7GZREL946kzaV7DOC9KME-2igL3LRkHt3eJoZwSWXAzFu1FCOhQ==",
+        "AQARAT_PROD": "zcEFWDuz4rnpCcn3_DRtTB0zD1CCnEJ3TGBvofYkWS3kAzFu-TX8jg=="
+    },
+    "OCP_APIM_KEYS": {
+        "AQARAT_DEV": "976abc7031124bc1ad4761fcf2c37137",
+        "AQARAT_STG": "2685074912d34e97a1a677bdacb8e385"
+    },
+    "IS_OCP": true,
+    "ENTITY_NAME": "rera",
+    "IDLE_AVATARS": [
+        "lady",
+        "gulf",
+        "suit"
+    ]
 }

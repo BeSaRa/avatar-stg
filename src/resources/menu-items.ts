@@ -43,6 +43,7 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/home/chat-history',
     svg: 'HISTORY',
     permissions: PERMISSION_GROUPS['CHAT_HISTORY_GROUP'],
+    haveSomeOfPermissions: true,
   },
   {
     id: 7,
@@ -67,5 +68,6 @@ export const MENU_ITEMS: MenuItem[] = [
     svg: 'VIDEO_GENERATOR',
     imgUrl: 'assets/icons/home/video-generator.png',
     permissions: PERMISSION_GROUPS['VIDEO_GENERATOR_GROUP'],
+    haveSomeOfPermissions: true,
   },
 ]

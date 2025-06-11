@@ -8,12 +8,19 @@ export class TextWriterAnimatorDirective implements OnInit {
   @Input() text = ''
   @Input() speed = 2
   @Input() stop = false
+  @Input() disableAnimate = false
   @Output() animating: EventEmitter<boolean> = new EventEmitter<boolean>()
   constructor(private elementRef: ElementRef) {}
   ngOnInit(): void {
     this.animateText()
   }
   animateText() {
+    if (this.disableAnimate) {
+      this.animating.emit(false)
+      this.elementRef.nativeElement.innerHTML = this.text // Render current text
+
+      return
+    }
     this.animating.emit(true)
     let index = 0
     let currentText = ''

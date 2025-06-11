@@ -158,7 +158,8 @@
               </div>
             } @else {
               @let extension = item.split('.')[1];
-              @let fileName = item.split('/')[1];
+              @let list = item.split('/');
+              @let fileName = list[list.length - 1];
               <div
                 class="content-item flex flex-col items-center p-4 rounded-lg [&.selected]:shadow-lg group relative"
                 appSelectableItem

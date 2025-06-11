@@ -912,8 +912,12 @@
     "en": "Video generating and downloading progress"
   },
   "greeting_chat_message": {
-    "ar": "مرحبا بك في المساعد القانوني الذكي للهيئة العامة لتنظيم القطاع العقاري، كيف يمكنني مساعدتك؟",
-    "en": "Welcome to the Smart Legal Assistant of the Real Estate Regulatory Authority. How can I assist you?"
+    "ar": "مرحبا بك في المساعد الذكي للهيئة العامة لتنظيم القطاع العقاري، كيف يمكنني مساعدتك؟",
+    "en": "Welcome to the Smart Assistant of the Real Estate Regulatory Authority. How can I assist you?"
+  },
+  "greeting_chat_message_legal": {
+    "ar": "مرحبا بك في المساعد القانوني  للهيئة العامة لتنظيم القطاع العقاري، كيف يمكنني مساعدتك؟",
+    "en": "Welcome to the Legal Assistant of the Real Estate Regulatory Authority. How can I assist you?"
   },
   "ai_answers_alert": {
     "ar": "تنويه: الإجابات تعتمد على تقنية الذكاء الاصطناعي وقد تكون عرضة للخطأ",
@@ -1250,5 +1254,49 @@
   "day": {
     "ar": "يوم",
     "en": "Day"
+  },
+  "approve_report_for_download": {
+    "ar": "اعتماد التقرير للتحميل",
+    "en": "Approve the report for download"
+  },
+  "enter_filename": {
+    "ar": "ادخل اسم الملف",
+    "en": "Enter file name"
+  },
+  "save_file_as": {
+    "ar": "حفظ الملف ك",
+    "en": "Save file As"
+  },
+  "download_as": {
+    "ar": "تحميل كَ",
+    "en": "Download As"
+  },
+  "filenameTip": {
+    "ar": "يجب أن يكون اسم الملف بين 3 و20 حرفًا ولا يمكن أن يبدأ أو ينتهي بمسافة أو نقطة، ويُمنع استخدام الرموز التالية:",
+    "en": "Filename must be 3–20 characters long, cannot start or end with a space or dot, and must not contain the following characters:"
+  },
+  "filenameLetters": {
+    "ar": "حروف (a-z, A-Z)",
+    "en": "Letters (a-z, A-Z)"
+  },
+  "filenameNumbers": {
+    "ar": "أرقام (0-9)",
+    "en": "Numbers (0-9)"
+  },
+  "filenameSpecialChars": {
+    "ar": "نقاط (.), شرطة سفلية (_), أو شرطة (-)",
+    "en": "Periods (.), underscores (_), or hyphens (-)"
+  },
+  "filenameRequired": {
+    "ar": "اسم الملف مطلوب.",
+    "en": "Filename is required."
+  },
+  "filenamePattern": {
+    "ar": "اسم الملف غير صالح. لا يُسمح بالرموز التالية: \\ / : * ? \" < > | ولا يمكن أن يبدأ أو ينتهي بمسافة أو نقطة.",
+    "en": "Invalid filename. Characters \\ / : * ? \" < > | are not allowed, and filename cannot start or end with a space or dot."
+  },
+  "stream_active": {
+    "ar": "التدفق",
+    "en": "Stream"
   }
 }

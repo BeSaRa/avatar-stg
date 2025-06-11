@@ -116,8 +116,8 @@ export class AiSearchComponent extends OnDestroyMixin(class {}) implements OnIni
     this.searchForm.valueChanges
       .pipe(
         takeUntil(this.destroy$),
+        debounceTime(800),
         distinctUntilChanged(),
-        debounceTime(400),
         filter(searchToken => searchToken.trim().length > 0 && this.store.isRecordingStopped())
       )
       .subscribe(searchToken => {

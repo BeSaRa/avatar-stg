@@ -28,11 +28,12 @@
       #video
       [ngClass]="{ 'h-full': hasSize(), 'w-full': !hasSize(), 'overflow-hidden': !hasSize() }"></video>
 
-    @if (hasSize()) {
-      <video #idleVideo [ngClass]="{ 'h-full': hasSize(), 'w-full': !hasSize() }" [hidden]="store.isStreamStarted()">
-        <source [src]="store.idleAvatarUrl()" type="video/webm" />
-      </video>
-    }
+    <video
+      #idleVideo
+      [ngClass]="{ 'h-full': hasSize(), 'w-full': !hasSize(), 'overflow-hidden': !hasSize() }"
+      [hidden]="store.isStreamStarted()">
+      <source [src]="store.idleAvatarUrl()" type="video/webm" />
+    </video>
   </div>
   {{ init$ | async }}
 </div>

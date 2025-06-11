@@ -154,7 +154,7 @@
           @for (url of crawlUrl.value; track $index; let urlIndex = $index) {
             <app-url-summary-card
               [crawlerSettingGroupForm]="url!"
-              (onUrlEdit)="updateUrlGroup()"
+              (onUrlEdit)="saveAllAfterEditOnce()"
               (onUrlDelete)="removeUrl(crawlUrlIndex, urlIndex, +crawlUrl.key)" />
           }
         </div>

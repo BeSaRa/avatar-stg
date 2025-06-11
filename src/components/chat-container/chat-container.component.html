@@ -1,52 +1,65 @@
 <div [ngClass]="{ hidden: !status() }" #chatContainer>
   <div
     [ngClass]="{ 'w-full h-full inset-0': fullscreenStatus(), 'ltr:left-5 rtl:right-5': !fullscreenStatus() }"
-    class="z-20 bg-white w-[500px] h-[600px] relative shadow-2xl rounded-md overflow-hidden bottom-5 max-h-full max-w-full flex flex-col">
+    class="z-20 bg-white w-[500px] {{
+      containerClass()
+    }} h-[600px] relative shadow-2xl rounded-md overflow-hidden bottom-5 max-h-full max-w-full flex flex-col">
     <div class="bg-gray-200 border-b border-primary/40 flex justify-between items-center px-4 py-2">
       <div class="flex justify-center items-center gap-2">
-        <!-- <span>{{ chatService.showLegal() ? lang.locals.chat : lang.locals.chat_assisstant }}</span> -->
-        <select
-          [matTooltip]="lang.locals.change_bot + '\n' + lang.locals.change_bot_note"
-          [matTooltipClass]="'whitespace-pre-line'"
-          [formControl]="chatService.botNameCtrl"
-          class="p-1 w-24 text-sm border-b-2 bg-transparent border-gray-400 focus:ring-primary focus:border-primary outline-none">
-          @for (chatbot of botNames$ | async; track $index) {
-            <option [value]="chatbot">{{ chatbot }}</option>
-          }
-        </select>
+        <span>{{ title() }}</span>
+        @if (botNameOptions().showBotSelection) {
+          <select
+            [matTooltip]="lang.locals.change_bot + '\n' + lang.locals.change_bot_note"
+            [matTooltipClass]="'whitespace-pre-line'"
+            [formControl]="chatService.botNameCtrl"
+            class="block p-1 w-24 text-sm border-b-2 bg-transparent border-gray-400 focus:ring-primary focus:border-primary outline-none">
+            @for (chatbot of botNames$ | async; track $index) {
+              <option [value]="chatbot">{{ chatbot }}</option>
+            }
+          </select>
+        }
       </div>
-      <div>
-        <button
-          matRipple
-          class="bg-gray-400 hover:bg-primary border rounded-full p-1 text-white"
-          (click)="fullScreenToggle()">
-          @if (fullscreenStatus()) {
+      <div class="flex items-center gap-2">
+        <mat-slide-toggle
+          (change)="streamResponse.set($event.checked)"
+          [disabled]="answerInProgress() || animating()"
+          >{{ lang.locals.stream_active }}</mat-slide-toggle
+        >
+        @if (showFullScreenBtn()) {
+          <button
+            matRipple
+            class="bg-gray-400 hover:bg-primary border rounded-full p-1 text-white"
+            (click)="fullScreenToggle()">
+            @if (fullscreenStatus()) {
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M144,104V64a8,8,0,0,1,16,0V84.69l42.34-42.35a8,8,0,0,1,11.32,11.32L171.31,96H192a8,8,0,0,1,0,16H152A8,8,0,0,1,144,104Zm-40,40H64a8,8,0,0,0,0,16H84.69L42.34,202.34a8,8,0,0,0,11.32,11.32L96,171.31V192a8,8,0,0,0,16,0V152A8,8,0,0,0,104,144Zm67.31,16H192a8,8,0,0,0,0-16H152a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V171.31l42.34,42.35a8,8,0,0,0,11.32-11.32ZM104,56a8,8,0,0,0-8,8V84.69L53.66,42.34A8,8,0,0,0,42.34,53.66L84.69,96H64a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V64A8,8,0,0,0,104,56Z"></path>
+              </svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M216,48V96a8,8,0,0,1-16,0V67.31l-42.34,42.35a8,8,0,0,1-11.32-11.32L188.69,56H160a8,8,0,0,1,0-16h48A8,8,0,0,1,216,48ZM98.34,146.34,56,188.69V160a8,8,0,0,0-16,0v48a8,8,0,0,0,8,8H96a8,8,0,0,0,0-16H67.31l42.35-42.34a8,8,0,0,0-11.32-11.32ZM208,152a8,8,0,0,0-8,8v28.69l-42.34-42.35a8,8,0,0,0-11.32,11.32L188.69,200H160a8,8,0,0,0,0,16h48a8,8,0,0,0,8-8V160A8,8,0,0,0,208,152ZM67.31,56H96a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V96a8,8,0,0,0,16,0V67.31l42.34,42.35a8,8,0,0,0,11.32-11.32Z"></path>
+              </svg>
+            }
+          </button>
+        }
+        @if (showHideBtn()) {
+          <button
+            matRipple
+            class="bg-gray-400 hover:bg-primary border rounded-full p-1 text-white"
+            (click)="toggleChat()">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
               <path
-                d="M144,104V64a8,8,0,0,1,16,0V84.69l42.34-42.35a8,8,0,0,1,11.32,11.32L171.31,96H192a8,8,0,0,1,0,16H152A8,8,0,0,1,144,104Zm-40,40H64a8,8,0,0,0,0,16H84.69L42.34,202.34a8,8,0,0,0,11.32,11.32L96,171.31V192a8,8,0,0,0,16,0V152A8,8,0,0,0,104,144Zm67.31,16H192a8,8,0,0,0,0-16H152a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V171.31l42.34,42.35a8,8,0,0,0,11.32-11.32ZM104,56a8,8,0,0,0-8,8V84.69L53.66,42.34A8,8,0,0,0,42.34,53.66L84.69,96H64a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V64A8,8,0,0,0,104,56Z"></path>
+                d="M176,128a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,128Zm56,0A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path>
             </svg>
-          } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
-              <path
-                d="M216,48V96a8,8,0,0,1-16,0V67.31l-42.34,42.35a8,8,0,0,1-11.32-11.32L188.69,56H160a8,8,0,0,1,0-16h48A8,8,0,0,1,216,48ZM98.34,146.34,56,188.69V160a8,8,0,0,0-16,0v48a8,8,0,0,0,8,8H96a8,8,0,0,0,0-16H67.31l42.35-42.34a8,8,0,0,0-11.32-11.32ZM208,152a8,8,0,0,0-8,8v28.69l-42.34-42.35a8,8,0,0,0-11.32,11.32L188.69,200H160a8,8,0,0,0,0,16h48a8,8,0,0,0,8-8V160A8,8,0,0,0,208,152ZM67.31,56H96a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V96a8,8,0,0,0,16,0V67.31l42.34,42.35a8,8,0,0,0,11.32-11.32Z"></path>
-            </svg>
-          }
-        </button>
-        <button
-          matRipple
-          class="bg-gray-400 hover:bg-primary border rounded-full p-1 text-white"
-          (click)="toggleChat()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="currentColor" viewBox="0 0 256 256">
-            <path
-              d="M176,128a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,128Zm56,0A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path>
-          </svg>
-        </button>
+          </button>
+        }
       </div>
     </div>
     <div #chatBody class="flex-auto overflow-hidden flex flex-col relative min-h-0 p-4">
       <div
         class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
-        <span>{{ lang.locals.greeting_chat_message }}</span>
+        <span>{{ greeting_message() }}</span>
       </div>
       @for (message of chatService.messages(); track message.id) {
         @if (message.isUser()) {
@@ -57,7 +70,13 @@
         } @else if (message.isAssistant()) {
           <div
             class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
-            <span appSecureUrl [innerHTML]="message.content | sanitizer: 'html'"></span>
+            <span
+              appSecureUrl
+              appTextWriterAnimator
+              (animating)="animating.set($event)"
+              [stop]="stopAnimate()"
+              [disableAnimate]="streamResponse()"
+              [text]="message.content"></span>
           </div>
         } @else {
           <div class="system-message chat-message">
@@ -72,6 +91,7 @@
           <span class="typewriter-effect" appSecureUrl> {{ inProgressMessage() }}</span>
         </div>
       }
+
       @if (answerInProgress()) {
         <div class="spinner justify-center flex gap-1">
           <div class="rect1"></div>
@@ -82,7 +102,8 @@
         </div>
       }
       <ng-container #thanksMessageContainer></ng-container>
-      @if (chatService.getFilteredMessages(getbotName()).length > 1 && !ratingDone()) {
+
+      @if (chatService.messages().length > 1 && !ratingDone() && showRatingBox()) {
         <div
           @slideFromBottom
           class="sticky bottom-0 left-0 w-56 self-end scale-90 hover:scale-95 hover:duration-300 hover:transition-transform bg-gray-300/30 p-1 rounded-tl-md rounded-tr-md border border-gray-300 border-b-0 shadow-sm text-gray-700 flex items-center justify-evenly gap-4 mt-auto [&_button]:flex [&_button]:flex-col [&_button]:justify-center [&_button]:items-center [&_button]:text-sm [&_button]:leading-none">
@@ -126,17 +147,18 @@
         <app-faq [questions]="questions()" (selectedQuestion)="handleSuggestionsQuestions($event)" />
       </div>
     }
-
     <div class="p-4 gap-2 flex justify-center items-stretch">
-      <button
-        (click)="clearChatHistory()"
-        [matTooltip]="lang.locals.clear_chat_history"
-        class="rounded-full bg-white relative text-primary hover:bg-gray-200 shadow shadow-primary overflow-hidden border flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-12">
-        <svg xmlns="http://www.w3.org/2000/svg" class="size-8" fill="currentColor" viewBox="0 0 256 256">
-          <path
-            d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
-        </svg>
-      </button>
+      @if (showClearMsgBtn()) {
+        <button
+          (click)="clearChatHistory()"
+          [matTooltip]="lang.locals.clear_chat_history"
+          class="rounded-full bg-white relative text-primary hover:bg-gray-200 shadow shadow-primary overflow-hidden border flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-12">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-8" fill="currentColor" viewBox="0 0 256 256">
+            <path
+              d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
+          </svg>
+        </button>
+      }
       <button
         [matTooltip]="lang.locals.send"
         [disabled]="answerInProgress()"
@@ -156,7 +178,7 @@
           class="border w-full outline-none rounded focus:ring-2 ring-offset-1 ring-primary resize-none p-2" />
         @if (animating()) {
           <button
-            [matTooltip]="lang.locals.stop_chat"
+            [matTooltip]="lang.locals.send"
             (click)="stopAnimate.set(true)"
             class="absolute top-2 right-0 mr-1 rounded-full bg-white text-primary hover:bg-gray-200 overflow-hidden border-primary border-2 flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-7">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-8" fill="currentColor" viewBox="0 0 24 24">
@@ -165,30 +187,34 @@
           </button>
         }
       </div>
-
-      <app-recorder
-        #recorder
-        (recognized$)="messageCtrl.setValue($event)"
-        (recognizing$)="messageCtrl.setValue($event)" />
-
-      <button
-        [matTooltip]="lang.locals.open_avatar"
-        class="rounded-full bg-white relative text-primary hover:bg-gray-200 shadow shadow-primary overflow-hidden border flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-12"
-        (click)="toggleAvatar()">
-        <img src="assets/icons/home/chat.png" alt="avatar" class="w-10 h-10 object-contain" />
-      </button>
-      <!-- <button
-        [matTooltip]="lang.locals.upload_document"
-        class="rounded-full bg-white relative text-primary hover:bg-gray-200 shadow shadow-primary overflow-hidden border flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-12">
-        <input
-          type="file"
-          multiple
-          class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          (change)="onFileSelected($event)" />
-        <svg xmlns="http://www.w3.org/2000/svg" class="size-8" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
-        </svg>
-      </button> -->
+      @if (showRecorderBtn()) {
+        <app-recorder
+          #recorder
+          (recognized$)="messageCtrl.setValue($event)"
+          (recognizing$)="messageCtrl.setValue($event)" />
+      }
+      @if (showAvatarBtn()) {
+        <button
+          [matTooltip]="lang.locals.open_avatar"
+          class="rounded-full bg-white relative text-primary hover:bg-gray-200 shadow shadow-primary overflow-hidden border flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-12"
+          (click)="toggleAvatar()">
+          <img src="assets/icons/home/chat.png" alt="avatar" class="w-10 h-10 object-contain" />
+        </button>
+      }
+      @if (showUploadDocumentBtn()) {
+        <button
+          [matTooltip]="lang.locals.upload_document"
+          class="rounded-full bg-white relative text-primary hover:bg-gray-200 shadow shadow-primary overflow-hidden border flex-shrink-0 flex-grow-0 flex items-center justify-center outline-none ring-offset-1 focus:ring-2 ring-primary size-12">
+          <input
+            type="file"
+            multiple
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            (change)="onFileSelected($event)" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-8" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
+          </svg>
+        </button>
+      }
     </div>
   </div>
 
@@ -214,11 +240,3 @@
     </div>
   }
 </div>
-
-<ng-template #thanksMessage>
-  <div
-    @slideFromBottom
-    class="absolute whitespace-pre-line bottom-0 left-2 mb-2 w-40 p-2 flex justify-center items-center bg-white rounded-xl shadow-md">
-    <p class="text-sm">{{ lang.locals.thanks_for_feedback }}</p>
-  </div>
-</ng-template>

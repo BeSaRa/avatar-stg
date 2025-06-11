@@ -211,5 +211,10 @@ export class AdminCrawlerComponent extends OnDestroyMixin(class {}) implements O
   updateUrlGroup() {
     this.urlGroupByDays = this.groupByCrawlDays()
   }
+
+  saveAllAfterEditOnce() {
+    this.updateUrlGroup()
+    this.startCrawling()
+  }
   public readonly originalOrder = (): number => 0
 }
