@@ -28,6 +28,7 @@ export default class AdminComponent {
   }
 
   isVertical(idx: number) {
-    return (idx - 2) % 8 < 4 && (idx - 2) % 8 >= 0 ? false : true
+    return !((idx - 2) % 8 < 4 && (idx - 2) % 8 >= 0)
+    // return (idx - 2) % 8 < 4 && (idx - 2) % 8 >= 0 ? false : true
   }
 }

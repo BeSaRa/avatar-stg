@@ -6,7 +6,7 @@ import { NgClass, NgTemplateOutlet } from '@angular/common'
 import { Component, signal, inject, OnInit, runInInjectionContext, Injector } from '@angular/core'
 import { FormArray, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog'
-import { finalize, forkJoin, of, switchMap, tap } from 'rxjs'
+import { finalize, forkJoin, iif, of, switchMap, tap } from 'rxjs'
 import { CheckboxComponent } from '../checkbox/checkbox.component'
 import {
   createPermissionForm,
@@ -15,6 +15,8 @@ import {
   PermissionGroup,
 } from '@/types/permission-form-type'
 import { PermissionGroupContract } from '@/contracts/permission-group-contract'
+import { EmployeeService } from '@/services/employee.service'
+import { AuthService } from '@/services/auth.service'
 
 @Component({
   selector: 'app-permissions-popup',
@@ -36,6 +38,8 @@ export class PermissionsPopupComponent implements OnInit {
   injector = inject(Injector)
   permissionGroups$ = this.permissionsService.getPermissionGroups()
   permissions$ = this.permissionsService.getAllPermission()
+  employeeService = inject(EmployeeService)
+  authService = inject(AuthService)
 
   get permissionsList() {
     return this.permissionsForm.get('permissions') as FormArray<PermissionGroup>
@@ -132,6 +136,12 @@ export class PermissionsPopupComponent implements OnInit {
 
     this.permissionsService
       .updatePermission(userId, checkedPermissionsIds)
+      .pipe(
+        // ask for refresh token if current user who has permission changes
+        switchMap(() =>
+          iif(() => this.employeeService.isCurrentUserId(userId), this.authService.refreshToken(), of(false))
+        )
+      )
       .pipe(
         finalize(() => {
           this.ref.close()

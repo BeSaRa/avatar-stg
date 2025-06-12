@@ -1,5 +1,5 @@
 import { MediaCrawler } from '@/models/media-crawler'
-import { SocialMeidaSearchItem } from '@/types/social-media-search-type'
+import { SocialMediaSearchItem } from '@/types/social-media-search-type'
 
 export interface SettingsContract {
   PartitionKey: string
@@ -34,7 +34,7 @@ export interface MediaSettings {
   a_class: string[]
   p_class: string[]
   img_class: string[]
-  x_crawling: Partial<Omit<SocialMeidaSearchItem, 'id'>>[]
+  x_crawling: Partial<Omit<SocialMediaSearchItem, 'id'>>[]
 }
 
 export interface MediaSettingInfo {

@@ -35,6 +35,7 @@ export class ChatHistoryChartsComponent {
 
   lang = inject(LocalService)
   charts = computed(() => {
+    console.log(this.getCharts())
     if (this.conversations()) {
       return this.getCharts()
     }

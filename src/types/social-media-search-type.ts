@@ -17,5 +17,5 @@ export function createSocialMediaSearchItemGroup() {
   )
 }
 
-export type SocialMeidaSearchItemGroup = ReturnType<typeof createSocialMediaSearchItemGroup>
-export type SocialMeidaSearchItem = ReturnType<SocialMeidaSearchItemGroup['getRawValue']> & { id: string }
+export type SocialMediaSearchItemGroup = ReturnType<typeof createSocialMediaSearchItemGroup>
+export type SocialMediaSearchItem = ReturnType<SocialMediaSearchItemGroup['getRawValue']> & { id: string }

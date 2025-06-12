@@ -1,4 +1,4 @@
-import { CommonModule, DOCUMENT, NgClass } from '@angular/common'
+import { CommonModule, DOCUMENT } from '@angular/common'
 import { Component, inject, Injector, OnInit, runInInjectionContext, signal } from '@angular/core'
 import { FormArray, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms'
 import { MatExpansionModule } from '@angular/material/expansion'
@@ -7,11 +7,10 @@ import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { finalize, takeUntil, tap } from 'rxjs'
 import { LocalService } from '@/services/local.service'
 import { AdminService } from '@/services/admin.service'
-import { SettingsFormComponent } from '../../components/settings-form/settings-form.component'
 import { MatDialog } from '@angular/material/dialog'
 import { AddUrlPopupComponent } from '@/components/add-url-popup/add-url-popup.component'
 import { PerfectScrollDirective } from '@/directives/perfect-scroll.directive'
-import { UrlSummaryCardComponent } from '../../components/url-summary-card/url-summary-card.component'
+import { UrlSummaryCardComponent } from '@/components/url-summary-card/url-summary-card.component'
 import {
   CrawlerSettingGroup,
   createCrawlerSettingsGroup,
@@ -32,11 +31,9 @@ import { CrawlUrlContract } from '@/contracts/settings-contract'
     MatTabsModule,
     ReactiveFormsModule,
     MatExpansionModule,
-    SettingsFormComponent,
     CommonModule,
     PerfectScrollDirective,
     UrlSummaryCardComponent,
-    NgClass,
   ],
   templateUrl: './admin-crawler.component.html',
   styleUrls: ['./admin-crawler.component.scss'],

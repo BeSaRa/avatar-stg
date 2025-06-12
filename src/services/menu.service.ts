@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core'
 import { MENU_ITEMS } from '../resources/menu-items'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
+import { EmployeeService } from './employee.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class MenuService {
-  applicationUserService = inject(ApplicationUserService)
+  private readonly employeeService = inject(EmployeeService)
 
   private readonly _menuItems = MENU_ITEMS
 
@@ -14,8 +14,8 @@ export class MenuService {
     return this._menuItems.filter(item =>
       item.permissions.length
         ? item.haveSomeOfPermissions
-          ? this.applicationUserService.$applicationUser().hasAnyPermission(item.permissions)
-          : this.applicationUserService.$applicationUser().hasAllPermission(item.permissions)
+          ? this.employeeService.hasAnyPermission(item.permissions)
+          : this.employeeService.hasAllPermission(item.permissions)
         : true
     )
   }

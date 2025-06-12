@@ -8,10 +8,10 @@ import { AppStore } from '@/stores/app.store'
 import { CommonModule, DOCUMENT } from '@angular/common'
 import { SidebarMenuComponent } from '@/components/sidebar-menu/sidebar-menu.component'
 import { HeaderComponent } from '@/components/header/header.component'
-import { ApplicationUserService } from '../auth/services/application-user.service'
 import { BreadcrumbComponent } from '@/components/breadcrumb/breadcrumb.component'
 import { MENU_ITEMS } from '../../resources/menu-items'
 import { IdleMonitorService } from '@/services/idle-monitor.service'
+import { EmployeeService } from '@/services/employee.service'
 
 @Component({
   selector: 'app-root',
@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
   store = inject(AppStore)
   document = inject(DOCUMENT)
   idleMonitor = inject(IdleMonitorService)
-  userService = inject(ApplicationUserService)
+  employeeService = inject(EmployeeService)
   storeEffect = effect(() => {
     this.document.body.style.setProperty('--app-primary-color', this.store.backgroundColor())
   })

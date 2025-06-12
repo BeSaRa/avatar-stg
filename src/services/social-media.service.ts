@@ -1,4 +1,4 @@
-import { SocialMeidaSearchItem } from '@/types/social-media-search-type'
+import { SocialMediaSearchItem } from '@/types/social-media-search-type'
 import { inject, Injectable } from '@angular/core'
 import { UrlService } from './url.service'
 import { HttpClient } from '@angular/common/http'
@@ -10,7 +10,7 @@ export class SocialMediaService {
   private readonly urlService = inject(UrlService)
   private readonly http = inject(HttpClient)
 
-  Xsearch(xpressions: Partial<SocialMeidaSearchItem>[]) {
+  Xsearch(xpressions: Partial<SocialMediaSearchItem>[]) {
     const url = `${this.urlService.URLS.SOCIAL}/x-search`
     return this.http.post(url, xpressions)
   }

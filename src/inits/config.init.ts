@@ -1,28 +1,31 @@
-import { APP_INITIALIZER, Injector, Provider } from '@angular/core'
+import { APP_INITIALIZER, Provider } from '@angular/core'
 import { ConfigService } from '@/services/config.service'
 import { UrlService } from '@/services/url.service'
-import { forkJoin, switchMap, tap } from 'rxjs'
+import { forkJoin, of, switchMap, tap } from 'rxjs'
 import { SpeechService } from '@/services/speech.service'
 import { LocalService } from '@/services/local.service'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
+import { AuthService } from '@/services/auth.service'
+import { TokenService } from '@/services/token.service'
 
 export default {
   provide: APP_INITIALIZER,
   useFactory: (
     configService: ConfigService,
     urlService: UrlService,
-    injector: Injector,
     commonService: SpeechService,
-    local: LocalService
+    local: LocalService,
+    auth: AuthService,
+    tokenService: TokenService
   ) => {
     return () =>
       forkJoin([configService.load()]).pipe(
         tap(() => urlService.setConfigService(configService)),
         tap(() => urlService.prepareUrls()),
         switchMap(() => local.load()),
-        tap(() => injector.get(ApplicationUserService).checkAutoLogoutOnRefresh())
+        switchMap(() => (tokenService.hasRefreshToken() ? auth.refreshToken() : of(null)))
+        // tap(() => injector.get(ApplicationUserService).checkAutoLogoutOnRefresh())
       )
   },
-  deps: [ConfigService, UrlService, Injector, SpeechService, LocalService],
+  deps: [ConfigService, UrlService, SpeechService, LocalService, AuthService, TokenService],
   multi: true,
 } satisfies Provider
