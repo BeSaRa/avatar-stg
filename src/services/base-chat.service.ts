@@ -236,16 +236,7 @@ export abstract class BaseChatService {
     return chunk
       .split('\n')
       .filter(line => line.startsWith('data: '))
-      .map(line => line.slice(6))
-      .filter(line => {
-        try {
-          JSON.parse(line)
-          return true
-        } catch {
-          console.warn('❌ Ignored invalid JSON line:', line)
-          return false
-        }
-      })
+      .map(line => line.slice(6)) // نزيل "data: "
   }
 
   /**
@@ -264,7 +255,7 @@ export abstract class BaseChatService {
       const newMessages = [...messages]
       const index = newMessages.findLastIndex(m => m.isAssistant())
       if (index !== -1) {
-        const copy = finalMessage.clone<Message>() // كائن جديد بنفس الـ id
+        const copy = finalMessage.clone<Message>()
         newMessages[index] = copy
       } else {
         newMessages.push(finalMessage)
@@ -287,60 +278,174 @@ export abstract class BaseChatService {
     }
   }
 
+  // private async processStream(stream: ReadableStream<Uint8Array>): Promise<boolean> {
+  //   const reader = stream.getReader()
+  //   const decoder = new TextDecoder('utf-8')
+  //   let fullText = ''
+  //   let jsonBuffer = ''
+  //   let chunkBuffer = ''
+
+  //   try {
+  //     while (true) {
+  //       const { done, value } = await reader.read()
+  //       if (done) break
+  //       debugger
+
+  //       // ندمج النص بعد فك التشفير الجزئي
+  //       fullText += decoder.decode(value, { stream: true })
+
+  //       // نحلل الأسطر المنتهية فقط
+  //       const lines = fullText.split('\n')
+  //       fullText = lines.pop() || '' // نحتفظ بأي سطر ناقص
+
+  //       for (const line of lines) {
+  //         if (!line.startsWith('data: ')) continue
+
+  //         jsonBuffer += line.slice(6)
+
+  //         let parsed: { event: string; data: unknown } | null = null
+  //         try {
+  //           parsed = JSON.parse(jsonBuffer)
+  //           jsonBuffer = ''
+  //         } catch {
+  //           continue
+  //         }
+
+  //         if (parsed!.event !== 'chunks') {
+  //           this.messageInProgress.set(false)
+
+  //           const data = parsed!.data as {
+  //             action_results: unknown[]
+  //             citations: ICitations[]
+  //             content: string
+  //             conversation_id: string
+  //             user_id: string
+  //             stream_id: string | null
+  //           }
+
+  //           const assistantMessage = new Message('', 'assistant')
+  //           assistantMessage.content = data.content
+  //           assistantMessage.context = { citations: data.citations, intent: [] }
+
+  //           this.conversationId.set(data.conversation_id)
+  //           this.inProgressMessage.next('')
+  //           this.updateMessages(assistantMessage)
+
+  //           const formatted = this.formatMessage(assistantMessage)
+  //           this.replaceLastAssistantMessage(formatted)
+  //           break
+  //         }
+
+  //         await new Promise(res => setTimeout(res, 40))
+
+  //         await this.typeChunk(parsed!.data as string, char => (chunkBuffer += char))
+  //       }
+  //     }
+
+  //     // flush the decoder (very important!)
+  //     fullText += decoder.decode()
+
+  //     reader.releaseLock()
+  //   } catch (error) {
+  //     reader.releaseLock()
+  //     console.error('❌ Stream error:', error)
+  //   }
+
+  //   return true
+  // }
+
   private async processStream(stream: ReadableStream<Uint8Array>): Promise<boolean> {
     const reader = stream.getReader()
     const decoder = new TextDecoder('utf-8')
-    let buffer = ''
+    let fullText = ''
     let jsonBuffer = ''
+    let chunkBuffer = ''
 
     try {
       while (true) {
-        const { done, value } = await reader.read()
+        const done = await this.readStreamChunk(reader, decoder, val => (fullText += val))
         if (done) break
 
-        const chunk = decoder.decode(value, { stream: true })
-        const lines = this.parseLines(chunk)
+        const lines = this.extractValidLines(fullText)
+        fullText = lines.remaining
 
-        for (const line of lines) {
-          jsonBuffer += line
+        for (const line of lines.valid) {
+          const parsed = this.tryParseJSONLine(line, jsonBuffer)
+          if (!parsed) continue
 
-          let parsed: { event: string; data: unknown } | null = null
-          try {
-            parsed = JSON.parse(jsonBuffer)
-            jsonBuffer = ''
-          } catch {
-            continue
-          }
+          jsonBuffer = ''
 
-          if (parsed?.event !== 'chunks') {
-            this.messageInProgress.set(false)
-
-            const { citations, content } = parsed!.data as { citations: ICitations[]; content: string }
-            const fullMsg = content
-
-            this.inProgressMessage.next('')
-            const assistantMessage = new Message('', 'assistant')
-            this.updateMessages(assistantMessage)
-
-            assistantMessage.content = fullMsg
-            assistantMessage.context = { citations, intent: [] }
-
-            const formatted = this.formatMessage(assistantMessage)
-            this.replaceLastAssistantMessage(formatted)
-            break
-          }
-
-          await new Promise(resolve => setTimeout(resolve, 40))
-          await this.typeChunk(parsed.data as string, value => (buffer += value))
+          const isDone = await this.handleParsedEvent(parsed, value => (chunkBuffer += value))
+          if (isDone) break
         }
       }
 
+      fullText += decoder.decode()
       reader.releaseLock()
     } catch (error) {
       reader.releaseLock()
-      console.log('❌ Error processing stream:', error)
+      console.error('❌ Stream error:', error)
     }
 
     return true
+  }
+
+  private async readStreamChunk(
+    reader: ReadableStreamDefaultReader<Uint8Array>,
+    decoder: TextDecoder,
+    onChunk: (chunk: string) => void
+  ): Promise<boolean> {
+    const { done, value } = await reader.read()
+    if (done) return true
+    onChunk(decoder.decode(value, { stream: true }))
+    return false
+  }
+
+  private extractValidLines(text: string): { valid: string[]; remaining: string } {
+    const lines = text.split('\n')
+    const remaining = lines.pop() || ''
+    return { valid: lines.filter(l => l.startsWith('data: ')), remaining }
+  }
+  private tryParseJSONLine(line: string, jsonBuffer: string): { event: string; data: unknown } | null {
+    jsonBuffer += line.slice(6)
+    try {
+      return JSON.parse(jsonBuffer)
+    } catch {
+      return null
+    }
+  }
+  private async handleParsedEvent(
+    parsed: { event: string; data: unknown },
+    chunkBufferCallback: (c: string) => string
+  ): Promise<boolean> {
+    if (parsed.event !== 'chunks') {
+      this.messageInProgress.set(false)
+
+      const data = parsed.data as {
+        action_results: unknown[]
+        citations: ICitations[]
+        content: string
+        conversation_id: string
+        user_id: string
+        stream_id: string | null
+      }
+
+      const assistantMessage = new Message('', 'assistant')
+      assistantMessage.content = data.content
+      assistantMessage.context = { citations: data.citations, intent: [] }
+
+      this.conversationId.set(data.conversation_id)
+      this.inProgressMessage.next('')
+      this.updateMessages(assistantMessage)
+
+      const formatted = this.formatMessage(assistantMessage)
+      this.replaceLastAssistantMessage(formatted)
+
+      return true
+    }
+
+    await new Promise(res => setTimeout(res, 40))
+    await this.typeChunk(parsed.data as string, chunkBufferCallback)
+    return false
   }
 }

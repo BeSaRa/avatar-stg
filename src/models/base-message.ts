@@ -37,4 +37,5 @@ export interface ICitations {
   filepath: string
   content: string
   url: string
+  ref_url?: string
 }
