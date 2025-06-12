@@ -175,7 +175,8 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
       .onBotNameChange()
       .pipe(
         takeUntil(this.destroy$),
-        skipWhile(() => !this.botNameOptions().showBotSelection)
+        skipWhile(() => !this.botNameOptions().showBotSelection),
+        switchMap(value => this.getQuestions(3, value))
       )
       .subscribe()
   }

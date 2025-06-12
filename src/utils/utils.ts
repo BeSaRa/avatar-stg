@@ -263,10 +263,9 @@ export function formatText<T extends { context: { citations: ICitations[] } }>(t
   if (!message?.context) {
     return formattedText.trim()
   }
+  const citations = message.context?.citations ?? []
   // Remove duplicate citations by URL and title
-  const uniqueCitations = Array.from(
-    new Map(message.context.citations.map(item => [item.url + item.title, item])).values()
-  )
+  const uniqueCitations = Array.from(new Map(citations.map(item => [item.url + item.title, item])).values())
 
   // Keep track of already replaced citations to prevent duplicate replacements
   const replacedCitations = new Set<string>()
@@ -276,7 +275,7 @@ export function formatText<T extends { context: { citations: ICitations[] } }>(t
     const index = Number(p1.replace(/[^0-9]/g, '')) - 1
     const item = uniqueCitations[index]
     const title = item?.title
-    const url = item?.url ? decodeURIComponent(item.url) : ''
+    const url = item?.url ? decodeURIComponent(item.url) : item?.ref_url ? decodeURIComponent(item.ref_url) : ''
 
     if (!url || !title || replacedCitations.has(url + title)) {
       return ''
