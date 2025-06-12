@@ -1,6 +1,5 @@
 import { fadeInScale } from '@/animations/fade-in-scale'
 import { AddFileNamePopupComponent } from '@/components/add-file-name-popup/add-file-name-popup.component'
-import { AvatarInterrupterBtnComponent } from '@/components/avatar-interrupter-btn/avatar-interrupter-btn.component'
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
 import { AppColors } from '@/constants/app-colors'
 import { ButtonDirective } from '@/directives/button.directive'
@@ -40,7 +39,6 @@ import {
     ReactiveFormsModule,
     MatFormFieldModule,
     SpinnerLoaderComponent,
-    AvatarInterrupterBtnComponent,
     MatTooltipModule,
     ButtonDirective,
   ],
@@ -92,7 +90,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
     .pipe(
       exhaustMap(() =>
         this.avatarService
-          .startStream()
+          .startStream('life-size')
           .pipe(
             catchError(err => {
               this.store.updateStreamStatus('Stopped') //1
@@ -159,8 +157,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
     // this.start$.next()
     // close when destroy component
     this.text.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(v => {
-      if ((v?.split(' ') ?? '').length > 70) this.wordsLimitExceeded = true
-      else this.wordsLimitExceeded = false
+      this.wordsLimitExceeded = (v?.split(' ') ?? '').length > 70
     })
     merge(this.destroy$)
       .pipe(tap(() => this.store.updateStreamStatus('Stopped'))) // 2

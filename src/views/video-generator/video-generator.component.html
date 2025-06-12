@@ -36,9 +36,7 @@
       </div>
 
       <div class="absolute w-full h-full overflow-hidden">
-        @if (!store.isStreamStopped() && !store.isStreamLoading()) {
-          <video autoplay #video class="w-full"></video>
-        }
+        <video [hidden]="store.isStreamStopped() || store.isStreamLoading()" autoplay #video class="w-full"></video>
         <video #idleVideo [hidden]="store.isStreamStarted()" class="w-full">
           <source [src]="store.idleAvatarUrl()" type="video/webm" />
         </video>
