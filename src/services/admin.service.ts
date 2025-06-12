@@ -8,11 +8,11 @@ import { IndexerInfoContract } from '@/contracts/indexer-info-contract'
 import { FormGroup, NonNullableFormBuilder } from '@angular/forms'
 import { CrawlUrlContract, SettingsContract } from '@/contracts/settings-contract'
 import { generateUUID } from '@/utils/utils'
-import { SocialMeidaSearchItem } from '@/types/social-media-search-type'
 import { SHOW_SNACKBAR } from '@/http-contexts/show-snackbar'
 import { SUCCESS_MESSAGE } from '@/http-contexts/success-message-token'
 import { MediaResultContract } from '@/contracts/media-result-contract'
 import { ConfigService } from './config.service'
+import { SocialMediaSearchItem } from '@/types/social-media-search-type'
 
 @Injectable({
   providedIn: 'root',
@@ -141,13 +141,13 @@ export class AdminService {
   getCrawlingData() {
     return this.getSettingsByEntityName().pipe(map(el => el.at(0)!.crawling_urls))
   }
-  getXCrawlingData(): Observable<Partial<SocialMeidaSearchItem>[]> {
+  getXCrawlingData(): Observable<Partial<SocialMediaSearchItem>[]> {
     return this.getSettingsByEntityName().pipe(
       map(el =>
         el
           .at(0)!
           .media_settings.x_crawling.map(
-            expression => ({ ...expression, id: generateUUID() }) as Partial<SocialMeidaSearchItem>
+            expression => ({ ...expression, id: generateUUID() }) as Partial<SocialMediaSearchItem>
           )
       )
     )
@@ -158,7 +158,7 @@ export class AdminService {
       context: new HttpContext().set(SHOW_SNACKBAR, true).set(SUCCESS_MESSAGE, successMessage),
     })
   }
-  updateXScheduleSettings(expressions: Partial<SocialMeidaSearchItem>[]) {
+  updateXScheduleSettings(expressions: Partial<SocialMediaSearchItem>[]) {
     const url = `${this.urlService.URLS.ADMIN}/settings/x`
     return this.http.put(url, expressions)
   }

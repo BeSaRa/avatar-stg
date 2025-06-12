@@ -10,6 +10,8 @@ export const Config = {
   ENTITY_NAME: '',
   EXTERNAL_PROTOCOLS: ['http', 'https'],
   IDLE_AVATARS: [] as string[],
+  ACCESS_TOKEN_COOKIE_NAME: '$__AT__$',
+  REFRESH_TOKEN_COOKIE_NAME: '$__RT__$',
 }
 
 export type ConfigType = typeof Config

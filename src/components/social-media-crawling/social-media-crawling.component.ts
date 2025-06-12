@@ -4,7 +4,7 @@ import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AdminService } from '@/services/admin.service'
 import { LocalService } from '@/services/local.service'
 import { SocialMediaService } from '@/services/social-media.service'
-import { createSocialMediaSearchItemGroup, SocialMeidaSearchItem } from '@/types/social-media-search-type'
+import { createSocialMediaSearchItemGroup, SocialMediaSearchItem } from '@/types/social-media-search-type'
 import { generateUUID, removeNullableAndIgnoreKeys } from '@/utils/utils'
 import { DatePipe, NgTemplateOutlet } from '@angular/common'
 import { Component, computed, inject, OnInit, signal } from '@angular/core'
@@ -23,12 +23,12 @@ export class SocialMediaCrawlingComponent extends OnDestroyMixin(class {}) imple
   socialMediaService = inject(SocialMediaService)
   adminService = inject(AdminService)
   socialMediaForm = createSocialMediaSearchItemGroup()
-  items = signal<Partial<SocialMeidaSearchItem>[]>([])
+  items = signal<Partial<SocialMediaSearchItem>[]>([])
   prevEditedKey = signal<string | null>(null)
   animateHeader = signal(false)
   isLoading = signal<boolean>(false)
   isLoadingData = signal(false)
-  editedItem = signal<Partial<SocialMeidaSearchItem> | null>(null)
+  editedItem = signal<Partial<SocialMediaSearchItem> | null>(null)
   readonly isEditing = computed(() => this.editedItem() !== null)
 
   ngOnInit(): void {
@@ -97,7 +97,7 @@ export class SocialMediaCrawlingComponent extends OnDestroyMixin(class {}) imple
     }
   }
 
-  editItem(exp: Partial<SocialMeidaSearchItem>) {
+  editItem(exp: Partial<SocialMediaSearchItem>) {
     const currentKey = exp.id // or exp.id if you have one
     const prevKey = this.prevEditedKey()
 

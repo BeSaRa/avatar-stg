@@ -1,7 +1,7 @@
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 import { NgIf } from '@angular/common'
 import { Directive, effect, inject, input } from '@angular/core'
 import { ALL_PERMISSIONS } from '../resources/all-permissions'
+import { EmployeeService } from '@/services/employee.service'
 
 @Directive({
   selector: '[appHasPermission]',
@@ -9,13 +9,13 @@ import { ALL_PERMISSIONS } from '../resources/all-permissions'
   hostDirectives: [NgIf],
 })
 export class HasPermissionDirective {
-  private readonly appicationUser = inject(ApplicationUserService).$applicationUser()
+  private readonly employeeService = inject(EmployeeService)
   private ngIf = inject(NgIf, { host: true })
 
   appHasPermission = input.required<(keyof typeof ALL_PERMISSIONS)[]>()
   showEffect = effect(
     () => {
-      this.ngIf.ngIf = this.appicationUser.hasAllPermission(this.appHasPermission()!)
+      this.ngIf.ngIf = this.employeeService.hasAllPermission(this.appHasPermission()!)
     },
     { allowSignalWrites: true }
   )

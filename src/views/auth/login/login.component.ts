@@ -7,8 +7,10 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
 import { ApplicationUserService } from '../services/application-user.service'
-import { finalize } from 'rxjs'
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
+import { AuthService } from '@/services/auth.service'
+import { ignoreErrors } from '@/utils/utils'
+import { catchError } from 'rxjs'
 
 @Component({
   selector: 'app-login',
@@ -23,6 +25,7 @@ export class LoginComponent {
   messagesService = inject(MessageService)
   userService = inject(ApplicationUserService)
   router = inject(Router)
+  authService = inject(AuthService)
 
   form = this.fb.group({
     userName: this.fb.control('', [Validators.required]),
@@ -37,10 +40,22 @@ export class LoginComponent {
       return
     }
     this.isLoading = true
-    const { userName, password } = this.form.value
-    this.userService
-      .login(userName!, password!)
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe()
+    const { userName: username, password } = this.form.getRawValue()
+    this.authService
+      .login({
+        username,
+        password,
+      })
+      .pipe(
+        catchError(err => {
+          this.messagesService.showError(`${this.lang.locals.login_failed}`)
+          return err
+        })
+      )
+      .pipe(ignoreErrors())
+      .subscribe(() => {
+        this.messagesService.showInfo(`${this.lang.locals.welcome_user}, ${username}! ${this.lang.locals.welcome_back}`)
+        this.router.navigateByUrl('/home').then()
+      })
   }
 }

@@ -3,14 +3,15 @@ import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
 import { ChatService } from '@/services/chat.service'
 import { LocalService } from '@/services/local.service'
 import { MenuService } from '@/services/menu.service'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
-import { RouterModule } from '@angular/router'
+import { Router, RouterModule } from '@angular/router'
 import { SettingsPopupComponent } from '../settings-popup/settings-popup.component'
 import { LegalChatService } from '@/services/legal-chat.service'
+import { AuthService } from '@/services/auth.service'
+import { EmployeeService } from '@/services/employee.service'
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -23,13 +24,15 @@ export class SidebarMenuComponent {
   lang = inject(LocalService)
   chatService = inject(ChatService)
   legalService = inject(LegalChatService)
-  applicationUserService = inject(ApplicationUserService)
+  employeeService = inject(EmployeeService)
   dialog = inject(MatDialog)
   menuService = inject(MenuService)
+  auth = inject(AuthService)
 
   readonly svgIcons = SVG_ICONS
 
   isOpened = false
+  private router = inject(Router)
 
   get shownItems() {
     return this.menuService.getMenuItems().slice(0, 7)
@@ -68,6 +71,8 @@ export class SidebarMenuComponent {
   }
 
   logout() {
-    this.applicationUserService.logout()
+    this.auth.logout().subscribe(() => {
+      this.router.navigateByUrl('auth/login').then()
+    })
   }
 }
