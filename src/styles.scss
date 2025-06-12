@@ -63,7 +63,7 @@ $avatar-theme: mat.define-theme(
   @include mat.slide-toggle-overrides(
     (
       selected-icon-color: var(--app-accent-500),
-      selected-pressed-track-color: var(--app-primary-500),
+      selected-track-color: var(--app-primary-500),
       label-text-font: 'Lusail',
     )
   );
