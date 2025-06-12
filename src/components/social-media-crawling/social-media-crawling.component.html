@@ -55,21 +55,19 @@
         </div>
       }
     </div>
-    @if (items().length) {
-      <div
-        class="absolute slide-from-top z-20 px-4 py-2 bg-black/30 shadow-lg mt-10 rounded-ee-lg rounded-es-lg h-12 top-0 w-full flex items-center backdrop-blur-md">
-        <button
-          *appHasPermission="['SOCIAL_MEDIA_X_SEACRH']"
-          type="button"
-          (click)="searchX()"
-          class="inline-flex items-center justify-center gap-2 bg-primary/90 text-white font-medium py-2 px-4 text-sm rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none w-1/5">
-          {{ lang.locals.save_queries }}
-          @if (isLoading()) {
-            <ng-container [ngTemplateOutlet]="loader" />
-          }
-        </button>
-      </div>
-    }
+    <div
+      class="absolute slide-from-top z-20 px-4 py-2 bg-black/30 shadow-lg mt-10 rounded-ee-lg rounded-es-lg h-12 top-0 w-full flex items-center backdrop-blur-md">
+      <button
+        *appHasPermission="['SOCIAL_MEDIA_X_SEACRH']"
+        type="button"
+        (click)="searchX()"
+        class="inline-flex items-center justify-center gap-2 bg-primary/90 text-white font-medium py-2 px-4 text-sm rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none w-1/5">
+        {{ lang.locals.save_queries }}
+        @if (isLoading()) {
+          <ng-container [ngTemplateOutlet]="loader" />
+        }
+      </button>
+    </div>
   </section>
   <aside class="flip-card flex flex-col w-1/4 bg-gray-200 text-gray-700 rounded-lg" [class.flipped]="isEditing()">
     <div class="flip-card-inner">
