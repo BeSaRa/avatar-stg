@@ -1,7 +1,7 @@
 import { APP_INITIALIZER, Provider } from '@angular/core'
 import { ConfigService } from '@/services/config.service'
 import { UrlService } from '@/services/url.service'
-import { forkJoin, of, switchMap, tap } from 'rxjs'
+import { catchError, forkJoin, of, switchMap, tap } from 'rxjs'
 import { SpeechService } from '@/services/speech.service'
 import { LocalService } from '@/services/local.service'
 import { AuthService } from '@/services/auth.service'
@@ -22,7 +22,9 @@ export default {
         tap(() => urlService.setConfigService(configService)),
         tap(() => urlService.prepareUrls()),
         switchMap(() => local.load()),
-        switchMap(() => (tokenService.hasRefreshToken() ? auth.refreshToken() : of(null)))
+        switchMap(() =>
+          tokenService.hasRefreshToken() ? auth.refreshToken().pipe(catchError(() => of(null))) : of(null)
+        )
         // tap(() => injector.get(ApplicationUserService).checkAutoLogoutOnRefresh())
       )
   },
