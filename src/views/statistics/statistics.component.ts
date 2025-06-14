@@ -145,7 +145,7 @@ export class StatisticsComponent implements OnInit {
     const total = values.reduce((a, b) => a + b, 0)
     const finalValues = total === 0 ? [1] : values
     const finalLabels = total === 0 ? [this.lang.locals.no_data_to_preview] : labels
-
+    const sum = finalValues.reduce((a, b) => a + b, 0)
     return {
       type: 'pie',
       data: {
@@ -153,7 +153,7 @@ export class StatisticsComponent implements OnInit {
         datasets: [
           {
             label: this.lang.locals.indexed_sources_percentage,
-            data: finalValues,
+            data: finalValues.map(item => Math.round((item / sum) * 100)),
           },
         ],
       },
@@ -177,8 +177,6 @@ export class StatisticsComponent implements OnInit {
             },
             label: (context: TooltipItem<'pie'>) => {
               const label = context.label || ''
-              console.log(context)
-
               return [`${label}:${label === this.lang.locals.no_data_to_preview ? 0 : context.raw}%`]
             },
           },
