@@ -5,20 +5,20 @@ import { formatString, formatText } from '@/utils/utils'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { inject, Injectable, signal, WritableSignal } from '@angular/core'
 import {
-  Observable,
   catchError,
-  distinctUntilChanged,
-  forkJoin,
-  map,
-  of,
-  tap,
-  exhaustMap,
-  Subject,
   defer,
+  distinctUntilChanged,
   EMPTY,
-  from,
-  switchMap,
+  exhaustMap,
   filter,
+  forkJoin,
+  from,
+  map,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  tap,
 } from 'rxjs'
 import { UrlService } from './url.service'
 import { AdminService } from './admin.service'
@@ -27,7 +27,7 @@ import { MediaResultContract } from '@/contracts/media-result-contract'
 import { STORAGE_ITEMS } from '@/constants/storage-items'
 import { ApplicationUser } from '@/views/auth/models/application-user'
 import { ICitations } from '@/models/base-message'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
+import { TokenService } from '@/services/token.service'
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +37,7 @@ export abstract class BaseChatService {
   protected readonly urlService = inject(UrlService)
   private readonly adminService = inject(AdminService)
   protected readonly store = inject(AppStore)
-  protected readonly applicationUserService = inject(ApplicationUserService)
+  protected readonly tokenService = inject(TokenService)
   readonly botNameCtrl = new FormControl('', { nonNullable: true })
   abstract messages: WritableSignal<Message[]>
   abstract status: WritableSignal<boolean>
@@ -201,7 +201,7 @@ export abstract class BaseChatService {
         ...(this.getUserId() ? { user_id: this.getUserId() } : {}),
       })
 
-      const token = this.applicationUserService.$applicationUser().access_token
+      const token = this.tokenService.getAccessToken()
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,

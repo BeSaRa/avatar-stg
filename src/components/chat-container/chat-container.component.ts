@@ -45,7 +45,6 @@ import { FAQContract } from '@/contracts/FAQ-contract'
 import { PerfectScrollDirective } from '@/directives/perfect-scroll.directive'
 import { FAQComponent } from '../faq/faq.component'
 import { BaseChatService } from '@/services/base-chat.service'
-import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
 import { SecureUrlDirective } from '@/directives/secure-url.directive'
 import { slideFromBottom } from '@/animations/fade-in-slide'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
@@ -66,7 +65,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle'
     AsyncPipe,
     PerfectScrollDirective,
     FAQComponent,
-    SanitizerPipe,
     SecureUrlDirective,
     MatSlideToggleModule,
   ],
