@@ -13,6 +13,9 @@ import { SpeechService } from '@/services/speech.service'
 import { AppStore } from '@/stores/app.store'
 import { IdleMonitorService } from '@/services/idle-monitor.service'
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -97,19 +100,6 @@ export class ApplicationUserService {
     )
   }
 
-  tryAuthenticate() {
-    const user = localStorage.getItem(STORAGE_ITEMS.USER)
-    if (user)
-      this.$applicationUser.update(state => {
-        const userObj = JSON.parse(user)
-        state.access_token = userObj.access_token
-        state.refresh_token = userObj.refresh_token
-        state.permissions = userObj.permissions
-        return state
-      })
-    this.$isAuthenticated.set(!!user)
-    !this.$isAuthenticated() && this._router.navigate(['/auth/login'])
-  }
   logout(): void {
     this.$isAuthenticated.set(false)
     this.$applicationUser.set(new ApplicationUser())

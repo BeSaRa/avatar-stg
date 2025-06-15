@@ -4,7 +4,7 @@
       <img class="h-20" [src]="'assets/images/qrep-newlogo-colored.png'" alt="logo" />
     </a>
     <div class="flex items-center justify-center gap-2">
-      @if (userService.$isAuthenticated()) {
+      @if (employeeService.hasAuthenticatedUser()) {
         <a routerLink="/home/avatar" appButton color="accent" shape="pill" class="!py-[2px]"
           ><img class="w-8 h-8" src="assets/icons/avatar-icon.png" alt="avatar" />
           <span>{{ lang.locals.avatar_chat }}</span></a

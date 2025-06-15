@@ -6,7 +6,6 @@ import { Component, inject } from '@angular/core'
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
-import { ApplicationUserService } from '../services/application-user.service'
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
 import { AuthService } from '@/services/auth.service'
 import { ignoreErrors } from '@/utils/utils'
@@ -23,7 +22,6 @@ export class LoginComponent {
   lang = inject(LocalService)
   fb = inject(NonNullableFormBuilder)
   messagesService = inject(MessageService)
-  userService = inject(ApplicationUserService)
   router = inject(Router)
   authService = inject(AuthService)
 

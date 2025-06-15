@@ -25,7 +25,6 @@ export default {
         switchMap(() =>
           tokenService.hasRefreshToken() ? auth.refreshToken().pipe(catchError(() => of(null))) : of(null)
         )
-        // tap(() => injector.get(ApplicationUserService).checkAutoLogoutOnRefresh())
       )
   },
   deps: [ConfigService, UrlService, SpeechService, LocalService, AuthService, TokenService],

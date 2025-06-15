@@ -2,6 +2,9 @@ import { signal } from '@angular/core'
 import { ALL_PERMISSIONS } from '../../../resources/all-permissions'
 import { Permission } from '@/contracts/permission-contract'
 
+/**
+ * @deprecated
+ */
 export class ApplicationUser {
   private _permissions: Permission[] = []
   private _permissionsKeys: string[] = []
