@@ -1,4 +1,4 @@
-import { Component, effect, HostListener, inject, OnInit } from '@angular/core'
+import { Component, effect, HostListener, inject } from '@angular/core'
 import { RouterModule, RouterOutlet } from '@angular/router'
 import { VersionComponent } from '@/components/version/version.component'
 import { LocalPopupComponent } from '@/components/local-popup/local-popup.component'
@@ -10,7 +10,6 @@ import { SidebarMenuComponent } from '@/components/sidebar-menu/sidebar-menu.com
 import { HeaderComponent } from '@/components/header/header.component'
 import { BreadcrumbComponent } from '@/components/breadcrumb/breadcrumb.component'
 import { MENU_ITEMS } from '../../resources/menu-items'
-import { IdleMonitorService } from '@/services/idle-monitor.service'
 import { EmployeeService } from '@/services/employee.service'
 
 @Component({
@@ -28,17 +27,11 @@ import { EmployeeService } from '@/services/employee.service'
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-  ngOnInit(): void {
-    this.idleMonitor.setIdleTimeout(5)
-    this.idleMonitor.initSafelyOnFirstUserInteraction()
-  }
-
+export class AppComponent {
   dialog = inject(MatDialog)
   lang = inject(LocalService)
   store = inject(AppStore)
   document = inject(DOCUMENT)
-  idleMonitor = inject(IdleMonitorService)
   employeeService = inject(EmployeeService)
   storeEffect = effect(() => {
     this.document.body.style.setProperty('--app-primary-color', this.store.backgroundColor())

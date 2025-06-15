@@ -12,6 +12,8 @@ export const Config = {
   IDLE_AVATARS: [] as string[],
   ACCESS_TOKEN_COOKIE_NAME: '$__AT__$',
   REFRESH_TOKEN_COOKIE_NAME: '$__RT__$',
+  ACCESS_TOKEN_TTL_IN_MINUTES: 2,
+  REFRESH_ACCESS_TOKEN_BEFORE_ENDING_IN_MINUTES: 1,
 }
 
 export type ConfigType = typeof Config
