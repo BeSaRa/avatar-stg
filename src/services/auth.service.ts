@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { UrlService } from '@/services/url.service'
 import { HttpClient, HttpContext } from '@angular/common/http'
-import { filter, iif, Observable, of, Subject, switchMap, tap, timer } from 'rxjs'
+import { catchError, filter, iif, map, mergeMap, Observable, of, Subject, switchMap, tap, timer } from 'rxjs'
 import { CastResponse } from 'cast-response'
 import { LoginData } from '@/models/login-data'
 import { TokenService } from '@/services/token.service'
@@ -12,6 +12,8 @@ import { IdleService } from '@/services/idle.service'
 import { MessageService } from '@/services/message.service'
 import { LocalService } from '@/services/local.service'
 import { Router } from '@angular/router'
+import { SpeechService } from './speech.service'
+import { AppStore } from '@/stores/app.store'
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +24,8 @@ export class AuthService {
   private readonly tokenService = inject(TokenService)
   private readonly employeeService = inject(EmployeeService)
   private readonly configService = inject(ConfigService)
+  private readonly commonService = inject(SpeechService)
+  private readonly store = inject(AppStore)
   private readonly startTimer$ = new Subject<void>()
   private readonly idleService = inject(IdleService)
   private readonly messageService = inject(MessageService)
@@ -80,7 +84,9 @@ export class AuthService {
   }
 
   login(credentials: { username: string; password: string }): Observable<LoginData> {
-    return this._login(credentials).pipe(this.prepareLoggedInUserPipe())
+    return this._login(credentials)
+      .pipe(this.prepareLoggedInUserPipe())
+      .pipe(mergeMap(res => this.handleSpeechToken(res)))
   }
 
   logout() {
@@ -118,5 +124,16 @@ export class AuthService {
         this.router.navigate(['/auth/login']).then()
         this.messageService.showInfo(this.lang.locals.session_timeout)
       })
+  }
+
+  private handleSpeechToken(loginData: LoginData): Observable<LoginData> {
+    return this.commonService.generateSpeechToken().pipe(
+      tap(token => this.store.updateSpeechToken(token)),
+      catchError(error => {
+        console.error('Error generating speech token:', error)
+        return of(null)
+      }),
+      map(() => loginData)
+    )
   }
 }
