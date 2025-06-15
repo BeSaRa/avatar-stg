@@ -7,7 +7,7 @@ import { AppStore } from '@/stores/app.store'
 import { HttpClient } from '@angular/common/http'
 import { UrlService } from './url.service'
 import { STORAGE_ITEMS } from '@/constants/storage-items'
-import { ApplicationUser } from '@/views/auth/models/application-user'
+import { LoginDataContract } from '@/contracts/login-data-contract'
 
 @Injectable({
   providedIn: 'root',
@@ -88,7 +88,7 @@ export class AgentChatService {
     const userItem = localStorage.getItem(STORAGE_ITEMS.USER)
     let userId = ''
     if (userItem) {
-      userId = (JSON.parse(userItem) as ApplicationUser).user_id
+      userId = (JSON.parse(userItem) as LoginDataContract).user_id
     }
     return userId
   }

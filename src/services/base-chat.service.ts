@@ -25,9 +25,9 @@ import { AdminService } from './admin.service'
 import { FormControl } from '@angular/forms'
 import { MediaResultContract } from '@/contracts/media-result-contract'
 import { STORAGE_ITEMS } from '@/constants/storage-items'
-import { ApplicationUser } from '@/views/auth/models/application-user'
 import { ICitations } from '@/models/base-message'
 import { TokenService } from '@/services/token.service'
+import { LoginDataContract } from '@/contracts/login-data-contract'
 
 @Injectable({
   providedIn: 'root',
@@ -180,7 +180,7 @@ export abstract class BaseChatService {
     const userItem = localStorage.getItem(STORAGE_ITEMS.USER)
     let userId = ''
     if (userItem) {
-      userId = (JSON.parse(userItem) as ApplicationUser).user_id
+      userId = (JSON.parse(userItem) as LoginDataContract).user_id
     }
     return userId
   }

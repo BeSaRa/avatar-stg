@@ -35,8 +35,8 @@ import { FAQService } from '@/services/faq.service'
 import { FAQContract } from '@/contracts/FAQ-contract'
 import { AppStore } from '@/stores/app.store'
 import { AvatarService } from '@/services/avatar.service'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
+import { EmployeeService } from '@/services/employee.service'
 
 @Component({
   selector: 'app-chat',
@@ -71,7 +71,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   store = inject(AppStore)
   avatarService = inject(AvatarService)
   chatHistoryService = inject(ChatHistoryService)
-  userService = inject(ApplicationUserService)
+  employeeService = inject(EmployeeService)
   status = this.chatService.status
   chatContainer = viewChild.required<ElementRef<HTMLDivElement>>('chatContainer')
   chatBodyContainer = viewChild<ElementRef<HTMLDivElement>>('chatBody')
@@ -103,7 +103,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   })
   //greeting avatar
   greetingAvatarEffect = effect(() => {
-    if (this.store.isStreamStarted() && this.store.hasStream() && this.userService.$isAuthenticated()) {
+    if (this.store.isStreamStarted() && this.store.hasStream() && this.employeeService.hasAuthenticatedUser()) {
       this.avatarService.greeting(this.getbotName(), this.lang.currentLanguage == 'ar').subscribe()
     }
   })

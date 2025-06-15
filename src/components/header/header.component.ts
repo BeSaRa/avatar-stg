@@ -3,7 +3,6 @@ import { SVG_ICONS } from '@/constants/svg-icons'
 import { ChatService } from '@/services/chat.service'
 import { LocalService } from '@/services/local.service'
 import { AppStore } from '@/stores/app.store'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
@@ -12,6 +11,7 @@ import { getState } from '@ngrx/signals'
 import { ALL_PERMISSIONS } from '../../resources/all-permissions'
 import { MENU_ITEMS } from '../../resources/menu-items'
 import { ButtonDirective } from '@/directives/button.directive'
+import { EmployeeService } from '@/services/employee.service'
 
 @Component({
   selector: 'app-header',
@@ -46,13 +46,11 @@ export class HeaderComponent {
   lang = inject(LocalService)
   settings = getState(this.store)
   dialog = inject(MatDialog)
-  userService = inject(ApplicationUserService)
   clonedSettings = structuredClone(this.settings)
   menuStatus: 'opened' | 'closed' = 'closed'
   menuItems = MENU_ITEMS
   SvgIcons = SVG_ICONS
-  applicationUserService = inject(ApplicationUserService)
-  applicationUser = this.applicationUserService.$applicationUser()
+  employeeService = inject(EmployeeService)
   private menuStatusMap = {
     opened: 'closed',
     closed: 'opened',
@@ -88,7 +86,7 @@ export class HeaderComponent {
   }
 
   hasPermission(permissions: (keyof typeof ALL_PERMISSIONS)[]) {
-    if (!this.applicationUser) return false
-    return this.applicationUser.hasAnyPermission(permissions)
+    if (!this.employeeService.hasAuthenticatedUser()) return false
+    return this.employeeService.hasAnyPermission(permissions)
   }
 }

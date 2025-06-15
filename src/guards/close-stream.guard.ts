@@ -2,14 +2,14 @@ import { CanDeactivateFn } from '@angular/router'
 import { inject } from '@angular/core'
 import { AppStore } from '@/stores/app.store'
 import { AvatarService } from '@/services/avatar.service'
-import { ApplicationUserService } from '@/views/auth/services/application-user.service'
+import { EmployeeService } from '@/services/employee.service'
 
 export const closeStreamGuard: CanDeactivateFn<unknown> = () => {
   const store = inject(AppStore)
+  const employeeService = inject(EmployeeService)
   const avatarService = inject(AvatarService)
-  const userService = inject(ApplicationUserService)
-  if (store.streamId() && userService.$isAuthenticated()) {
+  if (store.streamId() && employeeService.hasAuthenticatedUser()) {
     avatarService.closeStream().subscribe()
   }
-  return userService.$isAuthenticated() ? confirm('Stream will be closed') : true
+  return employeeService.hasAuthenticatedUser() ? confirm('Stream will be closed') : true
 }
