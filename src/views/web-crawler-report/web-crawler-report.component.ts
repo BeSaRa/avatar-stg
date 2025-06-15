@@ -3,13 +3,7 @@ import { URL_PATTERN } from '@/constants/url-pattern'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { LocalService } from '@/services/local.service'
 import { WebCrawlerService } from '@/services/web-crawler.service'
-import {
-  convertMarkdownToHtmlHeaders,
-  extractFileName,
-  formatString,
-  formatText,
-  markAllControlsAsTouchedAndDirty,
-} from '@/utils/utils'
+import { convertMarkdownToHtmlHeaders, formatString, formatText, markAllControlsAsTouchedAndDirty } from '@/utils/utils'
 import { NgClass, NgTemplateOutlet } from '@angular/common'
 import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core'
 import {
@@ -21,7 +15,7 @@ import {
   Validators,
 } from '@angular/forms'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { catchError, finalize, takeUntil, tap } from 'rxjs'
+import { catchError, EMPTY, finalize, from, Observable, switchMap, takeUntil, tap } from 'rxjs'
 import { CrawlerUrl, MediaCrawler } from '@/models/media-crawler'
 import { GenerteReportContract } from '@/contracts/generate-report-contract'
 import { ChipsInputComponent } from '@/components/chips-input/chips-input.component'
@@ -29,6 +23,8 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
 import { AdminService } from '@/services/admin.service'
+import { ChatMessageResultContract } from '@/contracts/chat-message-result-contract'
+import { MediaResultContract } from '@/contracts/media-result-contract'
 
 @Component({
   selector: 'app-web-crawler-report',
@@ -44,7 +40,7 @@ export class WebCrawlerReportComponent extends OnDestroyMixin(class {}) {
   adminService = inject(AdminService)
   fb = inject(NonNullableFormBuilder)
   reportName = signal('')
-  reportUrl = signal('')
+  isValidReport = signal(false)
   reportTxt = signal('')
   loaderUrl = signal<boolean>(false)
   loaderTopic = signal<boolean>(false)
@@ -177,51 +173,73 @@ export class WebCrawlerReportComponent extends OnDestroyMixin(class {}) {
       markAllControlsAsTouchedAndDirty(this.reportForm)
       return
     }
+
     this.loaderUrl.set(true)
-    const reportFilter: Partial<GenerteReportContract> = Object.fromEntries(
-      Object.entries(this.reportForm.value).filter(([, value]) =>
-        Array.isArray(value) ? value && value.length > 0 : Boolean(value)
-      )
-    )
+
+    const reportFilter = this.createReportFilter()
+
     this.crawlerService
       .generateReport(reportFilter)
       .pipe(
         takeUntil(this.destroy$),
         tap(() => this.animateTrigger.set(!this.animateTrigger())),
+        switchMap(res => this.handleGenerateReport(res)),
+        switchMap(file => {
+          if (!file) return EMPTY
+          return this.adminService.uploadBlobs([file], {
+            container_name: 'rera-media-reports',
+            subfolder_name: 'links',
+          })
+        }),
         finalize(() => this.loaderUrl.set(false)),
         catchError(error => {
           console.error('Error generating report:', error)
           return []
         })
       )
-      .subscribe(res => {
-        if (!res || !res.data) return
-
-        const {
-          data: { final_response, references, report_url },
-        } = res
-
-        if (final_response?.message?.content && references) {
-          this.reportName.set(extractFileName(report_url).split('.')[0])
-          this.reportUrl.set(report_url)
-
-          const formattedContent = formatString(
-            formatText(convertMarkdownToHtmlHeaders(final_response.message.content), final_response.message)
-          )
-
-          this.reportTxt.set(formattedContent)
-        }
-      })
+      .subscribe()
   }
 
-  async uploadReport() {
-    const file = await this.generatePdfBlob()
-    if (file) {
-      this.adminService
-        .uploadBlobs([file], { container_name: 'rera-media-reports', subfolder_name: 'links' })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe()
+  private createReportFilter(): Partial<GenerteReportContract> {
+    return Object.fromEntries(
+      Object.entries(this.reportForm.value).filter(([, value]) =>
+        Array.isArray(value) ? value && value.length > 0 : Boolean(value)
+      )
+    )
+  }
+
+  private isValidReportResponse(
+    res: MediaResultContract<{ final_response: ChatMessageResultContract; references: string[]; report_url: string }>
+  ): boolean {
+    return res?.status_code === 201 && !!res?.data?.final_response?.message?.content
+  }
+
+  private updateReportView(data: {
+    final_response: ChatMessageResultContract
+    references: string[]
+    report_url: string
+  }): void {
+    const { final_response } = data
+    const formattedContent = formatString(
+      formatText(convertMarkdownToHtmlHeaders(final_response.message.content), final_response.message)
+    )
+    this.reportTxt.set(formattedContent)
+    this.reportName.set(this.reportForm.value.search_text!)
+  }
+
+  private handleGenerateReport(
+    res: MediaResultContract<{ final_response: ChatMessageResultContract; references: string[]; report_url: string }>
+  ): Observable<File | null> {
+    const isValid = this.isValidReportResponse(res)
+    this.isValidReport.set(isValid)
+
+    if (res?.data) {
+      this.updateReportView(res.data)
     }
+
+    if (!isValid) return EMPTY
+
+    return from(this.generatePdfBlob())
   }
 
   async downloadPdf() {
@@ -240,59 +258,61 @@ export class WebCrawlerReportComponent extends OnDestroyMixin(class {}) {
 
   generatePdfBlob(): Promise<File> {
     return new Promise((resolve, reject) => {
-      const data = document.getElementById('pdf-content')
-      if (!data) return reject('PDF content element not found.')
+      setTimeout(() => {
+        const data = document.getElementById('pdf-content')
+        if (!data) return reject('PDF content element not found.')
 
-      const pdf = new jsPDF({
-        orientation: 'p',
-        unit: 'mm',
-        format: 'a4',
-      })
+        const pdf = new jsPDF({
+          orientation: 'p',
+          unit: 'mm',
+          format: 'a4',
+        })
 
-      const margin = 15
-      const pdfWidth = pdf.internal.pageSize.getWidth() - margin * 2
-      const pdfHeight = pdf.internal.pageSize.getHeight() - margin * 2
+        const margin = 15
+        const pdfWidth = pdf.internal.pageSize.getWidth() - margin * 2
+        const pdfHeight = pdf.internal.pageSize.getHeight() - margin * 2
 
-      html2canvas(data, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: data.scrollWidth,
-      })
-        .then(canvas => {
-          const imgData = canvas.toDataURL('image/jpeg', 1.0)
-          const imgHeight = (canvas.height * pdfWidth) / canvas.width
+        html2canvas(data, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: data.scrollWidth,
+        })
+          .then(canvas => {
+            const imgData = canvas.toDataURL('image/jpeg', 1.0)
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width
 
-          let heightLeft = imgHeight
-          let position = margin
+            let heightLeft = imgHeight
+            let position = margin
 
-          pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
-          heightLeft -= pdfHeight
-
-          while (heightLeft > 0) {
-            position = heightLeft - imgHeight + margin
-            pdf.addPage()
             pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
             heightLeft -= pdfHeight
-          }
 
-          const totalPages = pdf.getNumberOfPages()
-          for (let i = 1; i <= totalPages; i++) {
-            pdf.setPage(i)
-            pdf.setFontSize(8)
-            const text = `${i} / ${totalPages}`
-            pdf.text(text, pdf.internal.pageSize.getWidth() - margin, pdf.internal.pageSize.getHeight() - 5, {
-              align: 'right',
-            })
-          }
+            while (heightLeft > 0) {
+              position = heightLeft - imgHeight + margin
+              pdf.addPage()
+              pdf.addImage(imgData, 'JPEG', margin, position, pdfWidth, imgHeight)
+              heightLeft -= pdfHeight
+            }
 
-          const blob = pdf.output('blob')
-          const file = new File([blob], `${this.reportName()}.pdf`, { type: 'application/pdf' })
-          resolve(file)
-        })
-        .catch(reject)
+            const totalPages = pdf.getNumberOfPages()
+            for (let i = 1; i <= totalPages; i++) {
+              pdf.setPage(i)
+              pdf.setFontSize(8)
+              const text = `${i} / ${totalPages}`
+              pdf.text(text, pdf.internal.pageSize.getWidth() - margin, pdf.internal.pageSize.getHeight() - 5, {
+                align: 'right',
+              })
+            }
+
+            const blob = pdf.output('blob')
+            const file = new File([blob], `${this.reportName()}.pdf`, { type: 'application/pdf' })
+            resolve(file)
+          })
+          .catch(reject)
+      }, 0)
     })
   }
 }
