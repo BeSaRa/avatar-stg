@@ -184,7 +184,6 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   }
 
   fullScreenToggle() {
-    console.log(this.chatContainer().nativeElement)
     if (!this.document.fullscreenElement) {
       this.chatContainer()
         .nativeElement.requestFullscreen()
