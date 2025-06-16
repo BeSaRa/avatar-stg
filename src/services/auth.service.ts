@@ -14,6 +14,7 @@ import { LocalService } from '@/services/local.service'
 import { Router } from '@angular/router'
 import { SpeechService } from './speech.service'
 import { AppStore } from '@/stores/app.store'
+import { ignoreErrors } from '@/utils/utils'
 
 @Injectable({
   providedIn: 'root',
@@ -60,7 +61,18 @@ export class AuthService {
         )
       )
       .pipe(filter(v => !v)) // only if user not Idle make refresh Token
-      .pipe(switchMap(() => this.refreshToken()))
+      .pipe(
+        switchMap(() =>
+          this.refreshToken().pipe(
+            catchError(() => {
+              this.router.navigate(['/auth/login']).then()
+              this.messageService.showInfo(this.lang.locals.session_timeout)
+              return this.logout()
+            }),
+            ignoreErrors()
+          )
+        )
+      )
   }
 
   listenToRefreshTokenTimer() {
@@ -92,9 +104,9 @@ export class AuthService {
   logout() {
     return new Observable<LoginData | null>(subscriber => {
       subscriber.next(this.employeeService.getCurrentUser())
-      subscriber.complete()
       this.employeeService.removeCurrentUser()
       this.tokenService.removeTokens()
+      subscriber.complete()
     })
   }
 
