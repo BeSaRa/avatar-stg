@@ -9,7 +9,7 @@ import { Router } from '@angular/router'
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
 import { AuthService } from '@/services/auth.service'
 import { ignoreErrors } from '@/utils/utils'
-import { catchError } from 'rxjs'
+import { catchError, finalize } from 'rxjs'
 
 @Component({
   selector: 'app-login',
@@ -48,6 +48,11 @@ export class LoginComponent {
         catchError(err => {
           this.messagesService.showError(`${this.lang.locals.login_failed}`)
           return err
+        })
+      )
+      .pipe(
+        finalize(() => {
+          this.isLoading = false
         })
       )
       .pipe(ignoreErrors())
