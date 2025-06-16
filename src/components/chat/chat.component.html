@@ -82,7 +82,7 @@
         </div>
       }
       <ng-container #thanksMessageContainer></ng-container>
-      @if (chatService.getFilteredMessages(getbotName()).length > 1 && !ratingDone()) {
+      @if (chatService.getFilteredMessages(getBotName()).length > 1 && !ratingDone()) {
         <div
           @slideFromBottom
           class="sticky bottom-0 left-0 w-56 self-end scale-90 hover:scale-95 hover:duration-300 hover:transition-transform bg-gray-300/30 p-1 rounded-tl-md rounded-tr-md border border-gray-300 border-b-0 shadow-sm text-gray-700 flex items-center justify-evenly gap-4 mt-auto [&_button]:flex [&_button]:flex-col [&_button]:justify-center [&_button]:items-center [&_button]:text-sm [&_button]:leading-none">

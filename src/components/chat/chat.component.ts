@@ -104,7 +104,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   //greeting avatar
   greetingAvatarEffect = effect(() => {
     if (this.store.isStreamStarted() && this.store.hasStream() && this.employeeService.hasAuthenticatedUser()) {
-      this.avatarService.greeting(this.getbotName(), this.lang.currentLanguage == 'ar').subscribe()
+      this.avatarService.greeting(this.getBotName(), this.lang.currentLanguage == 'ar').subscribe()
     }
   })
   // noinspection JSUnusedGlobalSymbols
@@ -126,7 +126,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   })
   showLegalEffect = effect(
     () => {
-      this.getQuestions(3, this.getbotName()).subscribe()
+      this.getQuestions(3, this.getBotName()).subscribe()
     },
     { allowSignalWrites: true }
   )
@@ -198,7 +198,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(
         exhaustMap(value =>
           this.chatService
-            .sendMessageStreamed(value, this.getbotName())
+            .sendMessageStreamed(value, this.getBotName())
             .pipe(
               catchError(err => {
                 this.answerInProgress.set(false)
@@ -227,7 +227,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(tap(() => this.answerInProgress.set(true)))
       .pipe(
         exhaustMap(files =>
-          this.chatService.uploadDocument(files, this.getbotName(), this.chatService.conversationId()).pipe(
+          this.chatService.uploadDocument(files, this.getBotName(), this.chatService.conversationId()).pipe(
             catchError(err => {
               this.answerInProgress.set(false)
               throw new Error(err)
@@ -329,7 +329,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     }
   }
 
-  getbotName() {
+  getBotName() {
     // if (false) {
     //   return 'legal'
     // }
