@@ -28,6 +28,7 @@ import { STORAGE_ITEMS } from '@/constants/storage-items'
 import { ICitations } from '@/models/base-message'
 import { TokenService } from '@/services/token.service'
 import { LoginDataContract } from '@/contracts/login-data-contract'
+import { MarkdownService } from 'ngx-markdown'
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,7 @@ export abstract class BaseChatService {
   protected readonly http = inject(HttpClient)
   protected readonly urlService = inject(UrlService)
   private readonly adminService = inject(AdminService)
+  protected readonly markdownService = inject(MarkdownService)
   protected readonly store = inject(AppStore)
   protected readonly tokenService = inject(TokenService)
   readonly botNameCtrl = new FormControl('', { nonNullable: true })
@@ -242,8 +244,8 @@ export abstract class BaseChatService {
   /**
    * Format content string via helper utilities.
    */
-  private formatMessage(msg: Message): Message {
-    msg.content = formatString(formatText(msg.content, msg))
+  private async formatMessage(msg: Message): Promise<Message> {
+    msg.content = await this.markdownService.parse(msg.content)
     return new Message().clone(msg)
   }
 
@@ -438,13 +440,13 @@ export abstract class BaseChatService {
       this.inProgressMessage.next('')
       this.updateMessages(assistantMessage)
 
-      const formatted = this.formatMessage(assistantMessage)
+      const formatted = await this.formatMessage(assistantMessage)
       this.replaceLastAssistantMessage(formatted)
 
       return true
     }
 
-    await new Promise(res => setTimeout(res, 40))
+    await new Promise(res => setTimeout(res, 10))
     await this.typeChunk(parsed.data as string, chunkBufferCallback)
     return false
   }

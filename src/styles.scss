@@ -225,6 +225,9 @@ mat-dialog-content,
     clip-path: polygon(0 0, 100% 0, 100% 100%);
     @apply bg-gray-200;
   }
+  span a {
+    @apply text-sm text-primary underline;
+  }
 }
 
 html[dir='ltr'] {
