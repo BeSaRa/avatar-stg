@@ -4,7 +4,7 @@ import { TokenInterceptor } from '@/http-interceptors/token.interceptor'
 import { GeneralInterceptor } from '@/model-interceptors/general-interceptor'
 import { routes } from '@/routes/app.routes'
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http'
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core'
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, SecurityContext } from '@angular/core'
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar'
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip'
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
@@ -13,6 +13,7 @@ import { provideInterceptors } from 'cast-response'
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts'
 import configInit from '../inits/config.init'
 import { successHandlerInterceptor } from '@/http-interceptors/success-handler.interceptor'
+import { provideMarkdown } from 'ngx-markdown'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -44,5 +45,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(MatSnackBarModule),
     /* provideClientHydration(), */
     provideInterceptors([GeneralInterceptor]),
+    provideMarkdown({ sanitize: SecurityContext.HTML }),
   ],
 }
