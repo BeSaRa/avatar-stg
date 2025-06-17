@@ -9,13 +9,13 @@ export class IdleService implements OnDestroy {
   private checkInterval: number
   declare idleInterval: null | unknown
   private readonly configService = inject(ConfigService)
-
+  private ngZone = inject(NgZone)
   private idleStateChanged = new Subject<boolean>()
   private idleTimeoutReached = new Subject<void>()
 
   onIdleStateChanged$ = this.idleStateChanged.pipe(distinctUntilChanged())
 
-  constructor(private ngZone: NgZone) {
+  constructor() {
     // to get the seconds of max idle threshold
     this.idleThreshold =
       (this.configService.CONFIG.ACCESS_TOKEN_TTL_IN_MINUTES -
