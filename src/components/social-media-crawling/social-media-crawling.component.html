@@ -1,75 +1,98 @@
-<main class="flex bg-white h-[75vh] gap-4 p-2 rounded-md">
-  <section class="relative w-3/4 flex flex-col border rounded-lg bg-gray-200">
-    <header class="bg-primary rounded-ss-lg rounded-se-lg">
-      <p class="text-center text-white p-2 flex gap-2 items-center justify-center">
+<main class="flex bg-transparent h-[75vh] gap-4 p-2">
+  <section class="relative w-3/4 flex flex-col border rounded-xl shadow bg-secondary-100/80">
+    <header class="bg-transparent p-4 flex justify-between">
+      <p class="text-center text-primary text-lg p-2 flex gap-2 items-center justify-start font-medium">
         {{ lang.locals.queries }}
         @if (isLoadingData()) {
           <ng-container [ngTemplateOutlet]="loader" />
         }
       </p>
+      <div class="flex gap-4">
+        <button
+          appButton
+          *appHasPermission="['SOCIAL_MEDIA_X_SEACRH']"
+          type="button"
+          (click)="searchX()"
+          class="w-32 font-normal rouned-xl text-sm">
+          {{ lang.locals.save_queries }}
+          @if (isLoading()) {
+            <ng-container [ngTemplateOutlet]="loader" />
+          }
+        </button>
+        <button
+          appButton
+          *appHasPermission="['SOCIAL_MEDIA_X_SEACRH']"
+          type="button"
+          (click)="items.set([])"
+          class="w-32 font-normal rouned-xl text-sm !bg-gray-500">
+          {{ lang.locals.clear }}
+        </button>
+      </div>
     </header>
     <div
-      class="grid grid-cols-1 md:grid-cols-3 p-4 gap-4 mt-12"
+      class="grid grid-cols-1 md:grid-cols-3 p-4 gap-4"
       appPerfectScroll
       [perfectScrollOptions]="{ suppressScrollX: true }">
       @for (exp of items(); track $index) {
         <div
           [class.animate-editing]="editedItem()?.id === exp.id"
-          class="relative group inline-flex items-center bg-gray-100 text-gray-700 shadow-md p-2 gap-4 rounded-lg">
-          <div class="flex flex-shrink-0 justify-center items-center size-8 object-cover bg-black rounded-full">
-            <svg
-              class="size-4 fill-white"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 300 300.25"
-              fill="currentColor">
-              <path
-                d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-            </svg>
+          class="relative group flex flex-col w-64 h-32 items-start bg-gray-100 text-gray-700 shadow p-2 gap-4 rounded-lg">
+          <div class="inline-flex items-center justify-between w-full">
+            <div class="flex flex-shrink-0 justify-center items-center size-8 object-cover bg-black rounded-full">
+              <svg
+                class="size-4 fill-white"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 300 300.25"
+                fill="currentColor">
+                <path
+                  d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
+              </svg>
+            </div>
+            <p [title]="exp.query" class="text-lg font-semibold truncate w-4/5">{{ exp.query }}</p>
           </div>
 
           <div class="flex flex-col w-full max-w-full">
-            <p [title]="exp.query" class="text-lg font-semibold truncate w-4/5">{{ exp.query }}</p>
-            <article class="flex gap-2 text-sm text-gray-500">
-              <span>{{ (exp.start_time | date: 'MM/dd/yyyy') ?? '-' }}</span>
-              <span>{{ (exp.end_time | date: 'MM/dd/yyyy') ?? '-' }}</span>
+            <article class="flex items-center justify-between text-sm text-gray-500">
+              <span class="flex flex-col">
+                <small>{{ lang.locals.start_date }}</small>
+                {{ (exp.start_time | date: 'MM/dd/yyyy') ?? '-' }}
+              </span>
+              <span class="flex flex-col">
+                <small>{{ lang.locals.end_date }}</small>
+                {{ (exp.end_time | date: 'MM/dd/yyyy') ?? '-' }}
+              </span>
             </article>
-            <p>{{ exp.max_results ?? '-' }}</p>
+            <p>
+              <small class="ml-2">{{ lang.locals.max_results }}:</small>
+              {{ exp.max_results ?? '-' }}
+            </p>
           </div>
 
-          <button
-            (click)="deleteItem($index)"
-            class="outline-none flex items-center justify-center border-2 border-gray-300 hover:scale-125 transition-all duration-300 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto absolute -top-2 -left-2 rounded-full size-6 bg-red-500 hover:bg-red-600">
-            <svg class="size-4 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
-            </svg>
-          </button>
-          <button
-            (click)="editItem(exp)"
-            class="outline-none flex items-center justify-center border-2 border-gray-300 hover:scale-125 transition-all duration-300 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto absolute -bottom-2 -left-2 rounded-full size-6 bg-gray-700 hover:bg-gray-800">
-            <svg class="size-4 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path
-                d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-            </svg>
-          </button>
+          <div class="flex gap-2 absolute -top-2 left-4">
+            <button
+              (click)="editItem(exp)"
+              class="outline-none flex items-center justify-center hover:scale-125 transition-all duration-300 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto rounded-full size-6 bg-primary">
+              <svg class="size-4 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                  d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+              </svg>
+            </button>
+            <button
+              (click)="deleteItem($index)"
+              class="outline-none flex items-center justify-center hover:scale-125 transition-all duration-300 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto rounded-full size-6 bg-primary">
+              <svg class="size-4 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
+              </svg>
+            </button>
+          </div>
         </div>
       }
     </div>
-    <div
-      class="absolute slide-from-top z-20 px-4 py-2 bg-black/30 shadow-lg mt-10 rounded-ee-lg rounded-es-lg h-12 top-0 w-full flex items-center backdrop-blur-md">
-      <button
-        *appHasPermission="['SOCIAL_MEDIA_X_SEACRH']"
-        type="button"
-        (click)="searchX()"
-        class="inline-flex items-center justify-center gap-2 bg-primary/90 text-white font-medium py-2 px-4 text-sm rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none w-1/5">
-        {{ lang.locals.save_queries }}
-        @if (isLoading()) {
-          <ng-container [ngTemplateOutlet]="loader" />
-        }
-      </button>
-    </div>
   </section>
-  <aside class="flip-card flex flex-col w-1/4 bg-gray-200 text-gray-700 rounded-lg" [class.flipped]="isEditing()">
+  <aside
+    class="flip-card flex flex-col w-1/4 shadow bg-secondary-100/80 text-gray-700 rounded-xl"
+    [class.flipped]="isEditing()">
     <div class="flip-card-inner">
       @if (!isEditing()) {
         <div class="flip-card-front flip-card-face">
@@ -81,7 +104,7 @@
               type="button"
               (click)="addSearchItem()"
               [disabled]="socialMediaForm.invalid"
-              class="inline-flex items-center justify-center gap-2 bg-primary/90 w-full text-white font-medium py-2 px-4 rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none disabled:opacity-50">
+              class="inline-flex items-center justify-center gap-2 bg-primary/90 w-full text-white text-sm py-2 px-4 rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none disabled:opacity-50">
               {{ lang.locals.add_query }}
             </button>
           </div>
@@ -98,13 +121,13 @@
               type="button"
               (click)="addSearchItem()"
               [disabled]="socialMediaForm.invalid"
-              class="inline-flex items-center justify-center gap-2 bg-primary/90 w-full text-white font-medium py-2 px-4 rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none disabled:opacity-50">
+              class="inline-flex items-center justify-center gap-2 bg-primary/90 w-full text-white text-sm py-2 px-4 rounded-lg hover:bg-primary focus:ring-4 focus:ring-gray-300 focus:outline-none disabled:opacity-50">
               {{ lang.locals.edit_query }}
             </button>
             <button
               type="button"
               (click)="cancelEdit()"
-              class="inline-flex items-center justify-center gap-2 text-gray-700 bg-gray-300 w-full font-medium py-2 px-4 rounded-lg hover:bg-gray-400 focus:ring-4 focus:ring-gray-300 focus:outline-none">
+              class="inline-flex items-center justify-center gap-2 text-white bg-gray-500 w-full text-sm py-2 px-4 rounded-lg hover:bg-gray-400 focus:ring-4 focus:ring-gray-300 focus:outline-none">
               {{ lang.locals.cancel }}
             </button>
           </div>
@@ -115,34 +138,34 @@
 </main>
 
 <ng-template #formTemplate let-header>
-  <header class="bg-primary rounded-ss-lg rounded-se-lg">
-    <p [title]="header" class="text-center text-white text-lg p-2 truncate" [class.animate-header]="animateHeader()">
+  <header class="bg-transparent p-4">
+    <p [title]="header" class="text-primary font-medium text-lg truncate" [class.animate-header]="animateHeader()">
       {{ header }}
     </p>
   </header>
   <div
-    class="p-2 flex flex-col justify-between space-y-2"
+    class="p-4 flex flex-col justify-between space-y-2 [&_div_input]:border-none [&_div_label]:text-accent-500"
     [formGroup]="socialMediaForm"
     appPerfectScroll
     [perfectScrollOptions]="{ suppressScrollX: true }">
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
       <label for="search_text" class="text-sm font-medium">{{ lang.locals.query }}</label>
       <input
         formControlName="query"
         placeholder="{{ lang.locals.query }}"
         type="text"
         [class.border-red-500]="socialMediaForm.controls.query.invalid && socialMediaForm.controls.query.touched"
-        class="rounded-md p-2 border-2 border-gray-300 outline-none focus:border-primary" />
+        class="rounded-md p-1.5 border-2 border-gray-300 outline-none focus:border-primary" />
       @if (socialMediaForm.controls.query.invalid && socialMediaForm.controls.query.touched) {
         <span class="text-red-500 text-xs">{{ lang.locals.required }}</span>
       }
     </div>
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
       <label for="start_time" class="text-sm font-medium">{{ lang.locals.start_time }}</label>
       <input
         type="date"
         formControlName="start_time"
-        class="rounded-md p-2 border-2 border-gray-300 outline-none focus:border-primary"
+        class="rounded-md p-1.5 border-2 border-gray-300 outline-none focus:border-primary"
         [class.border-red-500]="socialMediaForm.errors?.['timeDateRangeInvalid'] && socialMediaForm.touched" />
       <!-- Error Messages for Index Dates -->
       @if (
@@ -152,12 +175,12 @@
         <span class="text-red-500 text-xs">{{ lang.locals.date_range_error }}</span>
       }
     </div>
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
       <label for="end_time" class="text-sm font-medium">{{ lang.locals.end_time }}</label>
       <input
         type="date"
         formControlName="end_time"
-        class="rounded-md p-2 border-2 border-gray-300 outline-none focus:border-primary"
+        class="rounded-md p-1.5 border-2 border-gray-300 outline-none focus:border-primary"
         [class.border-red-500]="socialMediaForm.errors?.['timeDateRangeInvalid'] && socialMediaForm.touched" />
       <!-- Error Messages for Index Dates -->
       @if (
@@ -167,11 +190,11 @@
         <span class="text-red-500 text-xs">{{ lang.locals.date_range_error }}</span>
       }
     </div>
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
       <label class="text-sm font-medium" for="max_results">{{ lang.locals.max_results }}</label>
       <input
         id="max_results"
-        class="w-full p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-300 text-gray-800"
+        class="w-full p-1.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-300 text-gray-800"
         type="number"
         [placeholder]="lang.locals.max_results"
         [class.border-red-500]="
