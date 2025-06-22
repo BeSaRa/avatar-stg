@@ -4,6 +4,7 @@ import { AvatarVideoComponent } from '@/components/avatar-video/avatar-video.com
 import { RecorderComponent } from '@/components/recorder/recorder.component'
 import { TextWriterAnimatorDirective } from '@/directives/text-writer-animator.directive'
 import { FeedbackChat } from '@/enums/feedback-chat'
+import { StreamComponent } from '@/enums/stream-component'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AgentMessage } from '@/models/agent-message'
 import { AgentChatService } from '@/services/agent-chat.service'
@@ -56,6 +57,8 @@ export class AgentChatComponent extends OnDestroyMixin(class {}) implements OnIn
   ratingDone = signal(false)
   declare scrollbarRef: PerfectScrollbar
   feedbackOptions = FeedbackChat
+  readonly streamComponent = StreamComponent
+
   // noinspection JSUnusedGlobalSymbols
   chatBodyContainerEffect = effect(() => {
     if (this.chatBodyContainer()) {

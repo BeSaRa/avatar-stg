@@ -241,7 +241,7 @@ export class StatisticsComponent implements OnInit {
       },
       scales: {
         x: { beginAtZero: true },
-        y: { ticks: { font: { size: 12 } } },
+        y: { ticks: { font: { size: 12 }, autoSkip: false } },
       },
     }
   }

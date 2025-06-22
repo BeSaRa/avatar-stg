@@ -1,4 +1,5 @@
 import { AvatarVideoComponent } from '@/components/avatar-video/avatar-video.component'
+import { StreamComponent } from '@/enums/stream-component'
 import { LocalService } from '@/services/local.service'
 import { AppStore } from '@/stores/app.store'
 import { CommonModule } from '@angular/common'
@@ -24,6 +25,8 @@ export default class AvatarComponent {
   store = inject(AppStore)
   lang = inject(LocalService)
   router = inject(Router)
+
+  readonly streamComponent = StreamComponent
 
   settingsOpened = false
   qrCodeOpened = false

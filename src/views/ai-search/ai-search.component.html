@@ -10,7 +10,10 @@
         class="block w-full p-3 ps-10 pe-12 text-lg text-gray-700 border border-gray-300 rounded-lg bg-gray-100 focus:ring-gray-400 focus:border-gray-400 focus:ring-4 outline-none ring-2 ring-gray-500"
         [placeholder]="lang.locals.search_in_website" />
     </div>
-    <app-recorder (recognized$)="searchForm.setValue($event)" (recognizing$)="searchForm.setValue($event)" />
+    <app-recorder
+      *appHasPermission="['SPEECH']"
+      (recognized$)="searchForm.setValue($event)"
+      (recognizing$)="searchForm.setValue($event)" />
   </div>
   @if (loadingSubject$ | async) {
     <div class="lds-ellipsis">

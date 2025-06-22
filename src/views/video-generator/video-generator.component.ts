@@ -3,6 +3,7 @@ import { AddFileNamePopupComponent } from '@/components/add-file-name-popup/add-
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
 import { AppColors } from '@/constants/app-colors'
 import { ButtonDirective } from '@/directives/button.directive'
+import { StreamComponent } from '@/enums/stream-component'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AvatarService } from '@/services/avatar.service'
 import { LocalService } from '@/services/local.service'
@@ -44,12 +45,13 @@ import {
   ],
   templateUrl: './video-generator.component.html',
   styleUrl: './video-generator.component.scss',
+  providers: [AvatarService],
   animations: [fadeInScale],
 })
 export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) implements OnInit, AfterViewInit {
   video = viewChild.required<ElementRef<HTMLVideoElement>>('video')
   idleVideo = viewChild<ElementRef<HTMLVideoElement>>('idleVideo')
-
+  readonly streamComponent = StreamComponent
   lang = inject(LocalService)
   avatarService = inject(AvatarService)
   store = inject(AppStore)
@@ -71,7 +73,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
 
   onlineStatus = computed(() => {
     this.lang.localChange() // just to track any change for the languages
-    switch (this.store.streamingStatus()) {
+    switch (this.store.streamingStatusMap()[StreamComponent.VideoGeneratorComponent]) {
       case 'Started':
         return this.lang.locals.connected
       case 'InProgress':
@@ -85,7 +87,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
 
   init$: Observable<unknown> = this.start$
     .asObservable()
-    .pipe(tap(() => this.store.updateStreamStatus('InProgress')))
+    .pipe(tap(() => this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'InProgress')))
     .pipe(takeUntil(this.destroy$))
     .pipe(
       exhaustMap(() =>
@@ -93,7 +95,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
           .startStream('life-size')
           .pipe(
             catchError(err => {
-              this.store.updateStreamStatus('Stopped') //1
+              this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'Stopped') //1
               throw err
             })
           )
@@ -124,7 +126,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
             this.video().nativeElement.paused
           ) {
             this.video().nativeElement.play().then()
-            this.store.updateStreamStatus('Started')
+            this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'Started')
           }
         })
 
@@ -135,10 +137,10 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
         this.pc.addEventListener('connectionstatechange', evt => {
           const connectionState = (evt.target as unknown as RTCPeerConnection).connectionState
           if (connectionState === 'connected') {
-            this.store.updateStreamStatus('Started')
+            this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'Started')
           }
           if (connectionState === 'disconnected') {
-            this.store.updateStreamStatus('Stopped')
+            this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'Stopped')
           }
         })
 
@@ -153,6 +155,7 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
     .pipe(map(() => ''))
 
   async ngOnInit(): Promise<void> {
+    this.avatarService.componentName.set(StreamComponent.VideoGeneratorComponent)
     // trigger the start of stream
     // this.start$.next()
     // close when destroy component
@@ -160,14 +163,14 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
       this.wordsLimitExceeded = (v?.split(' ') ?? '').length > 70
     })
     merge(this.destroy$)
-      .pipe(tap(() => this.store.updateStreamStatus('Stopped'))) // 2
+      .pipe(tap(() => this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'Stopped'))) // 2
       .subscribe(() => {
         console.log('COMPONENT DESTROYED')
       })
 
     this.stop$
-      .pipe(filter(() => this.store.hasStream()))
-      .pipe(tap(() => this.store.updateStreamStatus('Disconnecting')))
+      .pipe(filter(() => this.store.hasStreamFor(StreamComponent.VideoGeneratorComponent)))
+      .pipe(tap(() => this.store.updateStreamStatusFor(StreamComponent.VideoGeneratorComponent, 'Disconnecting')))
       .pipe(takeUntil(this.destroy$))
       .pipe(switchMap(() => this.avatarService.closeStream().pipe(ignoreErrors())))
       .subscribe(() => {
@@ -182,7 +185,13 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
   }
 
   test() {
-    if (!this.text.value || this.isLoading || !this.store.isStreamStarted() || this.wordsLimitExceeded) return
+    if (
+      !this.text.value ||
+      this.isLoading ||
+      !this.store.isStreamStartedFor(StreamComponent.VideoGeneratorComponent) ||
+      this.wordsLimitExceeded
+    )
+      return
     this.isLoading = true
     this.avatarService
       .renderText(this.text.value!)
@@ -227,9 +236,9 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
   }
 
   toggleStream() {
-    if (this.store.isStreamStopped()) {
+    if (this.store.isStreamStoppedFor(StreamComponent.VideoGeneratorComponent)) {
       this.start$.next()
-    } else if (this.store.isStreamStarted()) {
+    } else if (this.store.isStreamStartedFor(StreamComponent.VideoGeneratorComponent)) {
       this.stop$.next()
     }
   }
@@ -261,5 +270,8 @@ export default class VideoGeneratorComponent extends OnDestroyMixin(class {}) im
         })
       )
       .subscribe()
+  }
+  getAvatarService() {
+    return this.avatarService
   }
 }

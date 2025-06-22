@@ -1,3 +1,4 @@
+import { StreamComponent } from '@/enums/stream-component'
 import {
   Component,
   effect,
@@ -86,6 +87,7 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   loadingFAQ = signal(false)
   FAQService = inject(FAQService)
   questions = signal<FAQContract[]>([])
+  componentName = signal<StreamComponent>(StreamComponent.ChatbotComponent)
   selectedBot = signal(this.chatService.botNameCtrl.value)
   botNames$ = this.chatHistoryService.getAllBotNames().pipe(
     tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)),

@@ -1,3 +1,4 @@
+import { HasPermissionDirective } from '@/directives/has-permission.directive'
 import {
   Component,
   effect,
@@ -48,6 +49,8 @@ import { BaseChatService } from '@/services/base-chat.service'
 import { SecureUrlDirective } from '@/directives/secure-url.directive'
 import { slideFromBottom } from '@/animations/fade-in-slide'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { StreamComponent } from '@/enums/stream-component'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-chat-container',
@@ -67,6 +70,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle'
     FAQComponent,
     SecureUrlDirective,
     MatSlideToggleModule,
+    HasPermissionDirective,
   ],
   animations: [slideFromBottom],
   templateUrl: './chat-container.component.html',
@@ -76,6 +80,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   lang = inject(LocalService)
   chatService = inject(BaseChatService, { skipSelf: true })
   injector = inject(Injector)
+  router = inject(Router)
   document = inject(DOCUMENT)
   chatHistoryService = inject(ChatHistoryService)
   status = this.chatService.status
@@ -86,6 +91,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   showRatingBox = input(true)
   showRecorderBtn = input(true)
   showUploadDocumentBtn = input(true)
+  componentName = input.required<StreamComponent>()
   title = input(this.lang.locals.chat)
   containerClass = input('')
   botNameOptions = input.required<
@@ -140,6 +146,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
       last && last.scrollIntoView(true)
     }
   })
+
   showQuestionsEffect = effect(
     () => {
       const { showBotSelection, botName } = this.botNameOptions()
@@ -155,6 +162,12 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
         clearTimeout(timeoutID)
       })
     }
+    // if (!this.status()) {
+    //   this.router.navigate([], {
+    //     fragment: undefined,
+    //     queryParamsHandling: 'preserve',
+    //   })
+    // }
   })
 
   messageCtrl = new FormControl<string>('', { nonNullable: true })

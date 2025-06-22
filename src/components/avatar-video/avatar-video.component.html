@@ -5,16 +5,16 @@
       [ngClass]="{ 'scale-50 left-0': !hasSize() }">
       <div
         [ngClass]="{
-          'bg-red-600': store.isStreamStopped(),
-          'bg-green-700': store.isStreamStarted(),
-          'bg-orange-500': store.isStreamLoading(),
+          'bg-red-600': store.isStreamStoppedFor(componentName()),
+          'bg-green-700': store.isStreamStarted(componentName()),
+          'bg-orange-500': store.isStreamLoadingFor(componentName()),
         }"
         class="p-4 rounded-full"></div>
       <div
         [ngClass]="{
-          'bg-red-600': store.isStreamStopped(),
-          'bg-green-700': store.isStreamStarted(),
-          'bg-orange-500': store.isStreamLoading(),
+          'bg-red-600': store.isStreamStoppedFor(componentName()),
+          'bg-green-700': store.isStreamStarted(componentName()),
+          'bg-orange-500': store.isStreamLoadingFor(componentName()),
         }"
         class="p-4 absolute pulse rounded-full"></div>
       @if (hasSize()) {
@@ -24,14 +24,14 @@
 
     <video
       autoplay
-      [hidden]="store.isStreamStopped() || store.isStreamLoading()"
+      [hidden]="store.isStreamStoppedFor(componentName()) || store.isStreamLoadingFor(componentName())"
       #video
       [ngClass]="{ 'h-full': hasSize(), 'w-full': !hasSize(), 'overflow-hidden': !hasSize() }"></video>
 
     <video
       #idleVideo
       [ngClass]="{ 'h-full': hasSize(), 'w-full': !hasSize(), 'overflow-hidden': !hasSize() }"
-      [hidden]="store.isStreamStarted()">
+      [hidden]="store.isStreamStartedFor(componentName())">
       <source [src]="store.idleAvatarUrl()" type="video/webm" />
     </video>
   </div>

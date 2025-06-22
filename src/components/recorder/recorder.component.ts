@@ -109,6 +109,7 @@ export class RecorderComponent extends OnDestroyMixin(class {}) {
       langDetection,
       audioConfig
     )
+
     // recognizing event
     this.recognizer.recognizing = (_rec, event) => {
       if (event.result.reason === ResultReason.RecognizingSpeech) {

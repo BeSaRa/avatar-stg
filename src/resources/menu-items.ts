@@ -1,5 +1,5 @@
 import { MenuItem } from '@/contracts/menu-item-contract'
-import { PERMISSION_GROUPS } from './all-permissions'
+import { ALL_PERMISSIONS, PERMISSION_GROUPS } from './all-permissions'
 import { ADMIN_MENU_ITEMS } from './admin-menu-items'
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -68,6 +68,15 @@ export const MENU_ITEMS: MenuItem[] = [
     svg: 'VIDEO_GENERATOR',
     imgUrl: 'assets/icons/home/video-generator.png',
     permissions: PERMISSION_GROUPS['VIDEO_GENERATOR_GROUP'],
+    haveSomeOfPermissions: true,
+  },
+  {
+    id: 15,
+    label: 'chat',
+    route: '/home',
+    fragment: 'legal',
+    svg: 'CHAT',
+    permissions: [ALL_PERMISSIONS.CHATBOT_LEGAL],
     haveSomeOfPermissions: true,
   },
 ]

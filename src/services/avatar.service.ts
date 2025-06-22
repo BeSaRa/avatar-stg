@@ -3,18 +3,18 @@ import { NO_ACCESS_TOKEN } from '@/http-contexts/no-access-token'
 import { UrlService } from '@/services/url.service'
 import { AppStore } from '@/stores/app.store'
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http'
-import { inject, Injectable } from '@angular/core'
+import { inject, Injectable, signal } from '@angular/core'
 import { Observable, of, switchMap, tap, timer } from 'rxjs'
 import { ConfigService } from './config.service'
+import { StreamComponent } from '@/enums/stream-component'
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AvatarService {
   private readonly urlService = inject(UrlService)
   private readonly http = inject(HttpClient)
   private readonly store = inject(AppStore)
   private readonly config = inject(ConfigService)
+  componentName = signal<StreamComponent>(StreamComponent.AgentChatComponent)
 
   constructor() {
     if (!this.store.idleAvatar()) this.store.updateIdleAvatar(this.config.CONFIG.IDLE_AVATARS[0])
@@ -35,42 +35,54 @@ export class AvatarService {
           },
         }
       )
-      .pipe(tap(res => this.store.updateStreamId(res.data.id)))
+      .pipe(tap(res => this.store.updateStreamIdFor(this.componentName(), res.data.id)))
   }
 
   closeStream(): Observable<StreamResultContract> {
-    const streamId = this.store.streamId()
+    const streamId = this.store.streamIdMap()[this.componentName()]
     this.store.updateStreamId('')
     return this.http.delete<StreamResultContract>(this.urlService.URLS.AVATAR + `/close-stream/${streamId}`)
   }
 
   retrieveStream() {
-    return this.http.get(this.urlService.URLS.AVATAR + `/retrieve-stream/${this.store.streamId()}`)
+    return this.http.get(
+      this.urlService.URLS.AVATAR + `/retrieve-stream/${this.store.streamIdMap()[this.componentName()]}`
+    )
   }
 
   checkStreamStatus() {
-    return this.http.get(this.urlService.URLS.AVATAR + `/stream-status/${this.store.streamId()}`)
+    return this.http.get(
+      this.urlService.URLS.AVATAR + `/stream-status/${this.store.streamIdMap()[this.componentName()]}`
+    )
   }
 
   sendCandidate(candidate: RTCIceCandidate): Observable<StreamResultContract> {
     return this.http.post<StreamResultContract>(
-      this.urlService.URLS.AVATAR + `/send-candidate/${this.store.streamId()}`,
+      this.urlService.URLS.AVATAR + `/send-candidate/${this.store.streamIdMap()[this.componentName()]}`,
       { candidate }
     )
   }
 
   sendAnswer(answer: RTCSessionDescriptionInit): Observable<StreamResultContract> {
-    return this.http.put<StreamResultContract>(this.urlService.URLS.AVATAR + `/send-answer/${this.store.streamId()}`, {
-      answer,
-    })
+    return this.http.put<StreamResultContract>(
+      this.urlService.URLS.AVATAR + `/send-answer/${this.store.streamIdMap()[this.componentName()]}`,
+      {
+        answer,
+      }
+    )
   }
 
   interruptAvatar(): Observable<StreamResultContract> {
-    return this.http.delete<StreamResultContract>(this.urlService.URLS.AVATAR + `/stop-render/${this.store.streamId()}`)
+    return this.http.delete<StreamResultContract>(
+      this.urlService.URLS.AVATAR + `/stop-render/${this.store.streamIdMap()[this.componentName()]}`
+    )
   }
 
   renderText(text: string): Observable<unknown> {
-    return this.http.post(this.urlService.URLS.AVATAR + `/render-text/${this.store.streamId()}`, { text })
+    return this.http.post(
+      this.urlService.URLS.AVATAR + `/render-text/${this.store.streamIdMap()[this.componentName()]}`,
+      { text }
+    )
   }
 
   updateVideo(text: string): Observable<{ status: string }> {
@@ -89,7 +101,7 @@ export class AvatarService {
   }
 
   greeting(botName: string, isArabic: boolean) {
-    const url = `${this.urlService.URLS.AVATAR}/greeting/${botName}/${this.store.streamId()}`
+    const url = `${this.urlService.URLS.AVATAR}/greeting/${botName}/${this.store.streamIdMap()[this.componentName()]}`
     const params = new HttpParams().append('is_ar', isArabic)
     return this.http.post<void>(url, null, { params })
   }

@@ -11,6 +11,7 @@ export interface MenuItem {
   svg: keyof typeof SVG_ICONS
   imgUrl?: string
   route: string
+  fragment?: string
   permissions: (keyof typeof ALL_PERMISSIONS)[]
   haveSomeOfPermissions?: boolean
   children?: MenuItem[]

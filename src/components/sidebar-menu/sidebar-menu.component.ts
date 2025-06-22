@@ -35,11 +35,17 @@ export class SidebarMenuComponent {
   private router = inject(Router)
 
   get shownItems() {
-    return this.menuService.getMenuItems().slice(0, 7)
+    return this.menuService
+      .getMenuItems()
+      .filter(item => item.label !== 'chat')
+      .slice(0, 7)
   }
 
   get hiddenItems() {
-    return this.menuService.getMenuItems().slice(7)
+    return this.menuService
+      .getMenuItems()
+      .filter(item => item.label !== 'chat')
+      .slice(7)
   }
 
   toggleFullMenu() {

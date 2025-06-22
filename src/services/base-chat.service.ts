@@ -29,6 +29,7 @@ import { ICitations } from '@/models/base-message'
 import { TokenService } from '@/services/token.service'
 import { LoginDataContract } from '@/contracts/login-data-contract'
 import { MarkdownService } from 'ngx-markdown'
+import { StreamComponent } from '@/enums/stream-component'
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,7 @@ export abstract class BaseChatService {
   abstract messages: WritableSignal<Message[]>
   abstract status: WritableSignal<boolean>
   abstract conversationId: WritableSignal<string>
+  abstract componentName: WritableSignal<StreamComponent>
   chatType?: string
   messageInProgress = signal(false)
   private inProgressMessage = new Subject<string>()
@@ -57,11 +59,12 @@ export abstract class BaseChatService {
 
     const url = `${this.urlService.URLS.CHAT}/${bot}`
     this.messages.update(messages => [...messages, new Message(content, 'user', chatType ?? bot)])
-
     return this.http
       .post<ChatMessageResultContract>(url, {
         messages: this.messages(),
-        ...(this.store.streamId() ? { stream_id: this.store.streamId() } : null),
+        ...(this.store.streamIdMap()[this.componentName()]
+          ? { stream_id: this.store.streamIdMap()[this.componentName()] }
+          : null),
         ...(this.conversationId() ? { conversation_id: this.conversationId() } : null),
         ...(this.getUserId() ? { user_id: this.getUserId() } : null),
       })
@@ -198,7 +201,9 @@ export abstract class BaseChatService {
       const url = `${this.urlService.URLS.AGENT_CHAT}/stream/${bot}`
       const body = JSON.stringify({
         messages: this.messages(),
-        ...(this.store.streamId() ? { stream_id: this.store.streamId() } : {}),
+        ...(this.store.streamIdMap()[this.componentName()]
+          ? { stream_id: this.store.streamIdMap()[this.componentName()] }
+          : {}),
         ...(this.conversationId() ? { conversation_id: this.conversationId() } : {}),
         ...(this.getUserId() ? { user_id: this.getUserId() } : {}),
       })
