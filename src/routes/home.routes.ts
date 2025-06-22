@@ -5,6 +5,7 @@ import { PermissionGuard } from '@/guards/permission.guard'
 import { LandingComponent } from '@/views/landing/landing.component'
 import { Routes } from '@angular/router'
 import { PERMISSION_GROUPS } from '../resources/all-permissions'
+import { AvatarService } from '@/services/avatar.service'
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -53,6 +54,7 @@ const routes: Routes = [
     canActivate: [PermissionGuard.canActivate],
     data: { permissions: ['AVATAR'], hasAnyPermission: false } as PermissionRouteData,
     canDeactivate: [closeStreamGuard],
+    providers: [AvatarService],
   },
   {
     path: 'ms-avatar',
@@ -61,6 +63,7 @@ const routes: Routes = [
     canActivate: [AuthGuard, PermissionGuard.canActivate],
     data: { permissions: ['AVATAR'], hasAnyPermission: false } as PermissionRouteData,
     canDeactivate: [closeStreamGuard],
+    providers: [AvatarService],
   },
   {
     path: 'control',
@@ -74,6 +77,7 @@ const routes: Routes = [
     canActivate: [AuthGuard, PermissionGuard.canActivate],
     data: { permissions: ['AVATAR'], hasAnyPermission: false } as PermissionRouteData,
     canDeactivate: [closeStreamGuard],
+    providers: [AvatarService],
   },
   {
     path: '**',

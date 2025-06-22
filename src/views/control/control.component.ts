@@ -1,6 +1,7 @@
 import { OverlayChatComponent } from '@/components/overlay-chat/overlay-chat.component'
 import { ScreenControlComponent } from '@/components/screen-control/screen-control.component'
 import { ButtonDirective } from '@/directives/button.directive'
+import { StreamComponent } from '@/enums/stream-component'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AvatarService } from '@/services/avatar.service'
 import { ChatService } from '@/services/chat.service'
@@ -57,6 +58,14 @@ export default class ControlComponent extends OnDestroyMixin(class {}) implement
   isLoading = false
 
   text = signal('')
+
+  /**
+   *
+   */
+  constructor() {
+    super()
+    this._avatarService.componentName.set(StreamComponent.ChatbotComponent)
+  }
 
   ngAfterViewInit(): void {
     this.streamId.setValue(this._route.snapshot.queryParamMap.get('streamId'))

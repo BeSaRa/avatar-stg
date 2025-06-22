@@ -189,6 +189,7 @@
       </div>
       @if (showRecorderBtn()) {
         <app-recorder
+          *appHasPermission="['SPEECH']"
           #recorder
           (recognized$)="messageCtrl.setValue($event)"
           (recognizing$)="messageCtrl.setValue($event)" />
@@ -235,8 +236,16 @@
           {{ lang.locals.avatar_chat }}
         </span>
       </div>
-      <app-avatar-video class="w-full" [size]="undefined" />
+      <app-avatar-video [componentName]="componentName()" class="w-full" [size]="undefined" />
       <app-avatar-interrupter-btn class="absolute z-10 top-12 w-12 mx-4" />
     </div>
   }
 </div>
+
+<ng-template #thanksMessage>
+  <div
+    @slideFromBottom
+    class="absolute whitespace-pre-line bottom-0 left-2 mb-2 w-40 p-2 flex justify-center items-center bg-white rounded-xl shadow-md">
+    <p class="text-sm">{{ lang.locals.thanks_for_feedback }}</p>
+  </div>
+</ng-template>

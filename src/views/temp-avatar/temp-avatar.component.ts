@@ -3,6 +3,7 @@ import { AppColors } from '@/constants/app-colors'
 import { SVG_ICONS } from '@/constants/svg-icons'
 import { ButtonDirective } from '@/directives/button.directive'
 import { TextWriterAnimatorDirective } from '@/directives/text-writer-animator.directive'
+import { StreamComponent } from '@/enums/stream-component'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
 import { AvatarService } from '@/services/avatar.service'
@@ -194,6 +195,8 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   })
 
   async ngOnInit(): Promise<void> {
+    this.avatarService.componentName.set(StreamComponent.ChatbotComponent)
+
     this.chatHistoryService
       .getAllBotNames()
       .pipe(tap(names => this.chatService.botNameCtrl.patchValue(names[0])))
@@ -410,5 +413,9 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
       this.idleVideo()!.nativeElement.loop = true
       this.idleVideo()!.nativeElement.play().then()
     }
+  }
+
+  getAvatarService() {
+    return this.avatarService
   }
 }

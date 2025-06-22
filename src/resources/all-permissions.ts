@@ -113,6 +113,7 @@ export const ALL_PERMISSIONS = {
   AGENT_STREAM_CHAT: 'AGENT_STREAM_CHAT',
   TASK_AGENT_UPDATE_STATUS: 'TASK_AGENT_UPDATE_STATUS',
   TASK_AGENT_GET_STATU: 'TASK_AGENT_GET_STATU',
+  SPEECH: 'SPEECH',
 } as const
 
 function extractGroup(prefix: string): (keyof typeof ALL_PERMISSIONS)[] {

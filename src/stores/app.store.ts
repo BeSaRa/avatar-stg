@@ -1,4 +1,5 @@
 import { SpeechTokenContract } from '@/contracts/speech-token-contract'
+import { StreamComponent } from '@/enums/stream-component'
 import { computed, effect } from '@angular/core'
 import { getState, patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals'
 
@@ -7,6 +8,8 @@ interface AppStore {
   streamId: string
   recording: 'Started' | 'InProgress' | 'Stopped'
   streamingStatus: 'Started' | 'InProgress' | 'Stopped' | 'Disconnecting'
+  streamIdMap: Record<StreamComponent, string>
+  streamingStatusMap: Record<StreamComponent, 'Started' | 'InProgress' | 'Stopped' | 'Disconnecting'>
   streamReady: boolean
   backgroundColor: string
   backgroundUrl: string
@@ -25,6 +28,18 @@ const initialState: AppStore = {
   streamId: '',
   recording: 'Stopped',
   streamingStatus: 'Stopped',
+  streamIdMap: {
+    [StreamComponent.LegalComponent]: '',
+    [StreamComponent.ChatbotComponent]: '',
+    [StreamComponent.VideoGeneratorComponent]: '',
+    [StreamComponent.AgentChatComponent]: '',
+  },
+  streamingStatusMap: {
+    [StreamComponent.LegalComponent]: 'Stopped',
+    [StreamComponent.ChatbotComponent]: 'Stopped',
+    [StreamComponent.VideoGeneratorComponent]: 'Stopped',
+    [StreamComponent.AgentChatComponent]: 'Stopped',
+  },
   streamReady: false,
   backgroundColor: '#8A1538',
   backgroundUrl: 'assets/images/background.svg',
@@ -76,6 +91,31 @@ export const AppStore = signalStore(
     updateIdleAvatar(idle: string) {
       patchState(store, { idleAvatar: idle })
     },
+    updateStreamIdFor: (component: StreamComponent, streamId: string) => {
+      const current = getState(store).streamIdMap
+      patchState(store, {
+        streamIdMap: { ...current, [component]: streamId },
+      })
+    },
+    updateStreamStatusFor: (
+      component: StreamComponent,
+      status: 'Started' | 'InProgress' | 'Stopped' | 'Disconnecting'
+    ) => {
+      const current = getState(store).streamingStatusMap
+      patchState(store, {
+        streamingStatusMap: { ...current, [component]: status },
+      })
+    },
+    hasStreamFor: (component: StreamComponent): boolean => !!getState(store).streamIdMap[component],
+    isStreamStartedFor: (component: StreamComponent) => getState(store).streamingStatusMap[component] === 'Started',
+
+    isStreamStoppedFor: (component: StreamComponent) => getState(store).streamingStatusMap[component] === 'Stopped',
+
+    isStreamLoadingFor: (component: StreamComponent) => {
+      const status = getState(store).streamingStatusMap[component]
+      return status === 'InProgress' || status === 'Disconnecting'
+    },
+    getStreamStatusFor: (component: StreamComponent) => getState(store).streamingStatusMap[component],
   })),
   withMethods(store => {
     return {

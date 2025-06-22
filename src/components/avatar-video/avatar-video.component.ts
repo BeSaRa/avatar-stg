@@ -1,3 +1,4 @@
+import { StreamComponent } from '@/enums/stream-component'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AvatarService } from '@/services/avatar.service'
 import { LocalService } from '@/services/local.service'
@@ -39,6 +40,7 @@ import {
 })
 export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements OnInit, OnDestroy, AfterViewInit {
   size = input<'life-size' | undefined>()
+  componentName = input.required<StreamComponent>()
   hasSize = computed(() => !!this.size())
   @HostBinding('attr.class')
   fullWidth = 'w-full h-full block '
@@ -52,7 +54,7 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
   store = inject(AppStore)
   init$: Observable<unknown> = this.start$
     .asObservable()
-    .pipe(tap(() => this.store.updateStreamStatus('InProgress')))
+    .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'InProgress')))
     .pipe(takeUntil(this.destroy$))
     .pipe(
       exhaustMap(() =>
@@ -60,7 +62,7 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
           .startStream(this.size())
           .pipe(
             catchError(err => {
-              this.store.updateStreamStatus('Stopped') //1
+              this.store.updateStreamStatusFor(this.componentName(), 'Stopped') //1
               throw err
             })
           )
@@ -91,7 +93,7 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
             this.video().nativeElement.paused
           ) {
             this.video().nativeElement.play().then()
-            this.store.updateStreamStatus('Started')
+            this.store.updateStreamStatusFor(this.componentName(), 'Started')
           }
         })
 
@@ -102,10 +104,10 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
         this.pc.addEventListener('connectionstatechange', evt => {
           const connectionState = (evt.target as unknown as RTCPeerConnection).connectionState
           if (connectionState === 'connected') {
-            this.store.updateStreamStatus('Started')
+            this.store.updateStreamStatusFor(this.componentName(), 'Started')
           }
           if (connectionState === 'disconnected') {
-            this.store.updateStreamStatus('Stopped')
+            this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
           }
         })
 
@@ -121,7 +123,7 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
 
   onlineStatus = computed(() => {
     this.lang.localChange() // just to track any change for the languages
-    switch (this.store.streamingStatus()) {
+    switch (this.store.streamingStatusMap()[this.componentName()]) {
       case 'Started':
         return this.lang.locals.connected
       case 'InProgress':
@@ -137,23 +139,25 @@ export class AvatarVideoComponent extends OnDestroyMixin(class {}) implements On
     // trigger the start of stream
     // this.start$.next()
     // close when destroy component
-    this.store.updateStreamStatus('Stopped')
+    this.avatarService.componentName.set(this.componentName())
+
+    this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
     merge(this.destroy$)
-      .pipe(tap(() => this.store.updateStreamStatus('Stopped'))) // 2
+      .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'Stopped'))) // 2
       .pipe(switchMap(() => this.avatarService.closeStream().pipe(ignoreErrors())))
       .subscribe(() => {
         console.log('COMPONENT DESTROYED')
       })
 
     this.stop$
-      .pipe(filter(() => this.store.hasStream()))
-      .pipe(tap(() => this.store.updateStreamStatus('Disconnecting')))
+      .pipe(filter(() => this.store.hasStreamFor(this.componentName())))
+      .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'Disconnecting')))
       .pipe(takeUntil(this.destroy$))
       .pipe(switchMap(() => this.avatarService.closeStream().pipe(ignoreErrors())))
       .subscribe(() => {
-        this.store.updateStreamStatus('Stopped')
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
         console.log('MANUAL CLOSE')
-        this.store.updateStreamStatus('Stopped')
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
       })
 
     if (!this.size()) {

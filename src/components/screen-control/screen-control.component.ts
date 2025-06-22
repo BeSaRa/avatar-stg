@@ -25,6 +25,7 @@ import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/plugins/record'
 import { SpinnerLoaderComponent } from '../spinner-loader/spinner-loader.component'
 import { ButtonDirective } from '@/directives/button.directive'
+import { StreamComponent } from '@/enums/stream-component'
 
 @Component({
   selector: 'app-screen-control',
@@ -64,6 +65,8 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
   readonly svgIcons = SVG_ICONS
 
   async ngOnInit(): Promise<void> {
+    this.avatarService.componentName.set(StreamComponent.ChatbotComponent)
+
     this.listenToAccept()
     this.listenToBotNameChange()
     await this.prepareRecorder()

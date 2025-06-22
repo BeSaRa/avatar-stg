@@ -2,6 +2,7 @@ import { fadeInSlideUp } from '@/animations/fade-in-slide'
 import { RecorderComponent } from '@/components/recorder/recorder.component'
 import { DEFAULT_SEARCH_QUERY } from '@/constants/default-search-query'
 import { SearchQueryContract } from '@/contracts/search-query-contract'
+import { HasPermissionDirective } from '@/directives/has-permission.directive'
 import { SecureUrlDirective } from '@/directives/secure-url.directive'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { AiSearchService } from '@/services/ai-search.service'
@@ -41,6 +42,7 @@ import {
     RecorderComponent,
     MatTooltipModule,
     SecureUrlDirective,
+    HasPermissionDirective,
   ],
   templateUrl: './ai-search.component.html',
   styleUrl: './ai-search.component.scss',

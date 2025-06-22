@@ -1,4 +1,4 @@
-<app-avatar-video [size]="'life-size'" #avatarVideoComponent />
+<app-avatar-video [componentName]="streamComponent.ChatbotComponent" [size]="'life-size'" #avatarVideoComponent />
 
 @if (store.isStreamLoading()) {
   <div class="z-50 flex items-center justify-center w-full bg-black/50 h-full fixed">

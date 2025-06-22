@@ -21,23 +21,30 @@
         <span class="text-white text-sm font-semibold">{{ onlineStatus() }}</span>
         <div
           [ngClass]="{
-            'bg-red-600': store.isStreamStopped(),
-            'bg-green-700': store.isStreamStarted(),
-            'bg-orange-500': store.isStreamLoading(),
+            'bg-red-600': store.isStreamStoppedFor(streamComponent.VideoGeneratorComponent),
+            'bg-green-700': store.isStreamStartedFor(streamComponent.VideoGeneratorComponent),
+            'bg-orange-500': store.isStreamLoadingFor(streamComponent.VideoGeneratorComponent),
           }"
           class="p-2 rounded-full"></div>
         <div
           [ngClass]="{
-            'bg-red-600': store.isStreamStopped(),
-            'bg-green-700': store.isStreamStarted(),
-            'bg-orange-500': store.isStreamLoading(),
+            'bg-red-600': store.isStreamStoppedFor(streamComponent.VideoGeneratorComponent),
+            'bg-green-700': store.isStreamStartedFor(streamComponent.VideoGeneratorComponent),
+            'bg-orange-500': store.isStreamLoadingFor(streamComponent.VideoGeneratorComponent),
           }"
           class="p-2 absolute end-2 pulse rounded-full"></div>
       </div>
 
       <div class="absolute w-full h-full overflow-hidden">
-        <video [hidden]="store.isStreamStopped() || store.isStreamLoading()" autoplay #video class="w-full"></video>
-        <video #idleVideo [hidden]="store.isStreamStarted()" class="w-full">
+        <video
+          [hidden]="
+            store.isStreamStoppedFor(streamComponent.VideoGeneratorComponent) ||
+            store.isStreamLoadingFor(streamComponent.VideoGeneratorComponent)
+          "
+          autoplay
+          #video
+          class="w-full"></video>
+        <video #idleVideo [hidden]="store.isStreamStartedFor(streamComponent.VideoGeneratorComponent)" class="w-full">
           <source [src]="store.idleAvatarUrl()" type="video/webm" />
         </video>
       </div>
@@ -54,7 +61,12 @@
         color="accent"
         class="w-40"
         (click)="test()"
-        [disabled]="!store.isStreamStarted() || isLoading || !text.value || wordsLimitExceeded">
+        [disabled]="
+          !store.isStreamStartedFor(streamComponent.VideoGeneratorComponent) ||
+          isLoading ||
+          !text.value ||
+          wordsLimitExceeded
+        ">
         @if (isLoading) {
           <app-spinner-loader [width]="24" [borderWidth]="4" color="white"></app-spinner-loader>
         } @else {
@@ -80,21 +92,25 @@
     </div>
     <div class="col-span-3 flex justify-center items-center gap-4">
       <button
-        [disabled]="store.isStreamLoading()"
+        [disabled]="store.isStreamLoadingFor(streamComponent.VideoGeneratorComponent)"
         (pointerdown)="toggleStream()"
         class="!h-16 !w-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
-        @if (store.isStreamLoading()) {
+        @if (store.isStreamLoadingFor(streamComponent.VideoGeneratorComponent)) {
           <app-spinner-loader [color]="appColors.PRIMARY" [borderWidth]="2" [width]="20" />
         } @else {
           <img
-            [src]="store.isStreamStarted() ? 'assets/icons/stop.png' : 'assets/icons/start.png'"
+            [src]="
+              store.isStreamStartedFor(streamComponent.VideoGeneratorComponent)
+                ? 'assets/icons/stop.png'
+                : 'assets/icons/start.png'
+            "
             class="size-6"
             alt="start" />
-          {{ store.isStreamStarted() ? lang.locals.stop : lang.locals.start }}
+          {{ store.isStreamStartedFor(streamComponent.VideoGeneratorComponent) ? lang.locals.stop : lang.locals.start }}
         }
       </button>
       <button
-        [disabled]="!store.isStreamStarted()"
+        [disabled]="!store.isStreamStartedFor(streamComponent.VideoGeneratorComponent)"
         (click)="interruptAvatar()"
         class="!h-16 !w-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
         <span class="relative size-6">

@@ -479,4 +479,7 @@ export default class MsAvatarComponent implements AfterViewInit {
     text = text.replace(/<[^>]*>|\[doc\d+\]|<pre[^>]*>.*?<\/pre>|doc\d+|###|\*/g, '')
     return text
   }
+  getAvatarService() {
+    return this.avatarService
+  }
 }
