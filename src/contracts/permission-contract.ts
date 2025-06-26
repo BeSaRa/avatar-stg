@@ -4,7 +4,7 @@ export interface Permission {
   key: string
   en_name: string
   ar_name: string
-  _id: string
+  permission_id: string
   url: string
   group_id: string
   hide: boolean

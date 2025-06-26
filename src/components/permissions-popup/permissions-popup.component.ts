@@ -97,7 +97,7 @@ export class PermissionsPopupComponent implements OnInit {
 
     childrenList.controls.forEach(ctrl => {
       const childId = ctrl.value.id
-      const isChildChecked = userPermissions.some(userPerm => userPerm._id === childId)
+      const isChildChecked = userPermissions.some(userPerm => userPerm.permission_id === childId)
 
       ctrl.get('checked')?.patchValue(isChildChecked)
 
@@ -110,7 +110,7 @@ export class PermissionsPopupComponent implements OnInit {
 
   categorizePermissions(permissions: Permission[], permissionGroups: PermissionGroupContract[]) {
     permissionGroups.forEach(group => {
-      group.children = permissions.filter(permission => permission.group_id === group._id)
+      group.children = permissions.filter(permission => permission.group_id === group.group_id)
     })
   }
 

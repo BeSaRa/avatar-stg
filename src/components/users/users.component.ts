@@ -80,7 +80,7 @@ export class UsersComponent extends OnDestroyMixin(class {}) implements OnInit {
       .pipe(
         switchMap(confirmed => {
           if (!confirmed) return of(null)
-          return this.userService.deleteUser(user._id).pipe(
+          return this.userService.deleteUser(user.user_id).pipe(
             takeUntil(this.destroy$),
             tap(() => this.getAllUsers())
           )

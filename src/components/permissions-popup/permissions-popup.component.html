@@ -19,7 +19,7 @@
                   'h-full bg-gray-100 p-3 rounded-ss-md rounded-se-md shadow-sm hover:bg-gray-200 transition cursor-pointer text-lg'
                 "
                 formControlName="checked"
-                [id]="permission._id"
+                [id]="permission.group_id"
                 [label]="lang.currentLanguage === 'ar' ? permission.ar_name : permission.en_name">
               </app-checkbox>
               <ng-container formArrayName="children">
@@ -34,7 +34,7 @@
                               'h-full bg-gray-100 p-3 rounded-lg shadow-md hover:bg-gray-200 transition cursor-pointer'
                             "
                             formControlName="checked"
-                            [id]="permission._id + child._id"
+                            [id]="permission.group_id + child.permission_id"
                             [label]="lang.currentLanguage === 'ar' ? child.ar_name : child.en_name">
                           </app-checkbox>
                         </ng-container>
