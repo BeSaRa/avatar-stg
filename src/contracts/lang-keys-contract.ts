@@ -324,4 +324,5 @@ export interface LangKeysContract {
   save_file_as: string
   download_as: string
   stream_active: string
+  stream_inactive: string
 }

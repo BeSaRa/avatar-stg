@@ -8,17 +8,17 @@
     }
     <div class="absolute -start-20 top-1/2 -translate-y-1/2 !w-16 flex flex-col gap-2">
       <button
-        [disabled]="store.isStreamLoading()"
+        [disabled]="store.isStreamLoadingFor(componentName())"
         (pointerdown)="toggleStream()"
         class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
-        @if (store.isStreamLoading()) {
+        @if (store.isStreamLoadingFor(componentName())) {
           <app-spinner-loader [color]="appColors.PRIMARY" [borderWidth]="2" [width]="20" />
         } @else {
           <img
-            [src]="store.isStreamStarted() ? 'assets/icons/stop.png' : 'assets/icons/start.png'"
+            [src]="store.isStreamStartedFor(componentName()) ? 'assets/icons/stop.png' : 'assets/icons/start.png'"
             class="size-6"
             alt="start" />
-          {{ store.isStreamStarted() ? lang.locals.stop : lang.locals.start }}
+          {{ store.isStreamStartedFor(componentName()) ? lang.locals.stop : lang.locals.start }}
         }
       </button>
       <div class="relative w-full">
@@ -58,7 +58,7 @@
         </button>
       </div>
       <button
-        [disabled]="!store.isStreamStarted()"
+        [disabled]="!store.isStreamStartedFor(componentName())"
         (click)="interruptAvatar()"
         class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
         <span class="relative size-6">
@@ -75,7 +75,7 @@
         {{ lang.locals.clear_chat_history }}
       </button>
       <button
-        [disabled]="!store.isStreamStarted()"
+        [disabled]="!store.isStreamStartedFor(componentName())"
         (click)="qrCodeOpened = true"
         class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
         <svg fill="currentColor" class="size-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -93,21 +93,35 @@
         {{ lang.locals.full_screen }}
       </button>
     </div>
+    <div class="absolute -end-20 -translate-y-1/2 w-16 flex flex-col gap-2">
+      <button
+        (click)="toggleStreamResponse()"
+        class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
+        <span class="relative size-6">
+          @if (!chatService.streamResponse()) {
+            <img [src]="'assets/icons/stream.svg'" class="w-full h-full" alt="start_stream" />
+          } @else {
+            <img [src]="'assets/icons/stop_stream.svg'" alt="stop_stream" />
+          }
+        </span>
+        {{ chatService.streamResponse() ? lang.locals.stream_inactive : lang.locals.stream_active }}
+      </button>
+    </div>
     <div class="w-full absolute top-2 px-2 flex justify-between items-center">
       <div class="relative flex items-center gap-2 shadow-2xl shadow-white bg-black/20 py-1 px-2 rounded-full">
         <span class="text-white text-sm font-semibold">{{ onlineStatus() }}</span>
         <div
           [ngClass]="{
-            'bg-red-600': store.isStreamStopped(),
-            'bg-green-700': store.isStreamStarted(),
-            'bg-orange-500': store.isStreamLoading(),
+            'bg-red-600': store.isStreamStoppedFor(componentName()),
+            'bg-green-700': store.isStreamStartedFor(componentName()),
+            'bg-orange-500': store.isStreamLoadingFor(componentName()),
           }"
           class="p-2 rounded-full"></div>
         <div
           [ngClass]="{
-            'bg-red-600': store.isStreamStopped(),
-            'bg-green-700': store.isStreamStarted(),
-            'bg-orange-500': store.isStreamLoading(),
+            'bg-red-600': store.isStreamStoppedFor(componentName()),
+            'bg-green-700': store.isStreamStartedFor(componentName()),
+            'bg-orange-500': store.isStreamLoadingFor(componentName()),
           }"
           class="p-2 absolute end-2 pulse rounded-full"></div>
       </div>
@@ -118,8 +132,12 @@
       </div>
     </div>
 
-    <video class="h-full" autoplay [hidden]="store.isStreamStopped() || store.isStreamLoading()" #video></video>
-    <video class="h-full" #idleVideo [hidden]="store.isStreamStarted()">
+    <video
+      class="h-full"
+      autoplay
+      [hidden]="store.isStreamStoppedFor(componentName()) || store.isStreamLoadingFor(componentName())"
+      #video></video>
+    <video class="h-full" #idleVideo [hidden]="store.isStreamStartedFor(componentName())">
       <source [src]="store.idleAvatarUrl()" type="video/webm" />
     </video>
 
@@ -129,17 +147,25 @@
         class="min-h-0 flex-auto flex flex-col gap-1 w-full h-full relative overflow-hidden py-1 px-2 [&>.message.user]:justify-start [&>.message]:text-white">
         @for (message of chatService.messages(); track message.id) {
           <div class="message {{ message.role }}">
-            @if (message.role === 'assistant') {
+            @if (message.isAssistant()) {
               <div
+                appSecureUrl
                 appTextWriterAnimator
                 (animating)="animationStatus.set($event)"
                 class="whitespace-pre-wrap break-words"
+                [disableAnimate]="chatService.streamResponse()"
                 [text]="message.content"></div>
             } @else {
               <div class="whitespace-pre-wrap break-words" [innerHtml]="message.content"></div>
             }
+            @if (chatService.messageInProgress() && inProgressMessage().length) {
+              <div
+                class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
+                <span class="typewriter-effect" appSecureUrl> {{ inProgressMessage() }}</span>
+              </div>
+            }
 
-            @if (message.context && message.context.citations.length) {
+            @if (message?.context && message?.context?.citations?.length) {
               <div>
                 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
                 <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
@@ -173,11 +199,19 @@
         }
       </div>
     </div>
-    @if (qrCodeOpened && store.isStreamStarted()) {
-      <div (click)="qrCodeOpened = false" class="absolute w-full h-full flex items-center justify-center bg-black/80">
-        <div (click)="$event.stopPropagation()" class="relative flex flex-col justify-center items-center gap-2">
+    @if (qrCodeOpened && store.isStreamStartedFor(componentName())) {
+      <div
+        (click)="qrCodeOpened = false"
+        (keyup.enter)="qrCodeOpened = false"
+        tabindex="2"
+        class="absolute w-full h-full flex items-center justify-center bg-black/80">
+        <div
+          (click)="$event.stopPropagation()"
+          (keyup.enter)="$event.stopPropagation()"
+          tabindex="2"
+          class="relative flex flex-col justify-center items-center gap-2">
           <qrcode [qrdata]="getQRData()"></qrcode>
-          <span class="p-1 text-white">streamId: {{ store.streamId() }}</span>
+          <span class="p-1 text-white">streamId: {{ store.streamIdMap()[componentName()] }}</span>
           <button (click)="qrCodeOpened = false" class="w-10 h-10 p-1 text-white rounded-full bg-white/30">
             <svg fill="currentColor" viewBox="0 0 24 24">
               <path

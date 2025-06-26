@@ -7,6 +7,7 @@ import { StreamComponent } from '@/enums/stream-component'
   providedIn: 'root',
 })
 export class LegalChatService extends BaseChatService {
+  override streamResponse: WritableSignal<boolean> = signal(false)
   override componentName = signal(StreamComponent.LegalComponent)
   override messages: WritableSignal<Message[]> = signal([])
   override status: WritableSignal<boolean> = signal(false)

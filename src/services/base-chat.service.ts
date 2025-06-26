@@ -44,6 +44,7 @@ export abstract class BaseChatService {
   readonly botNameCtrl = new FormControl('', { nonNullable: true })
   abstract messages: WritableSignal<Message[]>
   abstract status: WritableSignal<boolean>
+  abstract streamResponse: WritableSignal<boolean>
   abstract conversationId: WritableSignal<string>
   abstract componentName: WritableSignal<StreamComponent>
   chatType?: string
