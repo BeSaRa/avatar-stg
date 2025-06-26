@@ -6,6 +6,6 @@ export interface PermissionGroupContract {
   key: string
   en_name: string
   ar_name: string
-  _id: string
+  group_id: string
   children: Permission[]
 }

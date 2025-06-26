@@ -22,8 +22,7 @@ export class UserService {
   }
   addUser(username: string): Observable<void> {
     const url = `${this.urlService.URLS.ADMIN}/user`
-    const params = new HttpParams().append('username', username)
-    return this.http.post<void>(url, null, { params: params, context: new HttpContext().set(SHOW_SNACKBAR, true) })
+    return this.http.post<void>(url, { username }, { context: new HttpContext().set(SHOW_SNACKBAR, true) })
   }
   deleteUser(userId: string): Observable<void> {
     const url = `${this.urlService.URLS.ADMIN}/user`

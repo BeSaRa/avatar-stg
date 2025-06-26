@@ -13,7 +13,7 @@ export function createPermissionForm() {
 export function createPermissionGroup(permission: PermissionGroupContract) {
   const fb = inject(NonNullableFormBuilder)
   return fb.group({
-    id: fb.control(permission._id),
+    id: fb.control(permission.group_id),
     checked: fb.control(false),
     children: fb.array<PermissionChildGroup>(
       permission?.children.length ? permission.children.map(child => createChildPermissionGroup(child)) : []
@@ -24,7 +24,7 @@ export function createPermissionGroup(permission: PermissionGroupContract) {
 export function createChildPermissionGroup(permission: Permission) {
   const fb = inject(NonNullableFormBuilder)
   return fb.group({
-    id: fb.control(permission._id),
+    id: fb.control(permission.permission_id),
     checked: fb.control(false),
   })
 }

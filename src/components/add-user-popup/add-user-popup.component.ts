@@ -7,7 +7,7 @@ import { NgClass } from '@angular/common'
 import { Component, inject, signal } from '@angular/core'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatDialogRef } from '@angular/material/dialog'
-import { finalize, takeUntil } from 'rxjs'
+import { catchError, EMPTY, takeUntil, tap } from 'rxjs'
 
 @Component({
   selector: 'app-add-user-popup',
@@ -41,11 +41,15 @@ export class AddUserPopupComponent extends OnDestroyMixin(class {}) {
       .addUser(username)
       .pipe(
         takeUntil(this.destroy$),
-        finalize(() => {
+        tap(() => {
           this.done.set(true)
           setTimeout(() => {
             this.ref.close()
           }, 1500)
+        }),
+        catchError(err => {
+          console.error('Error adding user:', err)
+          return EMPTY
         })
       )
       .subscribe()
