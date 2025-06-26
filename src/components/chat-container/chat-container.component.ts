@@ -112,7 +112,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   stopAnimate = signal(false)
   ratingDone = signal(false)
   loadingFAQ = signal(false)
-  streamResponse = signal(false)
+  streamResponse = this.chatService.streamResponse
   FAQService = inject(FAQService)
   questions = signal<FAQContract[]>([])
   botNames$ = this.chatHistoryService.getAllBotNames().pipe(
@@ -194,6 +194,9 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
 
   toggleChat() {
     this.status.update(value => !value)
+  }
+  toggleStreamResponse() {
+    this.chatService.streamResponse.update(value => !value)
   }
 
   fullScreenToggle() {

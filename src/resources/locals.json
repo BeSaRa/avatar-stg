@@ -1298,5 +1298,9 @@
   "stream_active": {
     "ar": "التدفق",
     "en": "Stream"
+  },
+  "stream_inactive": {
+    "ar": "إيقاف التدفق",
+    "en": "Stop Stream"
   }
 }

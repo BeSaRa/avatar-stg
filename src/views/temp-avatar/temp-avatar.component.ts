@@ -2,6 +2,7 @@ import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-load
 import { AppColors } from '@/constants/app-colors'
 import { SVG_ICONS } from '@/constants/svg-icons'
 import { ButtonDirective } from '@/directives/button.directive'
+import { SecureUrlDirective } from '@/directives/secure-url.directive'
 import { TextWriterAnimatorDirective } from '@/directives/text-writer-animator.directive'
 import { StreamComponent } from '@/enums/stream-component'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
@@ -38,10 +39,12 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk'
 import {
   catchError,
+  defer,
   delay,
   exhaustMap,
   filter,
   from,
+  iif,
   map,
   merge,
   Observable,
@@ -70,10 +73,10 @@ import RecordPlugin from 'wavesurfer.js/dist/plugins/record.js'
     ButtonDirective,
     TextWriterAnimatorDirective,
     QRCodeComponent,
+    SecureUrlDirective,
   ],
   templateUrl: './temp-avatar.component.html',
   styleUrl: './temp-avatar.component.scss',
-  providers: [ChatService],
 })
 export default class TempAvatarComponent extends OnDestroyMixin(class {}) implements OnInit, AfterViewInit {
   baseElement = viewChild.required<ElementRef>('baseElement')
@@ -108,12 +111,14 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   accept$ = new Subject<void>()
   recognizingStatus = signal<boolean>(false)
 
+  componentName = signal(StreamComponent.ChatbotComponent)
   animationStatus = signal(false)
   qrCodeOpened = false
+  inProgressMessage = signal<string>('')
 
   init$: Observable<unknown> = this.start$
     .asObservable()
-    .pipe(tap(() => this.store.updateStreamStatus('InProgress')))
+    .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'InProgress')))
     .pipe(takeUntil(this.destroy$))
     .pipe(
       exhaustMap(() =>
@@ -121,7 +126,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
           .startStream('life-size')
           .pipe(
             catchError(err => {
-              this.store.updateStreamStatus('Stopped') //1
+              this.store.updateStreamStatusFor(this.componentName(), 'Stopped') //1
               throw err
             })
           )
@@ -152,7 +157,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
             this.video().nativeElement.paused
           ) {
             this.video().nativeElement.play().then()
-            this.store.updateStreamStatus('Started')
+            this.store.updateStreamStatusFor(this.componentName(), 'Started')
           }
         })
 
@@ -163,10 +168,10 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
         this.pc.addEventListener('connectionstatechange', evt => {
           const connectionState = (evt.target as unknown as RTCPeerConnection).connectionState
           if (connectionState === 'connected') {
-            this.store.updateStreamStatus('Started')
+            this.store.updateStreamStatusFor(this.componentName(), 'Started')
           }
           if (connectionState === 'disconnected') {
-            this.store.updateStreamStatus('Stopped')
+            this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
           }
         })
 
@@ -182,7 +187,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
 
   onlineStatus = computed(() => {
     this.lang.localChange() // just to track any change for the languages
-    switch (this.store.streamingStatus()) {
+    switch (this.store.streamingStatusMap()[this.componentName()]) {
       case 'Started':
         return this.lang.locals.connected
       case 'InProgress':
@@ -208,22 +213,22 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
       .getAllBotNames()
       .pipe(tap(names => this.chatService.botNameCtrl.patchValue(names[0])))
       .subscribe()
-    this.store.updateStreamStatus('Stopped')
+    this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
     merge(this.destroy$)
-      .pipe(tap(() => this.store.updateStreamStatus('Stopped'))) // 2
+      .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'Stopped'))) // 2
       .subscribe(() => {
         console.log('COMPONENT DESTROYED')
       })
 
     this.stop$
-      .pipe(filter(() => this.store.hasStream()))
-      .pipe(tap(() => this.store.updateStreamStatus('Disconnecting')))
+      .pipe(filter(() => this.store.hasStreamFor(this.componentName())))
+      .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'Disconnecting')))
       .pipe(takeUntil(this.destroy$))
       .pipe(switchMap(() => this.avatarService.closeStream().pipe(ignoreErrors())))
       .subscribe(() => {
-        this.store.updateStreamStatus('Stopped')
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
         console.log('MANUAL CLOSE')
-        this.store.updateStreamStatus('Stopped')
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
       })
 
     this.start$.next()
@@ -231,6 +236,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
     this.listenToAccept()
     this.listenToBotNameChange()
     this.prepareRecorder()
+    this.listenToInProgressMessages()
   }
 
   ngAfterViewInit(): void {
@@ -244,9 +250,9 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   }
 
   toggleStream() {
-    if (this.store.isStreamLoading()) return
+    if (this.store.isStreamLoadingFor(this.componentName())) return
 
-    this.store.isStreamStopped() ? this.start$.next() : this.stop$.next()
+    this.store.isStreamStoppedFor(this.componentName()) ? this.start$.next() : this.stop$.next()
   }
 
   interruptAvatar() {
@@ -365,7 +371,16 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
         })
       )
       .pipe(tap(() => this.goToEndOfChat()))
-      .pipe(exhaustMap(value => this.chatService.sendMessage(value, this.chatService.botNameCtrl.value)))
+      .pipe(
+        exhaustMap(value => {
+          const { value: botNameValue } = this.chatService.botNameCtrl
+          return iif(
+            () => this.chatService.streamResponse(),
+            defer(() => this.chatService.sendMessageStreamed(value, botNameValue)),
+            defer(() => this.chatService.sendMessage(value, botNameValue))
+          )
+        })
+      )
       .pipe(delay(200))
       .subscribe(() => {
         const assistantList = this.chatContainer().nativeElement.querySelectorAll('.assistant')
@@ -398,7 +413,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   }
 
   getQRData() {
-    return `${this.getOrigin()}/control?streamId=${this.store.streamId()}`
+    return `${this.getOrigin()}/control?streamId=${this.store.streamIdMap()[this.componentName()]}`
   }
 
   getOrigin() {
@@ -417,5 +432,16 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
 
   getAvatarService() {
     return this.avatarService
+  }
+  toggleStreamResponse() {
+    this.chatService.streamResponse.update(value => !value)
+  }
+  private listenToInProgressMessages() {
+    this.chatService
+      .getInProgressMessage()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(inProgressMessage => {
+        this.inProgressMessage.set(inProgressMessage)
+      })
   }
 }

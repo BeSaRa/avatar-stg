@@ -25,6 +25,7 @@ export default class AvatarComponent {
   store = inject(AppStore)
   lang = inject(LocalService)
   router = inject(Router)
+  componentName = signal(StreamComponent.ChatbotComponent)
 
   readonly streamComponent = StreamComponent
 
@@ -44,9 +45,11 @@ export default class AvatarComponent {
   }
 
   toggleStream() {
-    if (this.store.isStreamLoading()) return
+    if (this.store.isStreamLoadingFor(this.componentName())) return
 
-    this.store.isStreamStopped() ? this.avatarVideoComponent().start$.next() : this.avatarVideoComponent().stop$.next()
+    this.store.isStreamStoppedFor(this.componentName())
+      ? this.avatarVideoComponent().start$.next()
+      : this.avatarVideoComponent().stop$.next()
   }
 
   toggleSettings() {
@@ -54,7 +57,7 @@ export default class AvatarComponent {
   }
 
   getQRData() {
-    return `${this.getOrigin()}/control?streamId=${this.store.streamId()}`
+    return `${this.getOrigin()}/control?streamId=${this.store.streamIdMap()[this.componentName()]}`
   }
 
   getOrigin() {

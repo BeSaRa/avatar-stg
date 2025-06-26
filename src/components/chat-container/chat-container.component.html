@@ -21,7 +21,8 @@
       </div>
       <div class="flex items-center gap-2">
         <mat-slide-toggle
-          (change)="streamResponse.set($event.checked)"
+          [checked]="streamResponse()"
+          (change)="toggleStreamResponse()"
           [disabled]="answerInProgress() || animating()"
           >{{ lang.locals.stream_active }}</mat-slide-toggle
         >

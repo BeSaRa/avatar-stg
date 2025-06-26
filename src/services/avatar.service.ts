@@ -40,7 +40,7 @@ export class AvatarService {
 
   closeStream(): Observable<StreamResultContract> {
     const streamId = this.store.streamIdMap()[this.componentName()]
-    this.store.updateStreamId('')
+    this.store.updateStreamIdFor(this.componentName(), '')
     return this.http.delete<StreamResultContract>(this.urlService.URLS.AVATAR + `/close-stream/${streamId}`)
   }
 

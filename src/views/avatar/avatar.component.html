@@ -11,9 +11,17 @@
   </div>
 }
 
-@if (qrCodeOpened && store.hasStream()) {
-  <div (click)="qrCodeOpened = false" class="z-50 flex items-center justify-center w-full bg-black/80 h-full fixed">
-    <div (click)="$event.stopPropagation()" class="relative flex flex-col justify-center items-center gap-2">
+@if (qrCodeOpened && store.hasStreamFor(componentName())) {
+  <div
+    (click)="qrCodeOpened = false"
+    (keyup.enter)="qrCodeOpened = false"
+    tabindex="2"
+    class="z-50 flex items-center justify-center w-full bg-black/80 h-full fixed">
+    <div
+      (click)="$event.stopPropagation()"
+      (keyup.enter)="$event.stopPropagation()"
+      tabindex="2"
+      class="relative flex flex-col justify-center items-center gap-2">
       <button
         (click)="qrCodeOpened = false"
         class="absolute -top-11 -left-11 w-12 h-12 p-1 text-white rounded-full bg-black/85">
