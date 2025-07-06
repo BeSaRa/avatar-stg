@@ -325,4 +325,20 @@ export interface LangKeysContract {
   download_as: string
   stream_active: string
   stream_inactive: string
+  sessionResult: string
+  usageResult: string
+  inappropriateResult: string
+  reponseTimeResult: string
+  tokenResult: string
+  botOverview: string
+  deviceInfo: string
+  regionInfo: string
+  success_rate: string
+  total_messages: string
+  total_queries: string
+  active_users: string
+  average_response_time: string
+  average_token_value: string
+  average_duration: string
+  view_details: string
 }

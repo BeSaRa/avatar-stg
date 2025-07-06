@@ -1,0 +1,24 @@
+<div class="flex flex-col w-[min(70rem,80vw)]">
+  <div class="p-4 bg-primary text-white text-lg font-semibold">{{ data.title }}</div>
+  <mat-dialog-content appPerfectScroll [perfectScrollOptions]="{ suppressScrollX: true }">
+    <div class="m-4">
+      <input
+        [formControl]="searchControl"
+        type="text"
+        [placeholder]="lang.locals.search_question"
+        class="w-full p-2 text-gray-700 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-primary/60 placeholder-gray-400" />
+    </div>
+    <mat-accordion>
+      @for (item of filteredQuestions; track $index) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="w-full">
+              <p class="truncate" [title]="item.question">{{ item.question }}</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-sm p-2" [innerHTML]="item.answer ? (item.answer! | markdown | async) : item.answer"></p>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </mat-dialog-content>
+</div>
