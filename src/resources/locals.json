@@ -1302,5 +1302,69 @@
   "stream_inactive": {
     "ar": "إيقاف التدفق",
     "en": "Stop Stream"
+  },
+  "sessionResult": {
+    "ar": "نتائج الجلسات",
+    "en": "Session Result"
+  },
+  "usageResult": {
+    "ar": "نتائج الاستخدام",
+    "en": "Usage Result"
+  },
+  "inappropriateResult": {
+    "ar": "نتائج المحتوى غير اللائق",
+    "en": "Inappropriate Content Result"
+  },
+  "reponseTimeResult": {
+    "ar": "نتائج زمن الاستجابة",
+    "en": "Response Time Result"
+  },
+  "tokenResult": {
+    "ar": "نتائج التوكنات",
+    "en": "Token Result"
+  },
+  "botOverview": {
+    "ar": "نظرة عامة على البوت",
+    "en": "Bot Overview"
+  },
+  "deviceInfo": {
+    "ar": "معلومات الأجهزة",
+    "en": "Devices Info"
+  },
+  "regionInfo": {
+    "ar": "المعلومات الجغرافية",
+    "en": "Region Info"
+  },
+  "average_response_time": {
+    "ar": "متوسط زمن الاستجابة",
+    "en": "Average Response Time"
+  },
+  "average_token_value": {
+    "ar": "متوسط عدد التوكنات",
+    "en": "Average Token Value"
+  },
+  "average_duration": {
+    "ar": "متوسط مدة الجلسة",
+    "en": "Average Duration"
+  },
+  "success_rate": {
+    "ar": "معدل النجاح",
+    "en": "Success Rate"
+  },
+  "total_messages": {
+    "ar": "إجمالي الرسائل",
+    "en": "Total Messages"
+  },
+  "total_queries": {
+    "ar": "إجمالي الاستفسارات",
+    "en": "Total Queries"
+  },
+  "active_users": {
+    "ar": "عدد المستخدمين النشطين",
+    "en": "Active Users"
+  },
+  "view_details": {
+    "ar": "عرض التفاصيل",
+    "en": "View Details"
   }
 }

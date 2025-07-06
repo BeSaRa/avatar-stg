@@ -71,6 +71,11 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'admin-insights',
+    loadComponent: () => import('@/views/admin-insights/admin-insights.component'),
+    pathMatch: 'full',
+  },
+  {
     path: 'video-generator',
     loadComponent: () => import('@/views/video-generator/video-generator.component'),
     pathMatch: 'full',
