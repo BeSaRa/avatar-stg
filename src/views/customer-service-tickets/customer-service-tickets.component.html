@@ -1,0 +1,124 @@
+<div class="max-w-6xl mx-auto p-4 bg-gray-50 shadow-md rounded-lg">
+  <!-- Table -->
+  <div appPerfectScroll class="overflow-x-auto overflow-y-auto max-h-[70vh] bg-white rounded-md shadow-sm">
+    <table class="w-full table-auto border-collapse">
+      <!-- Table Header -->
+      <thead>
+        <tr class="bg-primary text-white sticky top-0 z-10">
+          <th class="px-3 py-2 text-center text-sm font-semibold">
+            {{ lang.locals.sender_name }}
+          </th>
+          <th class="px-3 py-2 text-center text-sm font-semibold">
+            {{ lang.locals.actions }}
+          </th>
+        </tr>
+        <!-- Search Input Row -->
+        <tr class="sticky top-9 z-10">
+          <th colspan="2" class="bg-gray-50 px-3 py-2">
+            <input
+              [formControl]="searchControl"
+              type="text"
+              [placeholder]="lang.locals.search_sender_name"
+              class="w-full p-2 text-gray-700 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-primary/60 placeholder-gray-400" />
+          </th>
+        </tr>
+      </thead>
+      <!-- Table Body -->
+      <tbody>
+        @for (ticket of filteredTickets(); track $index) {
+          <tr class="hover:bg-gray-100 border-t">
+            <!-- sender Name -->
+            <td>
+              <div class="flex gap-2">
+                <button
+                  (click)="toggleExpand(ticket.RowKey)"
+                  class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                  @if (selectedTicketId() === ticket.RowKey) {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 fill-gray-600">
+                      <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 fill-gray-600">
+                      <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                    </svg>
+                  }
+                </button>
+                <span class="cursor-pointer px-3 py-2 text-gray-800 text-sm font-medium">{{ ticket.sender_name }}</span>
+              </div>
+            </td>
+            <!-- Actions -->
+            <td class="px-3 py-2 text-center">
+              <button
+                (click)="openUpdateTicket(ticket)"
+                class="bg-primary/80 text-white px-3 py-1 text-xs rounded-md hover:bg-primary disabled:opacity-50">
+                {{ lang.locals.update_task_status }}
+              </button>
+            </td>
+          </tr>
+          <!-- Expandable Area -->
+          @if (selectedTicketId() === ticket.RowKey) {
+            <tr>
+              <td colspan="2" class="px-3 py-2 bg-gray-50 border-t">
+                <div
+                  @expandCollapse
+                  class="overflow-hidden transition-all duration-300 ease-in-out max-h-96 opacity-100">
+                  <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded-md shadow-md">
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.sender_name }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_name || '—' }}</span>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.sender_email }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_email || '—' }}</span>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.sender_phone_number }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_phone_number || '—' }}</span>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.target_name }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_name || '—' }}</span>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.target_company_name }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_company_name || '—' }}</span>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.target_contact_info }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_contact_info || '—' }}</span>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="block font-medium text-gray-600">{{ lang.locals.subject }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.subject || '—' }}</span>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="block font-medium text-gray-600">{{ lang.locals.body }}</span>
+                      <p class="text-gray-500 text-sm whitespace-pre-line">{{ selectedTicket()?.body || '—' }}</p>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.ticket_status }}</span>
+                      <span
+                        class="text-xs font-semibold px-3 py-1 rounded-sm"
+                        [class.bg-blue-100]="selectedTicket()?.status === 'OPEN'"
+                        [class.text-blue-800]="selectedTicket()?.status === 'OPEN'"
+                        [class.bg-yellow-100]="selectedTicket()?.status === 'IN_PROGRESS'"
+                        [class.text-yellow-800]="selectedTicket()?.status === 'IN_PROGRESS'"
+                        [class.bg-green-100]="selectedTicket()?.status === 'RESOLVED'"
+                        [class.text-green-800]="selectedTicket()?.status === 'RESOLVED'"
+                        [class.bg-gray-200]="selectedTicket()?.status === 'CLOSED'"
+                        [class.text-gray-800]="selectedTicket()?.status === 'CLOSED'"
+                        [class.bg-red-100]="selectedTicket()?.status === 'ESCALATED'"
+                        [class.text-red-800]="selectedTicket()?.status === 'ESCALATED'">
+                        {{ lang.locals[selectedTicket()?.status!] }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

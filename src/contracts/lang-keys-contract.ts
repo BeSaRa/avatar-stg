@@ -342,4 +342,21 @@ export interface LangKeysContract {
   average_duration: string
   view_details: string
   admin_insights: string
+  change_ticket_status: string
+  sender_name: string
+  sender_email: string
+  sender_phone_number: string
+  target_name: string
+  target_company_name: string
+  target_contact_info: string
+  subject: string
+  body: string
+  ticket_status: string
+  customer_services: string
+  OPEN: string
+  IN_PROGRESS: string
+  RESOLVED: string
+  CLOSED: string
+  ESCALATED: string
+  search_sender_name: string
 }

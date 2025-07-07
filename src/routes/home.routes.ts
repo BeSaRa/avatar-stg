@@ -76,6 +76,11 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'customer-services',
+    loadComponent: () => import('@/views/customer-service-tickets/customer-service-tickets.component'),
+    pathMatch: 'full',
+  },
+  {
     path: 'video-generator',
     loadComponent: () => import('@/views/video-generator/video-generator.component'),
     pathMatch: 'full',

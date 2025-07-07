@@ -1370,5 +1370,73 @@
   "admin_insights": {
     "ar": "إحصاءات الادمن",
     "en": "Admin Insights"
+  },
+  "change_ticket_status": {
+    "ar": "تغيير حالة التكت",
+    "en": "Change Ticket Status"
+  },
+  "sender_name": {
+    "ar": "اسم المُرسل",
+    "en": "Sender Name"
+  },
+  "sender_email": {
+    "ar": "بريد المُرسل",
+    "en": "Sender Email"
+  },
+  "sender_phone_number": {
+    "ar": "هاتف المُرسل",
+    "en": "Sender Phone"
+  },
+  "target_name": {
+    "ar": "اسم الجهة المستهدفة",
+    "en": "Target Name"
+  },
+  "target_company_name": {
+    "ar": "اسم الشركة المستهدفة",
+    "en": "Target Company Name"
+  },
+  "target_contact_info": {
+    "ar": "معلومات التواصل مع الجهة",
+    "en": "Target Contact Info"
+  },
+  "subject": {
+    "ar": "الموضوع",
+    "en": "Subject"
+  },
+  "body": {
+    "ar": "نص الشكوى",
+    "en": "Complaint Body"
+  },
+  "ticket_status": {
+    "ar": "الحالة",
+    "en": "Status"
+  },
+  "customer_services": {
+    "ar": "خدمة الزبائن",
+    "en": "Customer Services"
+  },
+  "OPEN": {
+    "ar": "مفتوح",
+    "en": "Open"
+  },
+  "IN_PROGRESS": {
+    "ar": "قيد المعالجة",
+    "en": "In Progress"
+  },
+  "RESOLVED": {
+    "ar": "تم الحل",
+    "en": "Resolved"
+  },
+  "CLOSED": {
+    "ar": "مغلق",
+    "en": "Closed"
+  },
+  "ESCALATED": {
+    "ar": "تم التصعيد",
+    "en": "Escalated"
+  },
+  "search_sender_name": {
+    "ar": "البحث عن طريق اسم المرسل",
+    "en": "Search by sender name..."
   }
 }
