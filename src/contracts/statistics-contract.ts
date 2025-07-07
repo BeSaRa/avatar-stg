@@ -3,7 +3,7 @@ export interface MostIndexedUrlsContract {
   RowKey: string
   Most_indexed_URL: string
   Count: number
-  Date: string
+  date: string
 }
 
 export interface MostUsedKeywordsContract {

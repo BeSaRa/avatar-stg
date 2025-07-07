@@ -341,4 +341,5 @@ export interface LangKeysContract {
   average_token_value: string
   average_duration: string
   view_details: string
+  admin_insights: string
 }

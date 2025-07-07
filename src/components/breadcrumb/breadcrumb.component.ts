@@ -45,6 +45,7 @@ export class BreadcrumbComponent extends OnDestroyMixin(class {}) {
     effect(() => {
       if (this.menu().length) {
         this._routesMenuMap = this.buildRouteMapFromMenu(this.menu())
+        console.log(this._routesMenuMap)
       }
     })
   }
@@ -53,7 +54,7 @@ export class BreadcrumbComponent extends OnDestroyMixin(class {}) {
     const routeMap: Record<string, MenuItem> = {}
 
     for (const item of menuItems) {
-      const routeKey = item.route.split('/').pop()!
+      const routeKey = item.fragment ? `${item.route.split('/').pop()!}${item.fragment}` : item.route.split('/').pop()!
       routeMap[routeKey] = item
 
       if (item.children?.length) {
