@@ -87,4 +87,12 @@ export const MENU_ITEMS: MenuItem[] = [
     permissions: [],
     haveSomeOfPermissions: true,
   },
+  {
+    id: 17,
+    label: 'customer_services',
+    route: '/home/customer-services',
+    svg: 'CUSTOMER_SERVICE',
+    permissions: [],
+    haveSomeOfPermissions: true,
+  },
 ]
