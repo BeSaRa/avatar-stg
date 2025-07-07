@@ -9,12 +9,15 @@
             {{ lang.locals.sender_name }}
           </th>
           <th class="px-3 py-2 text-center text-sm font-semibold">
+            {{ lang.locals.ticket_status }}
+          </th>
+          <th class="px-3 py-2 text-center text-sm font-semibold">
             {{ lang.locals.actions }}
           </th>
         </tr>
         <!-- Search Input Row -->
         <tr class="sticky top-9 z-10">
-          <th colspan="2" class="bg-gray-50 px-3 py-2">
+          <th colspan="3" class="bg-gray-50 px-3 py-2">
             <input
               [formControl]="searchControl"
               type="text"
@@ -46,6 +49,22 @@
                 <span class="cursor-pointer px-3 py-2 text-gray-800 text-sm font-medium">{{ ticket.sender_name }}</span>
               </div>
             </td>
+            <td class="px-3 py-2 text-center">
+              <span
+                class="text-xs font-semibold px-3 py-1 rounded-sm"
+                [class.bg-blue-100]="ticket.status === 'OPEN'"
+                [class.text-blue-800]="ticket.status === 'OPEN'"
+                [class.bg-yellow-100]="ticket.status === 'IN_PROGRESS'"
+                [class.text-yellow-800]="ticket.status === 'IN_PROGRESS'"
+                [class.bg-green-100]="ticket.status === 'RESOLVED'"
+                [class.text-green-800]="ticket.status === 'RESOLVED'"
+                [class.bg-gray-200]="ticket.status === 'CLOSED'"
+                [class.text-gray-800]="ticket.status === 'CLOSED'"
+                [class.bg-red-100]="ticket.status === 'ESCALATED'"
+                [class.text-red-800]="ticket.status === 'ESCALATED'">
+                {{ ticket.status }}
+              </span>
+            </td>
             <!-- Actions -->
             <td class="px-3 py-2 text-center">
               <button
@@ -76,10 +95,6 @@
                       <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_phone_number || '—' }}</span>
                     </div>
                     <div>
-                      <span class="block font-medium text-gray-600">{{ lang.locals.target_name }}</span>
-                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_name || '—' }}</span>
-                    </div>
-                    <div>
                       <span class="block font-medium text-gray-600">{{ lang.locals.target_company_name }}</span>
                       <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_company_name || '—' }}</span>
                     </div>
@@ -94,23 +109,6 @@
                     <div class="col-span-2">
                       <span class="block font-medium text-gray-600">{{ lang.locals.body }}</span>
                       <p class="text-gray-500 text-sm whitespace-pre-line">{{ selectedTicket()?.body || '—' }}</p>
-                    </div>
-                    <div>
-                      <span class="block font-medium text-gray-600">{{ lang.locals.ticket_status }}</span>
-                      <span
-                        class="text-xs font-semibold px-3 py-1 rounded-sm"
-                        [class.bg-blue-100]="selectedTicket()?.status === 'OPEN'"
-                        [class.text-blue-800]="selectedTicket()?.status === 'OPEN'"
-                        [class.bg-yellow-100]="selectedTicket()?.status === 'IN_PROGRESS'"
-                        [class.text-yellow-800]="selectedTicket()?.status === 'IN_PROGRESS'"
-                        [class.bg-green-100]="selectedTicket()?.status === 'RESOLVED'"
-                        [class.text-green-800]="selectedTicket()?.status === 'RESOLVED'"
-                        [class.bg-gray-200]="selectedTicket()?.status === 'CLOSED'"
-                        [class.text-gray-800]="selectedTicket()?.status === 'CLOSED'"
-                        [class.bg-red-100]="selectedTicket()?.status === 'ESCALATED'"
-                        [class.text-red-800]="selectedTicket()?.status === 'ESCALATED'">
-                        {{ lang.locals[selectedTicket()?.status!] }}
-                      </span>
                     </div>
                   </div>
                 </div>
