@@ -79,4 +79,12 @@ export const MENU_ITEMS: MenuItem[] = [
     permissions: [ALL_PERMISSIONS.CHATBOT_LEGAL],
     haveSomeOfPermissions: true,
   },
+  {
+    id: 16,
+    label: 'admin_insights',
+    route: '/home/admin-insights',
+    svg: 'CHART_INSIGHTS',
+    permissions: [],
+    haveSomeOfPermissions: true,
+  },
 ]

@@ -82,9 +82,16 @@
             [options]="statistics.mostIndexedChart.chart.options">
           </canvas>
         </div>
-        <button (click)="resetIndexedZoom()" class="mt-2 text-sm text-blue-500 hover:underline">
-          {{ lang.locals.reset_zoom }}
-        </button>
+        <div class="flex gap-2">
+          <button (click)="resetIndexedZoom()" class="mt-2 text-sm text-blue-500 hover:underline">
+            {{ lang.locals.reset_zoom }}
+          </button>
+          <button
+            (click)="statistics.mostIndexedChart.viewDetails!()"
+            class="mt-2 text-sm text-blue-500 hover:underline">
+            {{ lang.locals.view_details }}
+          </button>
+        </div>
       } @else {
         <div class="h-10 bg-gray-300 rounded animate-pulse mb-4"></div>
         <div class="h-56 bg-gray-300 rounded animate-pulse"></div>
@@ -108,9 +115,16 @@
             [options]="statistics.mostUsedKeywordsChart.chart.options">
           </canvas>
         </div>
-        <button (click)="resetKeywordsZoom()" class="mt-2 text-sm text-blue-500 hover:underline">
-          {{ lang.locals.reset_zoom }}
-        </button>
+        <div class="flex gap-2">
+          <button (click)="resetKeywordsZoom()" class="mt-2 text-sm text-blue-500 hover:underline">
+            {{ lang.locals.reset_zoom }}
+          </button>
+          <button
+            (click)="statistics.mostUsedKeywordsChart.viewDetails!()"
+            class="mt-2 text-sm text-blue-500 hover:underline">
+            {{ lang.locals.view_details }}
+          </button>
+        </div>
       } @else {
         <div class="h-10 bg-gray-300 rounded animate-pulse mb-4"></div>
         <div class="h-56 bg-gray-300 rounded animate-pulse"></div>

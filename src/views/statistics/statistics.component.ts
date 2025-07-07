@@ -18,11 +18,21 @@ import { Context } from 'chartjs-plugin-datalabels'
 import { HasPermissionDirective } from '@/directives/has-permission.directive'
 import { ButtonDirective } from '@/directives/button.directive'
 import { StatisticsData } from '@/contracts/statisctics-data-contract'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import { StatisticsTablePopupComponent } from '@/components/statistics-table-popup/statistics-table-popup.component'
+import { StatisticsTableContract } from '@/contracts/statistics-table-contract'
 
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [AsyncPipe, BaseChartDirective, ReactiveFormsModule, HasPermissionDirective, ButtonDirective],
+  imports: [
+    AsyncPipe,
+    BaseChartDirective,
+    ReactiveFormsModule,
+    HasPermissionDirective,
+    ButtonDirective,
+    MatDialogModule,
+  ],
   templateUrl: './statistics.component.html',
 })
 export class StatisticsComponent implements OnInit {
@@ -30,6 +40,7 @@ export class StatisticsComponent implements OnInit {
   adminService = inject(AdminService)
   crawlingService = inject(WebCrawlerService)
   fb = inject(NonNullableFormBuilder)
+  dialog = inject(MatDialog)
 
   mostIndexedChart = viewChild('indexedChart', { read: BaseChartDirective })
   mostUsedKeywordsChart = viewChild('keywordsChart', { read: BaseChartDirective })
@@ -57,10 +68,12 @@ export class StatisticsComponent implements OnInit {
         mostIndexedChart: {
           title: this.lang.locals.most_indexed_urls,
           chart: this.getChartConfig(mostIndexed),
+          viewDetails: () => this.openMostIdexedUrlDialog(mostIndexed),
         },
         mostUsedKeywordsChart: {
           title: this.lang.locals.most_used_keywords,
           chart: this.getKeywordChartConfig(mostKeywords),
+          viewDetails: () => this.openMostIdexedKeywordsDialog(mostKeywords),
         },
         newsPercentageChart: {
           title: this.lang.locals.indexed_sources_percentage,
@@ -73,16 +86,16 @@ export class StatisticsComponent implements OnInit {
 
   getChartConfig(data: MostIndexedUrlsContract[]): ChartConfiguration {
     const urlCountMap = new Map<string, { count: number; dates: Set<string> }>()
-    data.forEach(item => {
+    data.slice(-10).forEach(item => {
       const url = decodeURIComponent(item.Most_indexed_URL)
-      const date = item.Date
+      const date = item.date
       const entry = urlCountMap.get(url) || { count: 0, dates: new Set<string>() }
       entry.count += item.Count
       entry.dates.add(date)
       urlCountMap.set(url, entry)
     })
 
-    const sorted = Array.from(urlCountMap.entries()).sort((a, b) => a[1].count - b[1].count)
+    const sorted = Array.from(urlCountMap.entries()).sort((a, b) => b[1].count - a[1].count)
     const labels = sorted.map(([url, val]) => `${url} (${Array.from(val.dates).join(', ')})`)
     const values = sorted.map(e => e[1].count)
 
@@ -106,7 +119,7 @@ export class StatisticsComponent implements OnInit {
 
   getKeywordChartConfig(data: MostUsedKeywordsContract[]): ChartConfiguration {
     const keywordMap = new Map<string, { count: number; dates: Set<string> }>()
-    data.forEach(item => {
+    data.slice(-10).forEach(item => {
       const keyword = item['Most-used-keywords'].trim()
       const date = item.date
       const entry = keywordMap.get(keyword) || { count: 0, dates: new Set<string>() }
@@ -115,7 +128,7 @@ export class StatisticsComponent implements OnInit {
       keywordMap.set(keyword, entry)
     })
 
-    const sorted = Array.from(keywordMap.entries()).sort((a, b) => a[1].count - b[1].count)
+    const sorted = Array.from(keywordMap.entries()).sort((a, b) => b[1].count - a[1].count)
     const labels = sorted.map(([kw, val]) => `${kw} (${Array.from(val.dates).join(', ')})`)
     const values = sorted.map(e => e[1].count)
 
@@ -241,7 +254,7 @@ export class StatisticsComponent implements OnInit {
       },
       scales: {
         x: { beginAtZero: true },
-        y: { ticks: { font: { size: 12 }, autoSkip: false } },
+        y: { ticks: { font: { size: 12 }, autoSkip: true } },
       },
     }
   }
@@ -252,5 +265,34 @@ export class StatisticsComponent implements OnInit {
 
   resetKeywordsZoom() {
     this.mostUsedKeywordsChart()?.chart?.resetZoom()
+  }
+
+  openMostIdexedUrlDialog(data: MostIndexedUrlsContract[]) {
+    this.dialog.open<
+      StatisticsTablePopupComponent<MostIndexedUrlsContract>,
+      StatisticsTableContract<MostIndexedUrlsContract>
+    >(StatisticsTablePopupComponent, {
+      data: {
+        headerCols: ['url', 'links_count', 'index_start_date'],
+        items: data,
+        keys: ['Most_indexed_URL', 'Count', 'date'],
+        searchKey: 'Most_indexed_URL',
+        header: 'most_indexed_urls',
+      },
+    })
+  }
+  openMostIdexedKeywordsDialog(data: MostUsedKeywordsContract[]) {
+    this.dialog.open<
+      StatisticsTablePopupComponent<MostUsedKeywordsContract>,
+      StatisticsTableContract<MostUsedKeywordsContract>
+    >(StatisticsTablePopupComponent, {
+      data: {
+        headerCols: ['keywords', 'keywords_count', 'index_start_date'],
+        items: data,
+        keys: ['Most-used-keywords', 'Count', 'date'],
+        searchKey: 'Most-used-keywords',
+        header: 'most_used_keywords',
+      },
+    })
   }
 }

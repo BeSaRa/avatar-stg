@@ -1366,5 +1366,9 @@
   "view_details": {
     "ar": "عرض التفاصيل",
     "en": "View Details"
+  },
+  "admin_insights": {
+    "ar": "إحصاءات الادمن",
+    "en": "Admin Insights"
   }
 }
