@@ -4,20 +4,23 @@ import { inject } from '@angular/core'
 import { ActivatedRouteSnapshot, CanActivateFn } from '@angular/router'
 import { LocalService } from '@/services/local.service'
 import { EmployeeService } from '@/services/employee.service'
+import { skipGuardIfAuthDisabled } from '@/utils/utils'
 
 export class PermissionGuard {
   static canActivate: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-    const employeeService = inject(EmployeeService)
-    const messageService = inject(MessageService)
-    const lang = inject(LocalService)
+    return skipGuardIfAuthDisabled(() => {
+      const employeeService = inject(EmployeeService)
+      const messageService = inject(MessageService)
+      const lang = inject(LocalService)
 
-    const hasPermission = this._hasPermission(employeeService, route.data as PermissionRouteData)
+      const hasPermission = this._hasPermission(employeeService, route.data as PermissionRouteData)
 
-    if (!hasPermission) {
-      messageService.showError(lang.locals.you_dont_have_permission_to_access_this_page)
-    }
+      if (!hasPermission) {
+        messageService.showError(lang.locals.you_dont_have_permission_to_access_this_page)
+      }
 
-    return hasPermission
+      return hasPermission
+    })
   }
 
   private static _hasPermission(service: EmployeeService, permissionRouteData: PermissionRouteData): boolean {

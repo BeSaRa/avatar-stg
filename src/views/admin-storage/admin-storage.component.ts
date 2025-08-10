@@ -4,7 +4,7 @@ import { ConfirmationPopupComponent } from '@/components/confirmation-popup/conf
 // eslint-disable-next-line max-len
 import { UploadStorageFilePopupComponent } from '@/components/upload-storage-file-popup/upload-storage-file-popup.component'
 import { ConfirmationDialogDataContact } from '@/contracts/confirmation-dialog-data-contract'
-import { HasPermissionDirective } from '@/directives/has-permission.directive'
+import { HasFeaturePermissionDirective } from '@/directives/has-feature-permission.directive'
 import { IgnoreSelectionDirective } from '@/directives/ignore-selection.directive'
 import { PerfectScrollDirective } from '@/directives/perfect-scroll.directive'
 import { SelectableContainerDirective } from '@/directives/selectable-container.directive'
@@ -33,7 +33,7 @@ import { catchError, distinctUntilChanged, filter, finalize, iif, map, of, switc
     MatTooltipModule,
     PerfectScrollDirective,
     NgTemplateOutlet,
-    HasPermissionDirective,
+    HasFeaturePermissionDirective,
   ],
   animations: [slideFromBottom, contentAnimation],
   templateUrl: './admin-storage.component.html',

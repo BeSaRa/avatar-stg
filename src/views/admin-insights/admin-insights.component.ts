@@ -86,10 +86,10 @@ export default class AdminInsightsComponent extends OnDestroyMixin(class {}) {
               chart: this.getBotTokensChartConfig(botOverview.data.total_tokens_per_bot),
             },
             deviceInfo: {
-              chart: this.getDeviceTypeChartConfig(userStatistics.data.device_info),
+              chart: this.getDeviceTypeChartConfig(userStatistics?.data?.device_info ?? []),
             },
             regionInfo: {
-              chart: this.getCountryRegionChartConfig(userStatistics.data.region),
+              chart: this.getCountryRegionChartConfig(userStatistics?.data?.region ?? []),
             },
           })
         ),

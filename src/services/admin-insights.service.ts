@@ -9,7 +9,7 @@ import {
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { UrlService } from './url.service'
-import { combineLatest, Observable } from 'rxjs'
+import { catchError, combineLatest, Observable, of } from 'rxjs'
 import { AdminInsightStatistics, BotNameOverviewData } from '@/contracts/admin-insights-contract'
 
 @Injectable({
@@ -82,7 +82,9 @@ export class AdminInsightsService {
       sessionResult: this.getSessionResults(botName, fromDate, toDate),
       tokenResult: this.getTokenResults(botName, fromDate, toDate),
       usageResult: this.getUsageResults(botName, fromDate, toDate),
-      userStatistics: this.getUserStatistics(botName, fromDate, toDate),
+      userStatistics: this.getUserStatistics(botName, fromDate, toDate).pipe(
+        catchError(() => of({ data: { device_info: [], region: [] } }))
+      ),
     })
   }
 

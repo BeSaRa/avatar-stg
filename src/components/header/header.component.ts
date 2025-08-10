@@ -12,11 +12,12 @@ import { ALL_PERMISSIONS } from '../../resources/all-permissions'
 import { MENU_ITEMS } from '../../resources/menu-items'
 import { ButtonDirective } from '@/directives/button.directive'
 import { EmployeeService } from '@/services/employee.service'
+import { HasFeaturePermissionDirective } from '@/directives/has-feature-permission.directive'
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, ButtonDirective],
+  imports: [RouterLink, ButtonDirective, HasFeaturePermissionDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   host: {

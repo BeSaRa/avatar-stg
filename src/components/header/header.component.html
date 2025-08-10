@@ -2,10 +2,17 @@
   <div class="flex items-center justify-between">
     <a class="flex-shrink" [routerLink]="['/home']">
       <img class="h-20" [src]="'assets/images/qrep-newlogo-colored.png'" alt="logo" />
+      <!-- <img class="h-20 w-80" [src]="'assets/images/phcc.svg'" alt="logo" /> -->
     </a>
     <div class="flex items-center justify-center gap-2">
       @if (employeeService.hasAuthenticatedUser()) {
-        <a routerLink="/home/avatar" appButton color="accent" shape="pill" class="!py-[2px]"
+        <a
+          routerLink="/home/avatar"
+          *appHasFeaturePermission="{ permissions: ['AVATAR'], feature: 'avatar' }"
+          appButton
+          color="accent"
+          shape="pill"
+          class="!py-[2px]"
           ><img class="w-8 h-8" src="assets/icons/avatar-icon.png" alt="avatar" />
           <span>{{ lang.locals.avatar_chat }}</span></a
         >

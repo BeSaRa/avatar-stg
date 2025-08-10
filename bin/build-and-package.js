@@ -78,9 +78,32 @@ function isOcp(selectedEnv) {
   }
 }
 
+function selectFeatureProfile() {
+  const profiles = envData.FEATURE_PROFILES
+  if (!profiles || profiles.length === 0) {
+    console.warn('⚠️ No FEATURE_PROFILES found in environment.json. Skipping profile selection.')
+    return
+  }
+
+  console.log('\nAvailable Feature Profiles:')
+  profiles.forEach((profile, index) => console.log(`${index + 1}) ${profile}`))
+  const choice = readline.question('Select a feature profile (number): ').trim()
+  const index = parseInt(choice, 10) - 1
+
+  if (index < 0 || index >= profiles.length) {
+    console.error('❌ Invalid feature profile selection!')
+    process.exit(1)
+  }
+
+  const selectedProfile = profiles[index]
+  console.log(`✅ Selected FEATURE_PROFILE: ${selectedProfile}`)
+  envData.FEATURE_PROFILE = selectedProfile
+}
+
 function updateEnvironment(selectedEnv) {
   console.log(`🔄 Updating BASE_ENVIRONMENT to: ${selectedEnv}`)
   envData.BASE_ENVIRONMENT = selectedEnv
+  selectFeatureProfile()
   fs.writeFileSync(envFilePath, JSON.stringify(envData, null, 4))
 }
 

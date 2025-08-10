@@ -359,4 +359,6 @@ export interface LangKeysContract {
   CLOSED: string
   ESCALATED: string
   search_sender_name: string
+  phcc_portal: string
+  greeting_chat_message_phcc: string
 }

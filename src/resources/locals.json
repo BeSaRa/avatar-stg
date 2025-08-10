@@ -1438,5 +1438,13 @@
   "search_sender_name": {
     "ar": "البحث عن طريق اسم المرسل",
     "en": "Search by sender name..."
+  },
+  "phcc_portal": {
+    "ar": "مؤسسة الرعاية الصحية الأولية",
+    "en": "Primary Health Care Corporation"
+  },
+  "greeting_chat_message_phcc": {
+    "ar": "مرحبا بك في مؤسسة الرعاية الصحية الأولية, كيف يمكنني مساعدتك؟",
+    "en": "Hi there! Welcome to PHCC, How can I help you?"
   }
 }

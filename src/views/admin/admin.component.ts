@@ -3,14 +3,14 @@ import { LocalService } from '@/services/local.service'
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
-import { HasPermissionDirective } from '@/directives/has-permission.directive'
 import { MenuItem } from '@/contracts/menu-item-contract'
 import { ADMIN_MENU_ITEMS } from '../../resources/admin-menu-items'
+import { HasFeaturePermissionDirective } from '@/directives/has-feature-permission.directive'
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavCardComponent, HasPermissionDirective],
+  imports: [CommonModule, RouterOutlet, NavCardComponent, HasFeaturePermissionDirective],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })

@@ -16,7 +16,7 @@ import { ConfirmationDialogDataContact } from '@/contracts/confirmation-dialog-d
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'
 import { NgClass } from '@angular/common'
 import { EditFaqPopupComponent } from '../edit-faq-popup/edit-faq-popup.component'
-import { HasPermissionDirective } from '@/directives/has-permission.directive'
+import { HasFeaturePermissionDirective } from '@/directives/has-feature-permission.directive'
 
 @Component({
   selector: 'app-faq-list',
@@ -27,7 +27,7 @@ import { HasPermissionDirective } from '@/directives/has-permission.directive'
     DropdownComponent,
     TemplateDirective,
     NgClass,
-    HasPermissionDirective,
+    HasFeaturePermissionDirective,
   ],
   templateUrl: './faq-list.component.html',
   styleUrl: './faq-list.component.scss',

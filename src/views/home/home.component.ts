@@ -8,6 +8,7 @@ import { SmartChatComponent } from '@/components/smart-chat/smart-chat.component
 import { AvatarService } from '@/services/avatar.service'
 import { OnDestroyMixin } from '@/mixins/on-destroy-mixin'
 import { LegalChatService } from '@/services/legal-chat.service'
+import { ChatService } from '@/services/chat.service'
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ export default class HomeComponent extends OnDestroyMixin(class {}) {
   main = viewChild.required<ElementRef<HTMLDivElement>>('main')
   route = inject(ActivatedRoute)
   legalService = inject(LegalChatService)
+  chatService = inject(ChatService)
 
   /**
    *
@@ -38,6 +40,7 @@ export default class HomeComponent extends OnDestroyMixin(class {}) {
       .pipe(
         takeUntil(this.destroy$),
         tap(f => this.legalService.status.set(f === 'legal'))
+        // tap(f => this.chatService.status.set(f === 'chat'))
       )
       .subscribe()
   }

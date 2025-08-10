@@ -1,15 +1,19 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { LoginData } from '@/models/login-data'
 import { ALL_PERMISSIONS } from '../resources/all-permissions'
+import { FeatureToggleService } from './feature-toggle.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
   private declare currentUser: LoginData | null
+  private readonly featureToggleService = inject(FeatureToggleService)
 
   hasAuthenticatedUser(): boolean {
-    return !!this.currentUser
+    const isAuthEnabled = this.featureToggleService.isAuthEnabled()
+    if (isAuthEnabled) return !!this.currentUser
+    return true
   }
 
   setCurrentUser(user: LoginData) {
