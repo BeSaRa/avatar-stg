@@ -190,7 +190,7 @@
       </div>
       @if (showRecorderBtn()) {
         <app-recorder
-          *appHasPermission="['SPEECH']"
+          *appHasFeaturePermission="{ permissions: ['SPEECH'], feature: 'chat' }"
           #recorder
           (recognized$)="messageCtrl.setValue($event)"
           (recognizing$)="messageCtrl.setValue($event)" />

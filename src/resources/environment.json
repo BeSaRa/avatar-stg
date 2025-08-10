@@ -1,29 +1,42 @@
 {
-    "ENVIRONMENTS_URLS": {
-        "DEV": "https://afnqcpcbai01.azurewebsites.net/api",
-        "AQARAT_DEV": "https://apigatewaydev.aqarat.gov.qa/api-afnqcdcbai01/api",
-        "AQARAT_STG": "https://apigatewaystg.aqarat.gov.qa/api-afnqcscbai01/api",
-        "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
-        "AZURE": "https://rera-api.azurewebsites.net/api",
-        "RERA": "https://rera-api-1.azurewebsites.net/api",
-        "MM": "https://mm-api-demo.azurewebsites.net/api"
-    },
-    "API_VERSION": "v1",
-    "BASE_ENVIRONMENT": "AZURE",
-    "KUNA_KEYS": {
-        "AQARAT_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
-        "AQARAT_STG": "kTt7GZREL946kzaV7DOC9KME-2igL3LRkHt3eJoZwSWXAzFu1FCOhQ==",
-        "AQARAT_PROD": "zcEFWDuz4rnpCcn3_DRtTB0zD1CCnEJ3TGBvofYkWS3kAzFu-TX8jg=="
-    },
-    "OCP_APIM_KEYS": {
-        "AQARAT_DEV": "976abc7031124bc1ad4761fcf2c37137",
-        "AQARAT_STG": "2685074912d34e97a1a677bdacb8e385"
-    },
-    "IS_OCP": true,
-    "ENTITY_NAME": "rera_agent",
-    "IDLE_AVATARS": [
-        "lady",
-        "gulf",
-        "suit"
-    ]
+  "ENVIRONMENTS_URLS": {
+    "DEV": "http://fnc-aiapp-cb-dev-sc.azurewebsites.net/api",
+    "DEMO": "https://ebla-ai-demo-002.azurewebsites.net/api",
+    "AQARAT_DEV": "https://apigatewaydev.aqarat.gov.qa/api-afnqcdcbai01/api",
+    "AQARAT_STG": "https://apigatewaystg.aqarat.gov.qa/api-afnqcscbai01/api",
+    "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
+    "RAYYAN_DEV": "https://fun-ar-sw-ai-dev-01.azurewebsites.net/api",
+    "RAYYAN_STG": "https://fun-ar-sw-ai-stg-01.azurewebsites.net/api",
+    "RAYYAN_PROD": "https://fun-ar-sw-ai-prd-01.azurewebsites.net/api",
+    "PHCC_DEV": "https://apim-ailz-dev-sc.phcc.gov.qa/fnc-aiapp-cb-dev-sc/api",
+    "PHCC_STG": "https://apim-ailz-stg-sc.phcc.gov.qa/fnc-aiapp-cb-stg-sc/api",
+    "PHCC_PROD": "https://apim-ailz-prd-sc.phcc.gov.qa/fnc-aiapp-cb-prd-sc/api",
+    "AZURE": "https://rera-api.azurewebsites.net/api",
+    "RERA": "https://rera-api-1.azurewebsites.net/api",
+    "MM": "https://mm-api-demo.azurewebsites.net/api"
+  },
+  "API_VERSION": "v1",
+  "BASE_ENVIRONMENT": "AQARAT_STG",
+  "KUNA_KEYS": {
+    "DEMO": "T55s7RlGknAAxFZSPU2jwIb5YwgmzVH4lsrWUKips4FwAzFuZQlXPQ==",
+    "AQARAT_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
+    "AQARAT_STG": "kTt7GZREL946kzaV7DOC9KME-2igL3LRkHt3eJoZwSWXAzFu1FCOhQ==",
+    "AQARAT_PROD": "zcEFWDuz4rnpCcn3_DRtTB0zD1CCnEJ3TGBvofYkWS3kAzFu-TX8jg==",
+    "RAYYAN_STG": "3gy2ZziQynTQR4GroKPaLEEVe0UCySLZr_SAgdwbay3gAzFuo_bCdQ==",
+    "RAYYAN_DEV": "kze8A1C0vtb10Odx-0BBjiv8D33szn0alw4y0lrYjUoQAzFuUKpCBQ==",
+    "RAYYAN_PROD": "s2JG6_fNYB3GY5hbusD_XlrWOqAxjVXnlXuc_e4-sFglAzFus5Gl6w=="
+  },
+  "OCP_APIM_KEYS": {
+    "AQARAT_DEV": "976abc7031124bc1ad4761fcf2c37137",
+    "AQARAT_STG": "2685074912d34e97a1a677bdacb8e385",
+    "PHCC_DEV": "68599f932d914f7ca1ec478bae38ed8a",
+    "PHCC_STG": "88053d6dfef347b9a8cc22c6fc13cd03",
+    "PHCC_PROD": "6754e783bf894e81b70af7a65a8b0d73",
+    "RAYYAN_STG": "110775bc2fd24ae3aae515e76bf21b5b"
+  },
+  "IS_OCP": true,
+  "ENTITY_NAME": "rera_agent",
+  "IDLE_AVATARS": ["lady", "gulf", "suit"],
+  "FEATURE_PROFILE": "aqarat",
+  "FEATURE_PROFILES": ["rayyan", "aqarat", "phcc"]
 }

@@ -2,6 +2,7 @@ import { SVG_ICONS } from '@/constants/svg-icons'
 import { LangKeysContract } from './lang-keys-contract'
 import { ALL_PERMISSIONS } from '../resources/all-permissions'
 import { CardColor } from '@/constants/card-color-type'
+import { FeatureKey } from '@/constants/feature-keys'
 
 export interface MenuItem {
   id: number
@@ -12,6 +13,7 @@ export interface MenuItem {
   imgUrl?: string
   route: string
   fragment?: string
+  feature?: FeatureKey
   permissions: (keyof typeof ALL_PERMISSIONS)[]
   haveSomeOfPermissions?: boolean
   children?: MenuItem[]

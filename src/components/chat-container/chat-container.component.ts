@@ -1,4 +1,3 @@
-import { HasPermissionDirective } from '@/directives/has-permission.directive'
 import {
   Component,
   effect,
@@ -51,6 +50,7 @@ import { slideFromBottom } from '@/animations/fade-in-slide'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { StreamComponent } from '@/enums/stream-component'
 import { Router } from '@angular/router'
+import { HasFeaturePermissionDirective } from '@/directives/has-feature-permission.directive'
 
 @Component({
   selector: 'app-chat-container',
@@ -70,7 +70,7 @@ import { Router } from '@angular/router'
     FAQComponent,
     SecureUrlDirective,
     MatSlideToggleModule,
-    HasPermissionDirective,
+    HasFeaturePermissionDirective,
   ],
   animations: [slideFromBottom],
   templateUrl: './chat-container.component.html',

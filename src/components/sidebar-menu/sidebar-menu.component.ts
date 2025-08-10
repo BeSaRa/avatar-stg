@@ -1,6 +1,11 @@
 import { SVG_ICONS } from '@/constants/svg-icons'
+import { HasFeatureDirective } from '@/directives/has-feature.directive'
 import { SanitizerPipe } from '@/pipes/sanitizer.pipe'
+import { AuthService } from '@/services/auth.service'
 import { ChatService } from '@/services/chat.service'
+import { EmployeeService } from '@/services/employee.service'
+import { FeatureToggleService } from '@/services/feature-toggle.service'
+import { LegalChatService } from '@/services/legal-chat.service'
 import { LocalService } from '@/services/local.service'
 import { MenuService } from '@/services/menu.service'
 import { CommonModule } from '@angular/common'
@@ -9,14 +14,11 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { Router, RouterModule } from '@angular/router'
 import { SettingsPopupComponent } from '../settings-popup/settings-popup.component'
-import { LegalChatService } from '@/services/legal-chat.service'
-import { AuthService } from '@/services/auth.service'
-import { EmployeeService } from '@/services/employee.service'
 
 @Component({
   selector: 'app-sidebar-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, SanitizerPipe, MatTooltip],
+  imports: [CommonModule, RouterModule, SanitizerPipe, MatTooltip, HasFeatureDirective],
   templateUrl: './sidebar-menu.component.html',
   styleUrl: './sidebar-menu.component.scss',
 })
@@ -28,6 +30,7 @@ export class SidebarMenuComponent {
   dialog = inject(MatDialog)
   menuService = inject(MenuService)
   auth = inject(AuthService)
+  isAuthEnabled = inject(FeatureToggleService).isAuthEnabled()
 
   readonly svgIcons = SVG_ICONS
 

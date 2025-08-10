@@ -13,6 +13,7 @@
         ></a>
       }
       <button
+        *appHasFeature="'chat'"
         [matTooltip]="lang.locals.chat_assisstant"
         matTooltipPosition="after"
         (click)="showSmartBot()"
@@ -20,6 +21,7 @@
         <div [innerHTML]="svgIcons.CHAT | sanitizer: 'html'"></div>
       </button>
       <button
+        *appHasFeature="'legal_chat'"
         [matTooltip]="lang.locals.chat"
         matTooltipPosition="after"
         (click)="showLegalChatBot()"
@@ -50,26 +52,28 @@
       </div>
     }
   </div>
-  <div class="border-t border-secondary-200 pt-4 px-8 flex flex-col gap-4">
-    <button
-      [matTooltip]="this.employeeService.getCurrentUser()?.username"
-      matTooltipPosition="after"
-      class="hover:text-primary transition-all">
-      <div [innerHTML]="svgIcons.USER | sanitizer: 'html'"></div>
-    </button>
-    <button
-      [matTooltip]="lang.locals.settings"
-      matTooltipPosition="after"
-      (click)="openSettings()"
-      class="hover:text-primary transition-all">
-      <div [innerHTML]="svgIcons.SETTINGS | sanitizer: 'html'"></div>
-    </button>
-    <button
-      [matTooltip]="lang.locals.log_out"
-      matTooltipPosition="after"
-      (click)="logout()"
-      class="hover:text-primary transition-all">
-      <div [innerHTML]="svgIcons.LOGOUT | sanitizer: 'html'"></div>
-    </button>
-  </div>
+  @if (isAuthEnabled) {
+    <div class="border-t border-secondary-200 pt-4 px-8 flex flex-col gap-4">
+      <button
+        [matTooltip]="this.employeeService.getCurrentUser()?.username"
+        matTooltipPosition="after"
+        class="hover:text-primary transition-all">
+        <div [innerHTML]="svgIcons.USER | sanitizer: 'html'"></div>
+      </button>
+      <button
+        [matTooltip]="lang.locals.settings"
+        matTooltipPosition="after"
+        (click)="openSettings()"
+        class="hover:text-primary transition-all">
+        <div [innerHTML]="svgIcons.SETTINGS | sanitizer: 'html'"></div>
+      </button>
+      <button
+        [matTooltip]="lang.locals.log_out"
+        matTooltipPosition="after"
+        (click)="logout()"
+        class="hover:text-primary transition-all">
+        <div [innerHTML]="svgIcons.LOGOUT | sanitizer: 'html'"></div>
+      </button>
+    </div>
+  }
 </div>

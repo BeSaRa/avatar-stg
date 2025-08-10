@@ -1,3 +1,5 @@
+import { FeatureProfile } from '@/types/feature-profile'
+
 export const Config = {
   VERSION: 'v0.1.8',
   BASE_ENVIRONMENT: '',
@@ -14,6 +16,8 @@ export const Config = {
   REFRESH_TOKEN_COOKIE_NAME: '$__RT__$',
   ACCESS_TOKEN_TTL_IN_MINUTES: 30,
   REFRESH_ACCESS_TOKEN_BEFORE_ENDING_IN_MINUTES: 5,
+  FEATURE_PROFILE: '' as FeatureProfile,
+  FEATURE_PROFILES: [] as FeatureProfile[],
 }
 
 export type ConfigType = typeof Config

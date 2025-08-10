@@ -1,5 +1,7 @@
 import { ICitations } from '@/models/base-message'
+import { FeatureToggleService } from '@/services/feature-toggle.service'
 import { CrawlerSettingsGroupRawValue, TransformedData, TransformedGrouped } from '@/types/url-crawler'
+import { inject } from '@angular/core'
 // noinspection JSUnusedGlobalSymbols
 
 import {
@@ -410,4 +412,14 @@ export function removeNullableAndIgnoreKeys<T extends Record<string, unknown>>(
   }
 
   return result
+}
+
+export function skipGuardIfAuthDisabled<T>(guardFn: () => T): T | true {
+  const featureToggle = inject(FeatureToggleService)
+
+  if (!featureToggle.isAuthEnabled()) {
+    return true
+  }
+
+  return guardFn()
 }
