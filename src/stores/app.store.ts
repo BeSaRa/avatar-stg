@@ -6,6 +6,7 @@ import { getState, patchState, signalStore, withComputed, withHooks, withMethods
 interface AppStore {
   speechToken: SpeechTokenContract
   streamId: string
+  clientId: string
   recording: 'Started' | 'InProgress' | 'Stopped'
   streamingStatus: 'Started' | 'InProgress' | 'Stopped' | 'Disconnecting'
   streamIdMap: Record<StreamComponent, string>
@@ -26,6 +27,7 @@ const initialState: AppStore = {
     region: '',
   },
   streamId: '',
+  clientId: '',
   recording: 'Stopped',
   streamingStatus: 'Stopped',
   streamIdMap: {
@@ -77,6 +79,9 @@ export const AppStore = signalStore(
     },
     updateStreamId: (streamId: string) => {
       patchState(store, { streamId })
+    },
+    updateClientId: (clientId: string) => {
+      patchState(store, { clientId })
     },
     recordingStarted: () => {
       patchState(store, { recording: 'Started' })

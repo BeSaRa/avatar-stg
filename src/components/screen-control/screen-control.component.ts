@@ -55,21 +55,21 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
   recognized$ = new Subject<void>()
   accept$ = new Subject<void>()
   recognizingStatus = signal<boolean>(false)
-  botNames$ = this.chatHistoryService
-    .getAllBotNames()
-    .pipe(tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)))
-
   lang = inject(LocalService)
 
   readonly appColors = AppColors
   readonly svgIcons = SVG_ICONS
 
   async ngOnInit(): Promise<void> {
+    this.chatHistoryService
+      .getAllBotNames()
+      .pipe(tap(bots => this.chatService.botNameCtrl.patchValue(bots.at(0)!)))
+      .subscribe()
     this.avatarService.componentName.set(StreamComponent.ChatbotComponent)
 
     this.listenToAccept()
     this.listenToBotNameChange()
-    await this.prepareRecorder()
+    this.speechService.generateSpeechToken().subscribe(() => this.prepareRecorder())
   }
 
   listenToBotNameChange() {

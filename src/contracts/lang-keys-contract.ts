@@ -361,6 +361,8 @@ export interface LangKeysContract {
   search_sender_name: string
   phcc_portal: string
   greeting_chat_message_phcc: string
+  enable_remote_control: string
+  disable_remote_control: string
   video_analyzer: string
   upload_video: string
   choose_video_from_list: string

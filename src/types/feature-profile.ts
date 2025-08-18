@@ -1,1 +1,1 @@
-export type FeatureProfile = 'rayyan' | 'aqarat' | 'phcc'
+export type FeatureProfile = 'demo' | 'rayyan' | 'aqarat' | 'phcc'
