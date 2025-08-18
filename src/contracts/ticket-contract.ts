@@ -12,4 +12,6 @@ export interface TicketContract {
   subject: string
   body: string
   status: TicketStatus
+  created_date: string
+  created_time: string
 }

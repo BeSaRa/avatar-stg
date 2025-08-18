@@ -1446,5 +1446,161 @@
   "greeting_chat_message_phcc": {
     "ar": "مرحبا بك في مؤسسة الرعاية الصحية الأولية, كيف يمكنني مساعدتك؟",
     "en": "Hi there! Welcome to PHCC, How can I help you?"
+  },
+  "video_analyzer": {
+    "ar": "محلل الفيديو",
+    "en": "Video Analyzer"
+  },
+  "upload_video": {
+    "ar": "ارفع فيديو",
+    "en": "Upload Video"
+  },
+  "choose_video_from_list": {
+    "ar": "اختر فيديو من القائمة",
+    "en": "Choose video from list"
+  },
+  "videos_list": {
+    "ar": "قائمة الفيديوهات",
+    "en": "Videos List"
+  },
+  "people": {
+    "ar": "الأشخاص",
+    "en": "People"
+  },
+  "audio_effects": {
+    "ar": "تأثيرات الصوت",
+    "en": "Audio Effects"
+  },
+  "labels": {
+    "ar": "الوسوم",
+    "en": "Labels"
+  },
+  "chat_about_video": {
+    "ar": "تحدث عن الفيديو",
+    "en": "Chat about video"
+  },
+  "uploading_file_msg": {
+    "ar": "جاري رفع وتحليل الملف ,يرجى الانتظار..",
+    "en": "Uploading and analysis file, please wait..."
+  },
+  "file_info_msg": {
+    "ar": "جاري جلب الملف, يرجى الانتظار...",
+    "en": "Get file data, please wait..."
+  },
+  "insights": {
+    "ar": "المشاهد",
+    "en": "Insights"
+  },
+  "locations": {
+    "ar": "الأماكن",
+    "en": "Locations"
+  },
+  "brands": {
+    "ar": "العلامات التجارية",
+    "en": "Brands"
+  },
+  "emotions": {
+    "ar": "المشاعر",
+    "en": "ُEmotions"
+  },
+  "scenes": {
+    "ar": "المشاهد",
+    "en": "Scenes"
+  },
+  "shots_in_this_scene": {
+    "ar": "اللقطات في هذا المشهد",
+    "en": "Shots in this scene"
+  },
+  "keyframes_in_this_shot": {
+    "ar": "الإطارات الرئيسية في هذه اللقطة",
+    "en": "Keyframes in this shot"
+  },
+  "named_entity": {
+    "ar": "الكيانات المسماة",
+    "en": "Named Entity"
+  },
+  "show_description": {
+    "ar": "عرض التفاصيل",
+    "en": "Show description"
+  },
+  "show_biography": {
+    "ar": "عرض السيرة الذاتية",
+    "en": "Show Biography"
+  },
+  "find_on_bing": {
+    "ar": "ابحث عن طريق Bing",
+    "en": "Find on Bing"
+  },
+  "anger": {
+    "ar": "غضب",
+    "en": "Anger"
+  },
+  "joy": {
+    "ar": "مرح",
+    "en": "Joy"
+  },
+  "fear": {
+    "ar": "خوف",
+    "en": "Fear"
+  },
+  "sad": {
+    "ar": "حزن",
+    "en": "Sad"
+  },
+  "observed_people": {
+    "ar": "الأشخاص الملاحظون",
+    "en": "Observed People"
+  },
+  "appear_in": {
+    "ar": "يظهر في",
+    "en": "Appears in"
+  },
+  "of_video": {
+    "ar": "من الفيديو",
+    "en": "of video"
+  },
+  "read_more": {
+    "ar": "اقرأ المزيد",
+    "en": "read more"
+  },
+  "certainty": {
+    "ar": "يقين",
+    "en": "Certainty"
+  },
+  "this_is_an_estimated_identification_and_might_be_incorrect": {
+    "ar": "هذا تعريف تقديري وقد يكون غير صحيح",
+    "en": "This is an estimated identification and might be incorrect"
+  },
+  "transcript": {
+    "ar": "النص",
+    "en": "Transcript"
+  },
+  "video_summary": {
+    "ar": "ملخص الفيديو",
+    "en": "Video Summary"
+  },
+  "choose_language": {
+    "ar": "من فضلك اختر لغة لرفع الفيديو",
+    "en": "Please choose language to upload video"
+  },
+  "translating": {
+    "ar": "جاري الترجمة...",
+    "en": "Translating..."
+  },
+  "this_may_take_few_moments": {
+    "ar": "ربما سيتسغرق بضع دقائق",
+    "en": "This may take a few moments"
+  },
+  "choose_lang": {
+    "ar": "اختر اللغة",
+    "en": "Choose language"
+  },
+  "videoAnalyzerHint": {
+    "ar": "يمكنك التواصل مع محلل الفيديو عن طريق الضغط على الأيقونة في أسفل الصفحة، واستمتع باكتشاف تفاصيل جديدة بسهولة ",
+    "en": "You can chat with the video analyzer by clicking the icon at the bottom of the page — enjoy discovering new insights effortlessly "
+  },
+  "videoAnalyzerGreeting": {
+    "ar": "مرحباً بك في محلل الفيديو، حيث تتحول اللقطات إلى رؤى واضحة وممتعة.",
+    "en": "Welcome to the Video Analyzer, where moments turn into clear and engaging insights."
   }
 }

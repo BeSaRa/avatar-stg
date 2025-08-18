@@ -3,4 +3,5 @@ export enum StreamComponent {
   ChatbotComponent = 'CHATBOT_COMPONENT',
   VideoGeneratorComponent = 'VIDEO_GENERATOR_COMPONENT',
   AgentChatComponent = 'AGENT_CHAT_COMPONENT',
+  VideoAnalyzerComponent = 'VIDEO_ANALYZER_COMPONENT',
 }

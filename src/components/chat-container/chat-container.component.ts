@@ -91,6 +91,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   showRatingBox = input(true)
   showRecorderBtn = input(true)
   showUploadDocumentBtn = input(true)
+  showAgentToggler = input(true)
   componentName = input.required<StreamComponent>()
   title = input(this.lang.locals.chat)
   containerClass = input('')

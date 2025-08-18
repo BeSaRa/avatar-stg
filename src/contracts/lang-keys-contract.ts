@@ -361,4 +361,43 @@ export interface LangKeysContract {
   search_sender_name: string
   phcc_portal: string
   greeting_chat_message_phcc: string
+  video_analyzer: string
+  upload_video: string
+  choose_video_from_list: string
+  videos_list: string
+  uploading_file_msg: string
+  file_info_msg: string
+  people: string
+  audio_effects: string
+  labels: string
+  chat_about_video: string
+  insights: string
+  locations: string
+  brands: string
+  emotions: string
+  scenes: string
+  shots_in_this_scene: string
+  keyframes_in_this_shot: string
+  named_entity: string
+  show_description: string
+  show_biography: string
+  find_on_bing: string
+  anger: string
+  joy: string
+  fear: string
+  sad: string
+  observed_people: string
+  appear_in: string
+  of_video: string
+  read_more: string
+  certainty: string
+  this_is_an_estimated_identification_and_might_be_incorrect: string
+  transcript: string
+  video_summary: string
+  choose_language: string
+  translating: string
+  this_may_take_few_moments: string
+  choose_lang: string
+  videoAnalyzerHint: string
+  videoAnalyzerGreeting: string
 }
