@@ -2,6 +2,7 @@
   "ENVIRONMENTS_URLS": {
     "DEV": "http://fnc-aiapp-cb-dev-sc.azurewebsites.net/api",
     "DEMO": "https://ebla-ai-demo-002.azurewebsites.net/api",
+    "DEMO_3": "https://ebla-ai-demo-003-fqeudne5escfcsea.qatarcentral-01.azurewebsites.net/api",
     "AQARAT_DEV": "https://apigatewaydev.aqarat.gov.qa/api-afnqcdcbai01/api",
     "AQARAT_STG": "https://apigatewaystg.aqarat.gov.qa/api-afnqcscbai01/api",
     "AQARAT_PROD": "https://afnqcpcbai01.azurewebsites.net/api",
@@ -35,8 +36,17 @@
     "RAYYAN_STG": "110775bc2fd24ae3aae515e76bf21b5b"
   },
   "IS_OCP": false,
-  "ENTITY_NAME": "rera_agent",
-  "IDLE_AVATARS": ["lady", "gulf", "suit"],
-  "FEATURE_PROFILE": "aqarat",
-  "FEATURE_PROFILES": ["rayyan", "aqarat", "phcc"]
+  "ENTITY_NAME": "mecc",
+  "IDLE_AVATARS": [
+    "lady",
+    "gulf",
+    "suit"
+  ],
+  "FEATURE_PROFILE": "demo",
+  "FEATURE_PROFILES": [
+    "demo",
+    "rayyan",
+    "aqarat",
+    "phcc"
+  ]
 }

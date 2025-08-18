@@ -1,6 +1,6 @@
 <div #baseElement class="relative h-full w-full flex items-center justify-center bg-secondary-100/80 rounded-xl shadow">
   <div class="flex flex-col items-center h-full justify-center absolute">
-    @if (recognizedText()) {
+    @if (recognizedText() && !qrCodeOpened) {
       <span
         class="absolute w-[90%] z-10 bottom-1/2 left-1/2 -translate-x-1/2 bg-black/70 text-white text-sm rounded px-2 py-1"
         >{{ recognizedText() }}</span
@@ -8,7 +8,7 @@
     }
     <div class="absolute -start-20 top-1/2 -translate-y-1/2 !w-16 flex flex-col gap-2">
       <button
-        [disabled]="store.isStreamLoadingFor(componentName())"
+        [disabled]="store.isStreamLoadingFor(componentName()) || qrCodeOpened"
         (pointerdown)="toggleStream()"
         class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
         @if (store.isStreamLoadingFor(componentName())) {
@@ -28,7 +28,7 @@
           (click)="rejectText()"
           appButton
           shape="pill"
-          [ngClass]="{ '-start-10 opacity-100': store.isRecordingStarted() }"
+          [ngClass]="{ '-start-10 opacity-100': store.isRecordingStarted() && !qrCodeOpened }"
           class="!p-1 !absolute top-1/2 -translate-y-1/2 opacity-0 transition-all duration-300">
           <svg class="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path
@@ -36,7 +36,7 @@
           </svg>
         </button>
         <button
-          [disabled]="store.isRecordingLoading() || recognizingStatus()"
+          [disabled]="store.isRecordingLoading() || recognizingStatus() || qrCodeOpened"
           (click)="toggleRecording()"
           class="relative w-full !h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
           @if (store.isRecordingLoading()) {
@@ -58,7 +58,7 @@
         </button>
       </div>
       <button
-        [disabled]="!store.isStreamStartedFor(componentName())"
+        [disabled]="!store.isStreamStartedFor(componentName()) || qrCodeOpened"
         (click)="interruptAvatar()"
         class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
         <span class="relative size-6">
@@ -68,21 +68,11 @@
         {{ lang.locals.stop_talking }}
       </button>
       <button
-        [disabled]="!chatService.messages().length"
+        [disabled]="!chatService.messages().length || qrCodeOpened"
         (click)="clearChat()"
         class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
         <img [src]="'assets/icons/clear-chat.png'" class="size-6" alt="start" />
         {{ lang.locals.clear_chat_history }}
-      </button>
-      <button
-        [disabled]="!store.isStreamStartedFor(componentName())"
-        (click)="qrCodeOpened = true"
-        class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
-        <svg fill="currentColor" class="size-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path
-            d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H11V13H9V11M15,11H17V13H19V11H21V13H19V15H21V19H19V21H17V19H13V21H11V17H15V15H17V13H15V11M19,19V15H17V19H19M15,3H21V9H15V3M17,5V7H19V5H17M3,3H9V9H3V3M5,5V7H7V5H5M3,15H9V21H3V15M5,17V19H7V17H5Z" />
-        </svg>
-        {{ lang.locals.qr_code }}
       </button>
       <button
         (click)="toggleFullScreen()"
@@ -105,6 +95,20 @@
           }
         </span>
         {{ chatService.streamResponse() ? lang.locals.stream_inactive : lang.locals.stream_active }}
+      </button>
+      <button
+        (click)="toggleRemote()"
+        class="!h-16 flex flex-col items-center justify-center bg-white rounded-md shadow text-primary text-xs transition-all hover:bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg fill="currentColor" class="size-8" viewBox="0 0 24 24">
+          @if (isRemote) {
+            <path
+              d="M2,5.27L3.28,4L21,21.72L19.73,23L16,19.27V22A1,1 0 0,1 15,23H9C8.46,23 8,22.55 8,22V11.27L2,5.27M12,0C15.05,0 17.8,1.23 19.77,3.23L18.36,4.64C16.75,3 14.5,2 12,2C9.72,2 7.64,2.85 6.06,4.24L4.64,2.82C6.59,1.07 9.17,0 12,0M12,4C13.94,4 15.69,4.78 16.95,6.05L15.55,7.46C14.64,6.56 13.39,6 12,6C10.83,6 9.76,6.4 8.9,7.08L7.5,5.66C8.7,4.62 10.28,4 12,4M15,9C15.56,9 16,9.45 16,10V14.18L13.5,11.69L13.31,11.5L10.82,9H15M10.03,13.3C10.16,14.16 10.84,14.85 11.71,15L10.03,13.3Z" />
+          } @else {
+            <path
+              d="M12,0C8.96,0 6.21,1.23 4.22,3.22L5.63,4.63C7.26,3 9.5,2 12,2C14.5,2 16.74,3 18.36,4.64L19.77,3.23C17.79,1.23 15.04,0 12,0M7.05,6.05L8.46,7.46C9.37,6.56 10.62,6 12,6C13.38,6 14.63,6.56 15.54,7.46L16.95,6.05C15.68,4.78 13.93,4 12,4C10.07,4 8.32,4.78 7.05,6.05M12,15A2,2 0 0,1 10,13A2,2 0 0,1 12,11A2,2 0 0,1 14,13A2,2 0 0,1 12,15M15,9H9A1,1 0 0,0 8,10V22A1,1 0 0,0 9,23H15A1,1 0 0,0 16,22V10A1,1 0 0,0 15,9Z" />
+          }
+        </svg>
+        {{ isRemote ? lang.locals.disable_remote_control : lang.locals.enable_remote_control }}
       </button>
     </div>
     <div class="w-full absolute top-2 px-2 flex justify-between items-center">
@@ -141,87 +145,75 @@
       <source [src]="store.idleAvatarUrl()" type="video/webm" />
     </video>
 
-    <div class="absolute bottom-0 w-full max-h-[45%] overflow-y-auto no-scrollbar overflow-x-hidden">
-      <div
-        #container
-        class="min-h-0 flex-auto flex flex-col gap-1 w-full h-full relative overflow-hidden py-1 px-2 [&>.message.user]:justify-start [&>.message]:text-white">
-        @for (message of chatService.messages(); track message.id) {
-          <div class="message {{ message.role }}">
-            @if (message.isAssistant()) {
-              <div
-                appSecureUrl
-                appTextWriterAnimator
-                (animating)="animationStatus.set($event)"
-                class="whitespace-pre-wrap break-words"
-                [disableAnimate]="chatService.streamResponse()"
-                [text]="message.content"></div>
-            } @else {
-              <div class="whitespace-pre-wrap break-words" [innerHtml]="message.content"></div>
-            }
-            @if (chatService.messageInProgress() && inProgressMessage().length) {
-              <div
-                class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
-                <span class="typewriter-effect" appSecureUrl> {{ inProgressMessage() }}</span>
-              </div>
-            }
-
-            @if (message?.context && message?.context?.citations?.length) {
-              <div>
-                <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
-                <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
-                <div class="icon-with-title" (click)="linkRef.hidden = !linkRef.hidden">
-                  <i
-                    class="mdi"
-                    [ngClass]="{
-                      'mdi-chevron-down': linkRef.hidden,
-                      'mdi-chevron-up': !linkRef.hidden,
-                    }"></i>
-                  <span class="title">References</span>
-                </div>
-                <!-- eslint-enable @angular-eslint/template/click-events-have-key-events -->
-
-                <div #linkRef hidden>
-                  @for (link of message.context.citations; track $index) {
-                    <div dir="auto">
-                      <div class="d-inline">
-                        <small class="px-1 text-primary">
-                          doc {{ $index + 1 }} <i class="mdi mdi-link-variant"></i
-                        ></small>
-                      </div>
-                      <!--                    (click)="openDocModal(docModal, link)" -->
-                      <a class="d-inline citation-link" style="cursor: pointer">{{ link.filepath }}</a>
-                    </div>
-                  }
-                </div>
-              </div>
-            }
-          </div>
-        }
-      </div>
-    </div>
-    @if (qrCodeOpened && store.isStreamStartedFor(componentName())) {
-      <div
-        (click)="qrCodeOpened = false"
-        (keyup.enter)="qrCodeOpened = false"
-        tabindex="2"
-        class="absolute w-full h-full flex items-center justify-center bg-black/80">
+    @if (!qrCodeOpened) {
+      <div class="absolute bottom-0 w-full max-h-[45%] overflow-y-auto no-scrollbar overflow-x-hidden">
         <div
-          (click)="$event.stopPropagation()"
-          (keyup.enter)="$event.stopPropagation()"
-          tabindex="2"
-          class="relative flex flex-col justify-center items-center gap-2">
-          <qrcode [qrdata]="getQRData()"></qrcode>
-          <span class="p-1 text-white">streamId: {{ store.streamIdMap()[componentName()] }}</span>
-          <button (click)="qrCodeOpened = false" class="w-10 h-10 p-1 text-white rounded-full bg-white/30">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-            </svg>
-          </button>
+          #container
+          class="min-h-0 flex-auto flex flex-col gap-1 w-full h-full relative overflow-hidden py-1 px-2 [&>.message.user]:justify-start [&>.message]:text-white">
+          @for (message of chatService.messages(); track message.id) {
+            <div class="message {{ message.role }}">
+              @if (message.isAssistant()) {
+                <div
+                  appSecureUrl
+                  appTextWriterAnimator
+                  (animating)="animationStatus.set($event)"
+                  class="whitespace-pre-wrap break-words"
+                  [disableAnimate]="chatService.streamResponse()"
+                  [text]="message.content"></div>
+              } @else {
+                <div class="whitespace-pre-wrap break-words" [innerHtml]="message.content"></div>
+              }
+              @if (chatService.messageInProgress() && inProgressMessage().length) {
+                <div
+                  class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
+                  <span class="typewriter-effect" appSecureUrl> {{ inProgressMessage() }}</span>
+                </div>
+              }
+
+              @if (message?.context && message?.context?.citations?.length) {
+                <div>
+                  <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+                  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+                  <div class="icon-with-title" (click)="linkRef.hidden = !linkRef.hidden">
+                    <i
+                      class="mdi"
+                      [ngClass]="{
+                        'mdi-chevron-down': linkRef.hidden,
+                        'mdi-chevron-up': !linkRef.hidden,
+                      }"></i>
+                    <span class="title">References</span>
+                  </div>
+                  <!-- eslint-enable @angular-eslint/template/click-events-have-key-events -->
+
+                  <div #linkRef hidden>
+                    @for (link of message.context.citations; track $index) {
+                      <div dir="auto">
+                        <div class="d-inline">
+                          <small class="px-1 text-primary">
+                            doc {{ $index + 1 }} <i class="mdi mdi-link-variant"></i
+                          ></small>
+                        </div>
+                        <!--                    (click)="openDocModal(docModal, link)" -->
+                        <a class="d-inline citation-link" style="cursor: pointer">{{ link.filepath }}</a>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (qrCodeOpened) {
+      <div class="absolute w-full h-full flex items-end justify-end bg-black/40">
+        <div class="relative gap-2">
+          <qrcode [qrdata]="getQRData()" [width]="150"></qrcode>
         </div>
       </div>
     }
   </div>
 
   {{ init$ | async }}
+  {{ listener$ | async }}
 </div>

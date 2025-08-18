@@ -3,10 +3,13 @@ import { NO_ACCESS_TOKEN } from '@/http-contexts/no-access-token'
 import { UrlService } from '@/services/url.service'
 import { AppStore } from '@/stores/app.store'
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http'
-import { inject, Injectable, signal } from '@angular/core'
-import { Observable, of, switchMap, tap, timer } from 'rxjs'
+import { inject, Injectable, NgZone, signal } from '@angular/core'
+import { map, Observable, of, switchMap, tap, timer } from 'rxjs'
 import { ConfigService } from './config.service'
 import { StreamComponent } from '@/enums/stream-component'
+import { EventSourcePlus, SseMessage } from 'event-source-plus' // or similar for @microsoft/fetch-event-source
+import { CONFIGURATIONS } from '../resources/configurations'
+import { TokenService } from './token.service'
 
 @Injectable()
 export class AvatarService {
@@ -14,13 +17,16 @@ export class AvatarService {
   private readonly http = inject(HttpClient)
   private readonly store = inject(AppStore)
   private readonly config = inject(ConfigService)
+  private readonly token = inject(TokenService)
+  private readonly zone = inject(NgZone)
+
   componentName = signal<StreamComponent>(StreamComponent.AgentChatComponent)
 
   constructor() {
     if (!this.store.idleAvatar()) this.store.updateIdleAvatar(this.config.CONFIG.IDLE_AVATARS[0])
   }
 
-  startStream(size?: 'life-size'): Observable<StreamResultContract> {
+  startStream(size?: 'life-size', useClientId = false): Observable<StreamResultContract> {
     return this.http
       .post<StreamResultContract>(
         this.urlService.URLS.AVATAR + '/start-stream',
@@ -32,10 +38,69 @@ export class AvatarService {
                   size: 'life-size',
                 }
               : undefined),
+            ...(this.store.clientId() && useClientId
+              ? {
+                  client_id: this.store.clientId(),
+                }
+              : undefined),
           },
         }
       )
       .pipe(tap(res => this.store.updateStreamIdFor(this.componentName(), res.data.id)))
+  }
+
+  connect(): Observable<string> {
+    if (this.store.clientId()) {
+      return of(this.store.clientId())
+    }
+    return this.http.post<{ client_id: string }>(this.urlService.URLS.AVATAR + '/connect', null).pipe(
+      map(res => res.client_id),
+      tap(id => this.store.updateClientId(id))
+    )
+  }
+
+  startListener() {
+    return new Observable<{ event: string; data: StreamResultContract }>(observer => {
+      const { BASE_ENVIRONMENT: currentEnvironment, IS_OCP, KUNA_KEYS, OCP_APIM_KEYS } = this.config.CONFIG
+      const eventSource = new EventSourcePlus(
+        this.urlService.URLS.AVATAR + `/start-listener/${this.store.clientId()}`,
+        {
+          headers: {
+            ...(this.token.hasAccessToken()
+              ? {
+                  [CONFIGURATIONS.TOKEN_HEADER_KEY]: `Bearer ${this.token.getAccessToken()}`,
+                }
+              : undefined),
+            ...(IS_OCP
+              ? { 'Ocp-Apim-Subscription-Key': OCP_APIM_KEYS[currentEnvironment] }
+              : { 'x-functions-key': KUNA_KEYS[currentEnvironment] }),
+          },
+        }
+      )
+
+      const controller = eventSource.listen({
+        onMessage: (message: SseMessage) => {
+          this.zone.run(() => {
+            observer.next(JSON.parse(message.data))
+          })
+        },
+        onRequestError: context => {
+          this.zone.run(() => {
+            observer.error(context.error)
+          })
+          controller.abort('error')
+        },
+        onResponseError: context => {
+          this.zone.run(() => {
+            observer.error(new Error(`Response error: ${context.response.status}`))
+          })
+          controller.abort('error')
+        },
+      })
+
+      // Cleanup on unsubscribe
+      return () => controller.abort('manual')
+    })
   }
 
   closeStream(): Observable<StreamResultContract> {

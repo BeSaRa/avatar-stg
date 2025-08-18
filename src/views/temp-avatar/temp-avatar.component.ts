@@ -1,6 +1,7 @@
 import { SpinnerLoaderComponent } from '@/components/spinner-loader/spinner-loader.component'
 import { AppColors } from '@/constants/app-colors'
 import { SVG_ICONS } from '@/constants/svg-icons'
+import { StreamResultContract } from '@/contracts/stream-result-contract'
 import { ButtonDirective } from '@/directives/button.directive'
 import { SecureUrlDirective } from '@/directives/secure-url.directive'
 import { TextWriterAnimatorDirective } from '@/directives/text-writer-animator.directive'
@@ -48,12 +49,14 @@ import {
   map,
   merge,
   Observable,
+  of,
   ReplaySubject,
   Subject,
   switchMap,
   take,
   takeUntil,
   tap,
+  throwError,
 } from 'rxjs'
 import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.js'
@@ -113,77 +116,68 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
 
   componentName = signal(StreamComponent.ChatbotComponent)
   animationStatus = signal(false)
-  qrCodeOpened = false
   inProgressMessage = signal<string>('')
+
+  startListen$ = new Subject<void>()
+  qrCodeOpened = false
+  isRemote = true
 
   init$: Observable<unknown> = this.start$
     .asObservable()
-    .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'InProgress')))
+    .pipe(
+      tap(() => {
+        this.store.updateStreamStatusFor(this.componentName(), 'InProgress')
+        this.store.updateStreamId('')
+      })
+    )
     .pipe(takeUntil(this.destroy$))
     .pipe(
-      exhaustMap(() =>
-        this.avatarService
-          .startStream('life-size')
-          .pipe(
-            catchError(err => {
-              this.store.updateStreamStatusFor(this.componentName(), 'Stopped') //1
-              throw err
-            })
-          )
-          .pipe(ignoreErrors())
-      )
+      switchMap(() => {
+        return this.isRemote
+          ? this.avatarService.connect().pipe(
+              tap(() => {
+                this.qrCodeOpened = true
+                this.startListen$.next()
+              })
+            )
+          : this.avatarService.startStream()
+      })
     )
     .pipe(
+      catchError(err => {
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped') //1
+        this.qrCodeOpened = false
+        throw err
+      })
+    )
+    .pipe(ignoreErrors())
+    .pipe(
       switchMap(response => {
-        const {
-          data: {
-            webrtcData: { offer, iceServers },
-          },
-        } = response
-
-        this.pc = new RTCPeerConnection({
-          iceServers,
-          iceTransportPolicy: 'relay',
-        })
-        this.pc.addEventListener('icecandidate', event => {
-          if (event.candidate) {
-            this.avatarService.sendCandidate(event.candidate).subscribe()
-          }
-        })
-
-        this.pc.addEventListener('icegatheringstatechange', event => {
-          if (
-            (event.target as unknown as RTCPeerConnection).iceGatheringState == 'complete' &&
-            this.video().nativeElement.paused
-          ) {
-            this.video().nativeElement.play().then()
-            this.store.updateStreamStatusFor(this.componentName(), 'Started')
-          }
-        })
-
-        this.pc.addEventListener('track', event => {
-          this.video().nativeElement.srcObject = event.streams[0]
-        })
-
-        this.pc.addEventListener('connectionstatechange', evt => {
-          const connectionState = (evt.target as unknown as RTCPeerConnection).connectionState
-          if (connectionState === 'connected') {
-            this.store.updateStreamStatusFor(this.componentName(), 'Started')
-          }
-          if (connectionState === 'disconnected') {
-            this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
-          }
-        })
-
-        return from(
-          this.pc.setRemoteDescription(new RTCSessionDescription(offer as unknown as RTCSessionDescriptionInit))
-        )
-          .pipe(switchMap(() => from(this.pc.createAnswer())))
-          .pipe(switchMap(answer => from(this.pc.setLocalDescription(answer)).pipe(map(() => answer))))
-          .pipe(switchMap(answer => this.avatarService.sendAnswer(answer)))
+        if (!this.isRemote) return this._prepareStream(response as StreamResultContract)
+        return of(null)
       })
     )
     .pipe(map(() => ''))
+
+  listener$ = this.startListen$
+    .asObservable()
+    .pipe(takeUntil(this.destroy$))
+    .pipe(switchMap(() => this.avatarService.startListener()))
+    .pipe(filter(() => this.isRemote))
+    .pipe(
+      exhaustMap(res => {
+        if (res.event !== 'ping') {
+          this.qrCodeOpened = false
+          return this._prepareStream(res.data)
+        }
+        return of(null)
+      }),
+      catchError(err => {
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
+        this.qrCodeOpened = false
+        return throwError(() => err)
+      })
+    )
 
   onlineStatus = computed(() => {
     this.lang.localChange() // just to track any change for the languages
@@ -200,6 +194,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   })
 
   async ngOnInit(): Promise<void> {
+    this.store.updateClientId('')
     this.avatarService.componentName.set(StreamComponent.ChatbotComponent)
 
     this.chatHistoryService
@@ -215,7 +210,10 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
       .subscribe()
     this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
     merge(this.destroy$)
-      .pipe(tap(() => this.store.updateStreamStatusFor(this.componentName(), 'Stopped'))) // 2
+      .pipe(
+        tap(() => this.store.updateStreamStatusFor(this.componentName(), 'Stopped')),
+        tap(() => this.store.updateClientId(''))
+      ) // 2
       .subscribe(() => {
         console.log('COMPONENT DESTROYED')
       })
@@ -247,6 +245,55 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
     //   },
     //   { injector: this.injector }
     // )
+  }
+
+  private _prepareStream(streamResult: StreamResultContract) {
+    this.store.updateStreamIdFor(this.componentName(), streamResult.data.id)
+
+    const {
+      data: {
+        webrtcData: { offer, iceServers },
+      },
+    } = streamResult
+
+    this.pc = new RTCPeerConnection({
+      iceServers,
+      iceTransportPolicy: 'relay',
+    })
+    this.pc.addEventListener('icecandidate', event => {
+      if (event.candidate) {
+        this.avatarService.sendCandidate(event.candidate).subscribe()
+      }
+    })
+
+    this.pc.addEventListener('icegatheringstatechange', event => {
+      if (
+        (event.target as unknown as RTCPeerConnection).iceGatheringState == 'complete' &&
+        this.video().nativeElement.paused
+      ) {
+        this.video().nativeElement.play().then()
+        this.store.updateStreamStatusFor(this.componentName(), 'Started')
+      }
+    })
+
+    this.pc.addEventListener('track', event => {
+      this.video().nativeElement.srcObject = event.streams[0]
+    })
+
+    this.pc.addEventListener('connectionstatechange', evt => {
+      const connectionState = (evt.target as unknown as RTCPeerConnection).connectionState
+      if (connectionState === 'connected') {
+        this.store.updateStreamStatusFor(this.componentName(), 'Started')
+      }
+      if (connectionState === 'disconnected') {
+        this.store.updateStreamStatusFor(this.componentName(), 'Stopped')
+      }
+    })
+
+    return from(this.pc.setRemoteDescription(new RTCSessionDescription(offer as unknown as RTCSessionDescriptionInit)))
+      .pipe(switchMap(() => from(this.pc.createAnswer())))
+      .pipe(switchMap(answer => from(this.pc.setLocalDescription(answer)).pipe(map(() => answer))))
+      .pipe(switchMap(answer => this.avatarService.sendAnswer(answer)))
   }
 
   toggleStream() {
@@ -373,11 +420,10 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
       .pipe(tap(() => this.goToEndOfChat()))
       .pipe(
         exhaustMap(value => {
-          const { value: botNameValue } = this.chatService.botNameCtrl
           return iif(
             () => this.chatService.streamResponse(),
-            defer(() => this.chatService.sendMessageStreamed(value, botNameValue)),
-            defer(() => this.chatService.sendMessage(value, botNameValue))
+            defer(() => this.chatService.sendMessageStreamed(value, this.chatService.botNameCtrl.value)),
+            defer(() => this.chatService.sendMessage(value, this.chatService.botNameCtrl.value))
           )
         })
       )
@@ -413,7 +459,7 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   }
 
   getQRData() {
-    return `${this.getOrigin()}/control?streamId=${this.store.streamIdMap()[this.componentName()]}`
+    return `${this.getOrigin()}/home/control?clientId=${this.store.clientId()}`
   }
 
   getOrigin() {
@@ -433,9 +479,18 @@ export default class TempAvatarComponent extends OnDestroyMixin(class {}) implem
   getAvatarService() {
     return this.avatarService
   }
+
   toggleStreamResponse() {
     this.chatService.streamResponse.update(value => !value)
   }
+
+  toggleRemote() {
+    this.isRemote = !this.isRemote
+    this.qrCodeOpened = false
+    this.store.updateClientId('')
+    this.start$.next()
+  }
+
   private listenToInProgressMessages() {
     this.chatService
       .getInProgressMessage()

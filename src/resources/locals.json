@@ -1447,6 +1447,14 @@
     "ar": "مرحبا بك في مؤسسة الرعاية الصحية الأولية, كيف يمكنني مساعدتك؟",
     "en": "Hi there! Welcome to PHCC, How can I help you?"
   },
+  "enable_remote_control": {
+    "ar": "تفعيل التحكم",
+    "en": "Enable control"
+  },
+  "disable_remote_control": {
+    "ar": "تعطيل التحكم",
+    "en": "Disable control"
+  },
   "video_analyzer": {
     "ar": "محلل الفيديو",
     "en": "Video Analyzer"
