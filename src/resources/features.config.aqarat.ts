@@ -20,4 +20,5 @@ export const AQARAT_FEATURES: Record<FeatureKey, boolean> = {
   [FEATURE_KEYS.STATISTICS]: true,
   [FEATURE_KEYS.ADMIN_INSIGHTS]: true,
   [FEATURE_KEYS.CUSTOMER_SERVICE]: true,
+  [FEATURE_KEYS.VIDEO_ANALYZER]: false,
 }

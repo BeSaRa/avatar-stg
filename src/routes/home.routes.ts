@@ -90,6 +90,11 @@ const routes: Routes = [
     providers: [AvatarService],
   },
   {
+    path: 'video_analyzer',
+    loadComponent: () => import('@/views/video-analyzer/video-analyzer.component').then(c => c.VideoAnalyzerComponent),
+    pathMatch: 'full',
+  },
+  {
     path: '**',
     redirectTo: '',
   },

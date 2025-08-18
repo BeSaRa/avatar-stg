@@ -18,6 +18,7 @@ export const FEATURE_KEYS = {
   STATISTICS: 'statistics',
   ADMIN_INSIGHTS: 'admin_insights',
   CUSTOMER_SERVICE: 'customer_service',
+  VIDEO_ANALYZER: 'video_analyzer',
 } as const
 
 export type FeatureKey = (typeof FEATURE_KEYS)[keyof typeof FEATURE_KEYS]

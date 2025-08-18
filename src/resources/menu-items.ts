@@ -105,6 +105,15 @@ export const MENU_ITEMS: MenuItem[] = [
     permissions: [],
     haveSomeOfPermissions: true,
   },
+  {
+    id: 18,
+    label: 'video_analyzer',
+    route: '/home/video_analyzer',
+    svg: 'VIDEO_ANALYSIS',
+    feature: 'video_analyzer',
+    permissions: [],
+    haveSomeOfPermissions: true,
+  },
   // {
   //   id: 18,
   //   label: 'chat_assisstant',

@@ -20,4 +20,5 @@ export const RAYYAN_FEATURES: Record<FeatureKey, boolean> = {
   [FEATURE_KEYS.STATISTICS]: false,
   [FEATURE_KEYS.ADMIN_INSIGHTS]: true,
   [FEATURE_KEYS.CUSTOMER_SERVICE]: false,
+  [FEATURE_KEYS.VIDEO_ANALYZER]: false,
 }

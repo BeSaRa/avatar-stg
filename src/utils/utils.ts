@@ -369,6 +369,48 @@ export const handleNull = (value: string | null | undefined): string | null => {
   return value && value.trim() !== '' ? value : null
 }
 
+export function captureVideoThumbnail(video: HTMLVideoElement, captureTime = 1): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!video || !(video instanceof HTMLVideoElement)) {
+      return reject('Invalid video element.')
+    }
+
+    // Wait for the video to be loaded
+    if (video.readyState < 2) {
+      // Ensure metadata is loaded
+      video.addEventListener('loadeddata', () => processCapture(), { once: true })
+    } else {
+      processCapture()
+    }
+
+    function processCapture() {
+      video.currentTime = captureTime
+
+      video.addEventListener(
+        'seeked',
+        () => {
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+
+          if (!ctx) return reject('Canvas not supported.')
+
+          // Set canvas dimensions to match the video frame
+          canvas.width = video.videoWidth
+          canvas.height = video.videoHeight
+
+          // Draw the video frame to the canvas
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+          // Convert to base64 image URL
+          const thumbnailURL = canvas.toDataURL('image/jpeg')
+          resolve(thumbnailURL)
+        },
+        { once: true }
+      )
+    }
+  })
+}
+
 /**
  * Generic date range validator utility.
  *
