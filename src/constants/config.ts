@@ -1,7 +1,7 @@
 import { FeatureProfile } from '@/types/feature-profile'
 
 export const Config = {
-  VERSION: 'v0.1.9',
+  VERSION: 'v0.1.10',
   BASE_ENVIRONMENT: '',
   ENVIRONMENTS_URLS: {},
   BASE_URL: '',
