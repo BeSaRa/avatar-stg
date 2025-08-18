@@ -2,7 +2,7 @@
   <form
     [formGroup]="filterForm"
     (ngSubmit)="loadStatistics()"
-    class="flex flex-row items-center gap-4 w-full text-gray-700">
+    class="flex md:flex-row flex-col items-center gap-4 w-full text-gray-700">
     <!-- from_date -->
     <div class="w-full md:w-2/6">
       <div class="flex flex-col">
@@ -82,7 +82,7 @@
 <div class="grid gap-2">
   <div class="contents col-span-1">
     <h2 class="text-2xl font-semibold text-gray-700 my-1">{{ lang.locals.sessionResult }}</h2>
-    <div class="grid grid-cols-12 md:grid-cols-4 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
       @if (statistics()?.sessionResult) {
         @for (item of statistics()?.sessionResult | keyvalue; track $index) {
           <ng-container *ngTemplateOutlet="dataCard; context: { $implicit: item, header: lang.locals[item.key] }" />
@@ -97,7 +97,7 @@
 
   <div class="contents col-span-1">
     <h2 class="text-2xl font-semibold text-gray-700 my-1">{{ lang.locals.usageResult }}</h2>
-    <div class="grid grid-cols-12 md:grid-cols-4 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
       @if (statistics()?.usageResult) {
         @for (item of statistics()?.usageResult | keyvalue; track $index) {
           <ng-container *ngTemplateOutlet="dataCard; context: { $implicit: item, header: lang.locals[item.key] }" />
@@ -173,7 +173,7 @@
   </div>
 
   <div class="col-span-1">
-    <div class="grid grid-cols-12 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <ng-template
         *ngTemplateOutlet="
           quesionAnswerCard;
@@ -181,8 +181,10 @@
             $implicit: statistics(),
             item: (statistics()?.inappropriateResult)!.messages!,
             header: lang.locals.inappropriateResult,
+            counts: statistics()?.inappropriateResult?.total_inappropriate_messages,
           }
         " />
+
       <ng-template
         *ngTemplateOutlet="
           quesionAnswerCard;
@@ -218,15 +220,22 @@
   </div>
 </ng-template>
 
-<ng-template #quesionAnswerCard let-stats let-item="item" let-header="header">
+<ng-template #quesionAnswerCard let-stats let-item="item" let-header="header" let-counts="counts">
   <div
     class="relative overflow-hidden h-28 p-6 bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg transition">
     <h2 class="text-gray-700 text-xl font-semibold">{{ header }}</h2>
     @if (stats === null || stats === undefined) {
       <div class="h-10 bg-gray-300 rounded animate-pulse mt-2"></div>
     } @else {
-      <button (click)="openQuestionAnswerDialog(item, header)" appButton class="w-full h-10 rounded-lg mt-1" size="sm">
+      <button
+        (click)="openQuestionAnswerDialog(item, header)"
+        appButton
+        class="w-full h-10 rounded-lg mt-1 inline-flex items-center"
+        size="sm">
         {{ lang.locals.view_details }}
+        @if (counts) {
+          <strong class="bg-white rounded-full p-2 text-gray-700 size-6 text-center">{{ counts }}</strong>
+        }
       </button>
     }
   </div>
