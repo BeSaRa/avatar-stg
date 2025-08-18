@@ -87,17 +87,29 @@
                       <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_name || '—' }}</span>
                     </div>
                     <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.ticket_number }}</span>
+                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.RowKey }}</span>
+                    </div>
+                    <div>
+                      <span class="block font-medium text-gray-600">{{ lang.locals.ticket_date_and_time }}</span>
+                      <span dir="ltr" class="text-gray-500 text-sm"
+                        >{{ selectedTicket()?.created_date }} _ {{ selectedTicket()?.created_time }}</span
+                      >
+                    </div>
+                    <div>
                       <span class="block font-medium text-gray-600">{{ lang.locals.sender_email }}</span>
                       <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_email || '—' }}</span>
                     </div>
                     <div>
                       <span class="block font-medium text-gray-600">{{ lang.locals.sender_phone_number }}</span>
-                      <span class="text-gray-500 text-sm">{{ selectedTicket()?.sender_phone_number || '—' }}</span>
+                      <span dir="ltr" class="text-gray-500 text-sm">{{
+                        selectedTicket()?.sender_phone_number || '—'
+                      }}</span>
                     </div>
-                    <div>
+                    <!-- <div>
                       <span class="block font-medium text-gray-600">{{ lang.locals.target_company_name }}</span>
                       <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_company_name || '—' }}</span>
-                    </div>
+                    </div> -->
                     <div>
                       <span class="block font-medium text-gray-600">{{ lang.locals.target_contact_info }}</span>
                       <span class="text-gray-500 text-sm">{{ selectedTicket()?.target_contact_info || '—' }}</span>

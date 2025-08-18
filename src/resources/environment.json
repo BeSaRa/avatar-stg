@@ -16,7 +16,7 @@
     "MM": "https://mm-api-demo.azurewebsites.net/api"
   },
   "API_VERSION": "v1",
-  "BASE_ENVIRONMENT": "AQARAT_STG",
+  "BASE_ENVIRONMENT": "AZURE",
   "KUNA_KEYS": {
     "DEMO": "T55s7RlGknAAxFZSPU2jwIb5YwgmzVH4lsrWUKips4FwAzFuZQlXPQ==",
     "AQARAT_DEV": "DKES0AUBDEpzlZmDF_OBFOrafNpt5xxu05GHaQuqhuscAzFumaRAEg==",
@@ -34,7 +34,7 @@
     "PHCC_PROD": "6754e783bf894e81b70af7a65a8b0d73",
     "RAYYAN_STG": "110775bc2fd24ae3aae515e76bf21b5b"
   },
-  "IS_OCP": true,
+  "IS_OCP": false,
   "ENTITY_NAME": "rera_agent",
   "IDLE_AVATARS": ["lady", "gulf", "suit"],
   "FEATURE_PROFILE": "aqarat",
