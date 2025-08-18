@@ -400,4 +400,6 @@ export interface LangKeysContract {
   choose_lang: string
   videoAnalyzerHint: string
   videoAnalyzerGreeting: string
+  ticket_number: string
+  ticket_date_and_time: string
 }

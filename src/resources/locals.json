@@ -1602,5 +1602,13 @@
   "videoAnalyzerGreeting": {
     "ar": "مرحباً بك في محلل الفيديو، حيث تتحول اللقطات إلى رؤى واضحة وممتعة.",
     "en": "Welcome to the Video Analyzer, where moments turn into clear and engaging insights."
+  },
+  "ticket_number": {
+    "ar": "رقم الشكوى",
+    "en": "Ticket Number"
+  },
+  "ticket_date_and_time": {
+    "ar": "تاريخ و وقت الشكوى",
+    "en": "Ticket Date And Time"
   }
 }
