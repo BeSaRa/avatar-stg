@@ -20,7 +20,7 @@ import {
   SpeechConfig,
   SpeechRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk'
-import { delay, exhaustMap, filter, map, Subject, take, takeUntil, tap } from 'rxjs'
+import { defer, delay, exhaustMap, filter, iif, map, Subject, take, takeUntil, tap } from 'rxjs'
 import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/plugins/record'
 import { SpinnerLoaderComponent } from '../spinner-loader/spinner-loader.component'
@@ -184,7 +184,15 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
         })
       )
       .pipe(tap(() => this.goToEndOfChat()))
-      .pipe(exhaustMap(value => this.chatService.sendMessage(value, this.chatService.botNameCtrl.value)))
+      .pipe(
+        exhaustMap(value =>
+          iif(
+            () => this.chatService.streamResponse(),
+            defer(() => this.chatService.sendMessageStreamed(value, this.chatService.botNameCtrl.value)),
+            defer(() => this.chatService.sendMessage(value, this.chatService.botNameCtrl.value))
+          )
+        )
+      )
       .pipe(delay(200))
       .subscribe(() => {
         const assistantList = this.overlayChatComponent().container().nativeElement.querySelectorAll('.assistant')
@@ -207,5 +215,9 @@ export class ScreenControlComponent extends OnDestroyMixin(class {}) implements 
 
   interruptAvatar() {
     this.avatarService.interruptAvatar().pipe(take(1)).subscribe()
+  }
+
+  toggleStreamResponse() {
+    this.chatService.streamResponse.update(value => !value)
   }
 }
