@@ -66,10 +66,12 @@
       </div>
       @for (message of chatService.messages(); track message.id) {
         @if (message.isUser()) {
-          <div
-            class="user-message chat-message ltr:self-end min-w-[min(400px,100%)] rtl:self-start rtl:!rounded-tr-none ltr:!rounded-tr-none">
-            <p>{{ message.content }}</p>
-          </div>
+          @if (!message?.hidden) {
+            <div
+              class="user-message chat-message ltr:self-end min-w-[min(400px,100%)] rtl:self-start rtl:!rounded-tr-none ltr:!rounded-tr-none">
+              <p>{{ message.content }}</p>
+            </div>
+          }
         } @else if (message.isAssistant()) {
           <div
             class="assistant-message chat-message whitespace-break-spaces ltr:self-start min-w-[min(400px,100%)] rtl:self-end rtl:!rounded-tl-none ltr:!rounded-tr-none">
@@ -79,6 +81,7 @@
               (animating)="animating.set($event)"
               [stop]="stopAnimate()"
               [disableAnimate]="streamResponse()"
+              [trackedId]="message.id!"
               [text]="message.content"></span>
           </div>
         } @else {

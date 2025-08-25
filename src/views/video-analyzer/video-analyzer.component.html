@@ -1,4 +1,4 @@
-<div class="flex flex-col md:flex-row justify-between items-center">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4">
   @if (video() || videoData()) {
     <div class="flex flex-col space-y-2 w-full md:w-1/2 h-full" [@slideIn]>
       <div class="flex gap-4 justify-between items-center w-full">
@@ -94,11 +94,10 @@
     </button> -->
     @if (videoData()) {
       <div
-        class="relative flex justify-center items-center w-2/3 h-60 rounded-md border border-gray-300 shadow-sm bg-black overflow-hidden">
+        class="relative flex justify-center items-center w-full h-[50vh] rounded-md border border-gray-300 shadow-sm bg-black overflow-hidden">
         <div class="absolute w-full flex justify-center items-center top-0 bg-black/40 p-2">
           <span [title]="videoData()?.name" class="truncate">{{ videoData()?.name }}</span>
         </div>
-
         <video
           #selectedVideo
           class="selected-video h-full bg-transparent bg-cover"
@@ -126,13 +125,13 @@
   @if (videoIndexerChatService.status()) {
     <app-chat-container
       [componentName]="streamComponent.VideoAnalyzerComponent"
-      [clearMessageOnly]="true"
       [showFullScreenBtn]="false"
       [showAvatarBtn]="false"
       [showRecorderBtn]="false"
       [showUploadDocumentBtn]="false"
       [showAgentToggler]="false"
       [showHideBtn]="true"
+      [responseAsMarkdown]="true"
       [greeting_message]="lang.locals.videoAnalyzerGreeting"
       class="fixed z-20 rtl:right-16 ltr:left-16 bottom-0 text-black"
       [title]="lang.locals.video_analyzer"

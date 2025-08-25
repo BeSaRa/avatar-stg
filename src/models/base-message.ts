@@ -7,6 +7,7 @@ export class BaseMessage {
   content!: string
   role!: MessageRoleType
   id?: string
+  hidden?: boolean
 
   /**
    *

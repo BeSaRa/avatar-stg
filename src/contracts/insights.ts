@@ -313,6 +313,7 @@ interface Video {
   externalUrl?: string | null
   metadata?: Record<string, unknown> | null
   insights: VideoInsights
+  thumbnail_url: string
 }
 
 interface SummarizedInsights {
