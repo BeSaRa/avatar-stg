@@ -7,6 +7,7 @@ import {
   Injector,
   input,
   OnInit,
+  output,
   signal,
   TemplateRef,
   viewChild,
@@ -51,6 +52,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { StreamComponent } from '@/enums/stream-component'
 import { Router } from '@angular/router'
 import { HasFeaturePermissionDirective } from '@/directives/has-feature-permission.directive'
+import { SanitizerPipe } from '../../pipes/sanitizer.pipe'
+import { AnimationStateService } from '@/services/animation-state.service'
 
 @Component({
   selector: 'app-chat-container',
@@ -71,6 +74,7 @@ import { HasFeaturePermissionDirective } from '@/directives/has-feature-permissi
     SecureUrlDirective,
     MatSlideToggleModule,
     HasFeaturePermissionDirective,
+    SanitizerPipe,
   ],
   animations: [slideFromBottom],
   templateUrl: './chat-container.component.html',
@@ -80,6 +84,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   lang = inject(LocalService)
   chatService = inject(BaseChatService, { skipSelf: true })
   injector = inject(Injector)
+  animationState = inject(AnimationStateService)
   router = inject(Router)
   document = inject(DOCUMENT)
   chatHistoryService = inject(ChatHistoryService)
@@ -92,6 +97,8 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
   showRecorderBtn = input(true)
   showUploadDocumentBtn = input(true)
   showAgentToggler = input(true)
+  responseAsMarkdown = input(false)
+  assistantMessageClicked = output<string>()
   componentName = input.required<StreamComponent>()
   title = input(this.lang.locals.chat)
   containerClass = input('')
@@ -312,6 +319,7 @@ export class ChatContainerComponent extends OnDestroyMixin(class {}) implements 
     this.chatService.messages.set([])
     this.chatService.conversationId.set('')
     this.ratingDone.set(false)
+    this.animationState.clear()
   }
 
   toggleAvatar() {

@@ -1,4 +1,5 @@
-import { Directive, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { AnimationStateService } from '@/services/animation-state.service'
+import { Directive, ElementRef, EventEmitter, inject, Input, OnInit, Output } from '@angular/core'
 
 @Directive({
   selector: '[appTextWriterAnimator]',
@@ -9,19 +10,23 @@ export class TextWriterAnimatorDirective implements OnInit {
   @Input() speed = 2
   @Input() stop = false
   @Input() disableAnimate = false
+  @Input({ required: true }) trackedId: string | number = ''
   @Output() animating: EventEmitter<boolean> = new EventEmitter<boolean>()
-  constructor(private elementRef: ElementRef) {}
+  elementRef = inject(ElementRef)
+  animationState = inject(AnimationStateService)
+
   ngOnInit(): void {
     this.animateText()
   }
   animateText() {
-    if (this.disableAnimate) {
+    if (this.disableAnimate || this.animationState.has(this.trackedId)) {
       this.animating.emit(false)
       this.elementRef.nativeElement.innerHTML = this.text // Render current text
 
       return
     }
     this.animating.emit(true)
+    this.animationState.mark(this.trackedId)
     let index = 0
     let currentText = ''
 

@@ -28,7 +28,7 @@ import { STORAGE_ITEMS } from '@/constants/storage-items'
 import { ICitations } from '@/models/base-message'
 import { TokenService } from '@/services/token.service'
 import { LoginDataContract } from '@/contracts/login-data-contract'
-import { MarkdownService } from 'ngx-markdown'
+import { MarkdownService, MarkedRenderer } from 'ngx-markdown'
 import { StreamComponent } from '@/enums/stream-component'
 
 @Injectable({
@@ -251,7 +251,13 @@ export abstract class BaseChatService {
    * Format content string via helper utilities.
    */
   private async formatMessage(msg: Message): Promise<Message> {
-    msg.content = await this.markdownService.parse(msg.content)
+    const renderer = new MarkedRenderer()
+    renderer.list = ({ items }) => {
+      console.log(items)
+      return `<h1>${items}</h1>`
+    }
+
+    msg.content = await this.markdownService.parse(msg.content, { markedOptions: { renderer: renderer } })
     return new Message().clone(msg)
   }
 

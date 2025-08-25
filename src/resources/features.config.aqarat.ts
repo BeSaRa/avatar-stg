@@ -1,7 +1,7 @@
 import { FEATURE_KEYS, FeatureKey } from '@/constants/feature-keys'
 
 export const AQARAT_FEATURES: Record<FeatureKey, boolean> = {
-  [FEATURE_KEYS.AUTH]: true,
+  [FEATURE_KEYS.AUTH]: false,
   [FEATURE_KEYS.CHAT]: true,
   [FEATURE_KEYS.LEGAL_CHAT]: true,
   [FEATURE_KEYS.ADMIN_PAGES]: true,
@@ -20,5 +20,5 @@ export const AQARAT_FEATURES: Record<FeatureKey, boolean> = {
   [FEATURE_KEYS.STATISTICS]: true,
   [FEATURE_KEYS.ADMIN_INSIGHTS]: true,
   [FEATURE_KEYS.CUSTOMER_SERVICE]: true,
-  [FEATURE_KEYS.VIDEO_ANALYZER]: false,
+  [FEATURE_KEYS.VIDEO_ANALYZER]: true,
 }

@@ -37,6 +37,7 @@
                 appTextWriterAnimator
                 (animating)="animatingChange($event, message)"
                 [stop]="stopAnimate()"
+                [trackedId]="message.id!"
                 [text]="message.content">
               </span>
               @if (!message.isAnimating) {
@@ -88,6 +89,7 @@
                 appTextWriterAnimator
                 (animating)="animatingChange($event)"
                 [stop]="stopAnimate()"
+                [trackedId]="message.id!"
                 [text]="message.content"></span>
             </div>
           }

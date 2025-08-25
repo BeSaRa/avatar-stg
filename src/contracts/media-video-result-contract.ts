@@ -9,6 +9,13 @@ export interface VideoData {
   name: string
   id: string
   thumbnail_url: string
+  text?: string
+}
+
+export interface VideoSearchResult {
+  text: string
+  video_id: string
+  video_name: string
 }
 
 export interface VideoIndexInfo {
